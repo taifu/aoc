@@ -19,4 +19,4 @@ d = """3093	749	3469	142	2049	3537	1596	3035	2424	3982	3290	125	249	131	118	3138
 
 print(sum([max(r) - min(r) for r in [[int(f) for f in r.split('\t')] for r in d.split('\n')]]))
 
-print(int(sum([(a / b if a % b == 0 else (b / a if b % a == 0 else 0)) for r in [[int(f) for f in r.split('\t')] for r in d.split('\n')] for a, b in itertools.combinations(r, 2)])))
+print(int(sum([(a / b if a % b == 0 else 0) for r in [[int(f) for f in r.split('\t')] for r in d.split('\n')] for a, b in itertools.permutations(r, 2)])))
