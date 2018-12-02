@@ -1,4 +1,4 @@
-freqs = [int(x.strip()) for x in open("input").readlines()]
+freqs = [int(x.strip()) for x in open("input.txt").readlines()]
 print(sum(freqs))
 curr_freq = 0
 seen = set([0])
