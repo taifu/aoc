@@ -1,6 +1,3 @@
-import re
-
-
 data = open("input.txt").read().strip()
 
 
@@ -17,4 +14,4 @@ def react(data):
 
 
 print(len(react(data)))
-print(min(len(react(re.sub(c, '', data, flags=re.IGNORECASE))) for c in set(data.lower())))
+print(min(len(react(data.replace(c, "").replace(c.upper(), ""))) for c in "abcdefghijklmnopqrstuvwxyz"))
