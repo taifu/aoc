@@ -49,32 +49,34 @@ def get_size(points):
         max_y = max(max_y, p[1]) if max_y is not None else p[1]
     size_x = max_x - min_x + 1
     size_y = max_y - min_y + 1
-    return min_x, min_y, max_x, max_y, size_x, size_y
+    return min_x, min_y, size_x, size_y
 
 
-def draw(points, size_x, size_y):
-    min_x, min_y, max_x, max_y, size_x, size_y = get_size(points)
-    if size_x < 250 and size_y < 250:
-        matrix = [[" "] * size_x for y in range(size_y)]
-        for point in points:
-            matrix[point[1] - min_y][point[0] - min_x] = "#"
-        print("")
-        for line in matrix:
-            print("".join(line))
-        print("")
+def move(points, back=False):
     for point in points:
-        point[0] += point[2]
-        point[1] += point[3]
-    min_x, min_y, max_x, max_y, size_x, size_y = get_size(points)
-    return size_x, size_y
+        point[0] += point[2] * (-1 if back else 1)
+        point[1] += point[3] * (-1 if back else 1)
 
 
-size_x = size_y = None
+def draw(points, min_x, min_y, size_x, size_y):
+    matrix = [[" "] * size_x for y in range(size_y)]
+    for point in points:
+        matrix[point[1] - min_y][point[0] - min_x] = "#"
+    print("")
+    for line in matrix:
+        print("".join(line))
+    print("")
+
+
+min_x = min_y = size_x = size_y = None
 seconds = 0
 while True:
-    new_size_x, new_size_y = draw(points, size_x, size_y)
+    new_min_x, new_min_y, new_size_x, new_size_y = get_size(points)
     if size_x and new_size_x > size_x and new_size_y > size_y:
-        print(seconds)
+        move(points, back=True)
+        draw(points, min_x, min_y, size_x, size_y)
+        print(seconds - 1)
         break
     seconds += 1
-    size_x, size_y = new_size_x, new_size_y
+    move(points)
+    min_x, min_y, size_x, size_y = new_min_x, new_min_y, new_size_x, new_size_y
