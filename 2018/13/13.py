@@ -15,27 +15,30 @@ raw = r"""/>-<\
 
 raw = open("input.txt").read()
 
-track = []
-cars = {}
-chars = "v^<>"
 
-DOWN, UP, LEFT, RIGHT = list(chars)
+DOWN, UP, LEFT, RIGHT = list("v^<>")
 G_LEFT, G_STRAIGHT, G_RIGHT = range(3)
-
-for y, line in enumerate(raw.split("\n")):
-    row = list(line)
-    for x, direction in enumerate(row):
-        if direction in chars:
-            cars[len(cars)] = [x, y, direction, G_LEFT]
-            if direction in (LEFT, RIGHT):
-                row[x] = "-"
-            else:
-                row[x] = "|"
-    track.append(row)
+DELTA = {DOWN: (0, 1), UP: (0, -1), LEFT: (-1, 0), RIGHT: (1, 0)}
 
 
-def turn(pos, direction, turning):
-    if pos == "+":
+def read(raw):
+    track = []
+    cars = {}
+    for y, line in enumerate(raw.split("\n")):
+        row = list(line)
+        for x, direction in enumerate(row):
+            if direction in (DOWN, UP, LEFT, RIGHT):
+                cars[len(cars)] = [x, y, direction, G_LEFT]
+                if direction in (LEFT, RIGHT):
+                    row[x] = "-"
+                else:
+                    row[x] = "|"
+        track.append(row)
+    return track, cars
+
+
+def turn(street, direction, turning):
+    if street == "+":
         if turning == G_LEFT:
             if direction == LEFT:
                 direction = DOWN
@@ -55,7 +58,7 @@ def turn(pos, direction, turning):
             else:
                 direction = RIGHT
         turning = (turning + 1) % 3
-    elif pos == "/":
+    elif street == "/":
         if direction == LEFT:
             direction = DOWN
         elif direction == RIGHT:
@@ -64,7 +67,7 @@ def turn(pos, direction, turning):
             direction = LEFT
         else:
             direction = RIGHT
-    elif pos == "\\":
+    elif street == "\\":
         if direction == LEFT:
             direction = UP
         elif direction == RIGHT:
@@ -78,21 +81,12 @@ def turn(pos, direction, turning):
 
 def move(car, track):
     x, y, direction, turning = car
-    if direction == LEFT:
-        x = x - 1
-    elif direction == RIGHT:
-        x = x + 1
-    elif direction == UP:
-        y = y - 1
-    elif direction == DOWN:
-        y = y + 1
-    pos = track[y][x]
-    if pos in "+/\\":
-        direction, turning = turn(pos, direction, turning)
-    car[0] = x
-    car[1] = y
-    car[2] = direction
-    car[3] = turning
+    delta = DELTA.get(direction, (0, 0))
+    x, y = x + delta[0], y + delta[1]
+    street = track[y][x]
+    if street in "+/\\":
+        direction, turning = turn(street, direction, turning)
+    car[0:4] = x, y, direction, turning
 
 
 def draw(track, cars):
@@ -109,8 +103,8 @@ def draw(track, cars):
     print("=" * 10)
 
 
-tick = 0
-first_crash = True
+track, cars = read(raw)
+tick, first_crash = 0, True
 
 while True:
     tick += 1
@@ -128,8 +122,6 @@ while True:
         else:
             positions.pop((x, y))
         positions[position] = car
-    if len(to_remove) not in (0, 2):
-        raise Exception("Wrong!")
     for car in to_remove:
         cars.pop(car)
     if len(cars) == 1:
