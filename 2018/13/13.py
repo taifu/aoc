@@ -23,18 +23,18 @@ DELTA = {DOWN: (0, 1), UP: (0, -1), LEFT: (-1, 0), RIGHT: (1, 0)}
 
 def read(raw):
     track = []
-    cars = {}
+    carts = {}
     for y, line in enumerate(raw.split("\n")):
         row = list(line)
         for x, direction in enumerate(row):
             if direction in (DOWN, UP, LEFT, RIGHT):
-                cars[len(cars)] = [x, y, direction, G_LEFT]
+                carts[len(carts)] = [x, y, direction, G_LEFT]
                 if direction in (LEFT, RIGHT):
                     row[x] = "-"
                 else:
                     row[x] = "|"
         track.append(row)
-    return track, cars
+    return track, carts
 
 
 def turn(street, direction, turning):
@@ -79,22 +79,22 @@ def turn(street, direction, turning):
     return direction, turning
 
 
-def move(car, track):
-    x, y, direction, turning = car
+def move(cart, track):
+    x, y, direction, turning = cart
     delta = DELTA.get(direction, (0, 0))
     x, y = x + delta[0], y + delta[1]
     street = track[y][x]
     if street in "+/\\":
         direction, turning = turn(street, direction, turning)
-    car[0:4] = x, y, direction, turning
+    cart[0:4] = x, y, direction, turning
 
 
-def draw(track, cars):
+def draw(track, carts):
     print("=" * 10)
     for y, row in enumerate(track):
         line = ""
         for x, c in enumerate(row):
-            for c_x, c_y, direction, turning in cars.values():
+            for c_x, c_y, direction, turning in carts.values():
                 if (c_x, c_y) == (x, y):
                     c = direction
                     break
@@ -103,27 +103,28 @@ def draw(track, cars):
     print("=" * 10)
 
 
-track, cars = read(raw)
+track, carts = read(raw)
 tick, first_crash = 0, True
 
 while True:
     tick += 1
-    positions = dict((((x, y), car) for car, (x, y, direction, turning) in cars.items()))
+    positions = dict((((x, y), cart) for cart, (x, y, direction, turning) in carts.items()))
     to_remove = set()
-    for car, (x, y, direction, turning) in cars.copy().items():
-        move(cars[car], track)
-        position = (cars[car][0], cars[car][1])
+    carts_order = sorted([(y, x, cart, direction, turning) for cart, (x, y, direction, turning) in carts.copy().items()])
+    for y, x, cart, direction, turning in carts_order:
+        move(carts[cart], track)
+        position = (carts[cart][0], carts[cart][1])
         if position in positions:
             if first_crash:
                 print("{},{}".format(*position))
                 first_crash = False
             to_remove.add(positions[position])
-            to_remove.add(car)
+            to_remove.add(cart)
         else:
             positions.pop((x, y))
-        positions[position] = car
-    for car in to_remove:
-        cars.pop(car)
-    if len(cars) == 1:
-        print("{},{}".format(*cars.values()[0][:2]))
+        positions[position] = cart
+    for cart in to_remove:
+        carts.pop(cart)
+    if len(carts) == 1:
+        print("{},{}".format(*carts.values()[0][:2]))
         break
