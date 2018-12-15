@@ -110,7 +110,7 @@ while True:
     tick += 1
     positions = dict((((x, y), cart) for cart, (x, y, direction, turning) in carts.items()))
     to_remove = set()
-    carts_order = sorted([(y, x, cart, direction, turning) for cart, (x, y, direction, turning) in carts.copy().items()])
+    carts_order = sorted([(y, x, cart, direction, turning) for cart, (x, y, direction, turning) in carts.items()])
     for y, x, cart, direction, turning in carts_order:
         move(carts[cart], track)
         position = (carts[cart][0], carts[cart][1])
