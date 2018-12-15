@@ -230,9 +230,7 @@ class Cavern:
 
 maze = Cavern(raw)
 n_elves = len(maze.elves)
-
 maze.go()
-
 print(maze.outcome())
 
 ap = 4
