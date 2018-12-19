@@ -80,11 +80,13 @@ class CPU:
             self.registers[self.r_ip] = ip
             line = self.program[ip]
             if show:
-                out = "{} {}".format(ip, self.registers)
+                out = "{} {}".format(str(ip).rjust(2), str(self.registers).ljust(35))
                 out += ("{} {}".format(str(line[0]).replace(".", " ").split()[2][3:8], line[1:]))
             line[0](line[1:])
             if show:
-                print(out + " {} {}".format(ip, self.registers))
+                print(out)
+                print("   " + str(self.registers))
+                print()
             ip = self.registers[self.r_ip]
             ip += 1
         return self.registers[0]
@@ -108,5 +110,14 @@ print(cpu.run())
 
 cpu = CPU(raw)
 print(cpu.run())
-print(cpu.run(1, show=True))
-print(cpu.run(1))
+
+# L'algoritmo somma tutti i fattori di un grande numero
+# print(cpu.run(1, True))
+# Si vede dopo pochi cicli che nizializza il secondo registro a 10551383
+# Questi i suoi fattori primi:
+#   43  59  4159
+
+print(1 + 43 + 59 + 4159 + (43 * 59) + (43 * 4159) + (59 * 4159) + (43 * 59 * 4159))
+
+
+
