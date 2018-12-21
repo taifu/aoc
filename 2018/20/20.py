@@ -1,4 +1,4 @@
-import math
+from collections import deque
 
 raw = open("input.txt").read().strip()
 
@@ -16,65 +16,60 @@ class Map:
     def __init__(self, raw):
         self._read(raw.strip()[1:-1])
 
-    def _explore(self, raw, pos=0j, depth=0):
+    def _explore(self, raw, pos=0j):
         if not raw:
             return
         self._visited.add(pos)
-        opened = closed = branch = INF
-        try:
-            opened = raw.index("(")
-        except ValueError:
-            pass
-        try:
-            closed = raw.index(")")
-        except ValueError:
-            pass
-        try:
-            branch = raw.index("|")
-        except ValueError:
-            pass
-        first = min(branch, opened, closed)
-        raw, rest = raw[:first], raw[first + 1:]
-        if first < INF:
-            if first == branch:
-                self._explore(raw, pos, depth)
-                raw = self._explore(rest, pos, depth)
-            elif first == closed:
-                self._explore(raw, pos, depth)
-                self._explore(rest, pos, depth)
-            elif first == opened:
-                self._explore(raw, pos)
-                self._explore(rest, pos, depth + 1)
+        start_pos = pos
         while raw:
             char, raw = raw[0], raw[1:]
-            pos += DELTA[char]
-            self._doors.add(pos)
-            pos += DELTA[char]
-            self._visited.add(pos)
+            if char == "(":
+                raw = self._explore(raw, pos)
+            elif char == ")":
+                return raw
+            elif char == "|":
+                pos = start_pos
+                continue
+            else:
+                delta = DELTA[char]
+                pos += delta
+                self._visited.add(pos)
+                if delta.imag != 0:
+                    self._doors_h.add(pos)
+                else:
+                    self._doors_v.add(pos)
+                pos += delta
+                self._visited.add(pos)
         return
 
     def _read(self, raw):
         self._visited = set()
-        self._doors = set()
+        self._doors_v = set()
+        self._doors_h = set()
         self._explore(raw)
         self._build()
 
-    def _set_point(self, x, y, char):
-        self._map[int(y) - self.min_y][int(x) - self.min_x] = char
+    def _set_point(self, xy, char):
+        self._map[int(xy.imag) - self.min_y][int(xy.real) - self.min_x] = char
+
+    def _get_point(self, xy):
+        return self._map[int(xy.imag) - self.min_y][int(xy.real) - self.min_x]
 
     def _build(self):
-        self.min_x = min(int(p.real) for p in self._visited.union(self._doors))
-        self.max_x = max(int(p.real) for p in self._visited.union(self._doors))
-        self.min_y = min(int(p.real) for p in self._visited.union(self._doors))
-        self.max_y = max(int(p.imag) for p in self._visited.union(self._doors))
+        self.min_x = min(int(p.real) for p in self._visited) - 1
+        self.max_x = max(int(p.real) for p in self._visited) + 1
+        self.min_y = min(int(p.real) for p in self._visited) - 1
+        self.max_y = max(int(p.imag) for p in self._visited) + 1
         self.width = self.max_x - self.min_x + 1
         self.height = self.max_y - self.min_y + 1
         self._map = [["#"] * self.width for y in range(self.height)]
-        for p in self._doors:
-            self._set_point(p.real, p.imag, " ")
         for p in self._visited:
-            self._set_point(p.real, p.imag, ".")
-        self._set_point(0, 0, "X")
+            self._set_point(p, ".")
+        for p in self._doors_v:
+            self._set_point(p, "|")
+        for p in self._doors_h:
+            self._set_point(p, "-")
+        self._set_point(0j, "X")
 
     def draw(self):
         print()
@@ -82,17 +77,29 @@ class Map:
             print("".join(line))
         print()
 
-    def furthest(self):
-        pass
+    def longest(self):
+        visited = set()
+        max_doors = 0
+        thousand_doors = set()
+        paths = deque([(0j, 0)])
+        while paths:
+            pos, doors = paths.popleft()
+            if pos in visited:
+                continue
+            visited.add(pos)
+            if doors > max_doors:
+                max_doors = doors
+            if doors >= 1000:
+                thousand_doors.add(pos)
+            for direction, delta in DELTA.items():
+                char = self._get_point(pos + delta)
+                if char in ("|-"):
+                    paths.append((pos + delta * 2, doors + 1))
+        return max_doors, len(thousand_doors)
 
 
-map = Map(raw_example_1)
-map.draw()
-print(map.furthest())
+map = Map(raw)
+a, b = map.longest()
 
-map = Map(raw_example)
-map.draw()
-print(map.furthest())
-
-#map = Map(raw)
-print(map.furthest())
+print(a)
+print(b)
