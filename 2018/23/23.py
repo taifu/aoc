@@ -71,35 +71,43 @@ class Nanobots:
             elif bot.z > max_z:
                 max_z = bot.z
         step = max([max_x - min_x, max_y - min_y, max_z - min_z]) // 10
-        while step > 1:
+        from_x, to_x = min_x, max_x
+        from_y, to_y = min_y, max_y
+        from_z, to_z = min_z, max_z
+        best_x = best_y = best_z = 0
+        while True:
             best_inside = 0
-            for x in range(min_x, max_x, step):
+            for x in range(from_x, to_x, step):
                 x0 = x + step // 2
-                for y in range(min_y, max_y, step):
+                for y in range(from_y, to_y, step):
                     y0 = y + step // 2
-                    for z in range(min_z, max_z, step):
+                    for z in range(from_z, to_z, step):
                         z0 = z + step // 2
                         inside = 0
                         for bot in self.bots:
-                            if bot.distance(x0, y0, z0) < step:
+                            if bot.distance(x0, y0, z0) < step + bot.r:
                                 inside += 1
-                        if inside > best_inside:
+                        if inside >= best_inside or (inside == best_inside and x + y + z < best_x + best_y + best_z):
                             best_inside = inside
                             best_x, best_y, best_z = x, y, z
+            from_x = best_x - step
+            from_y = best_y - step
+            from_z = best_z - step
+            to_x = best_x + step + 1
+            to_y = best_y + step + 1
+            to_z = best_z + step + 1
+            if step == 1:
+                break
+            step //= 2
+
+        return Bot(0, 0, 0, 0).distance(best_x, best_y, best_z)
 
 
+# bots = Nanobots(raw_example)
+# print(len(bots.in_range()))
 
-            step = step // 10
-            step = 1
-
-        print(min_x, min_y, min_z, max_x, max_y, max_z)
-
-
-bots = Nanobots(raw_example)
-print(len(bots.in_range()))
-
-bots = Nanobots(raw_example_2)
-print(bots.best_pos())
+# bots = Nanobots(raw_example_2)
+# print(bots.best_pos())
 
 bots = Nanobots(raw)
 print(len(bots.in_range()))
