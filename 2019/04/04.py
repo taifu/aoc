@@ -1,22 +1,19 @@
 def count(from_, to_):
-    tot = 0
-    tot2 = 0
+    tot = tot2 = 0
     for pwd in range(from_, to_ + 1):
-        a, b, c, d, e, f = [int(p) for p in str(pwd)]
-        if a <= b <= c <= d <= e <= f and (a == b or b == c or c == d or d == e or e == f):
+        parts = [int(p) for p in str(pwd)]
+        if all(parts[n] <= parts[n + 1] for n in range(0, 5)) and any(parts[n] == parts[n + 1] for n in range(0, 5)):
             tot += 1
-            parts = [a, b, c, d, e, f]
             simil = set()
-            adiac = 1
-            n = 0
-            while n < 5:
-                if parts[n] != parts[n + 1]:
-                    simil.add(adiac)
-                    adiac = 1
-                else:
-                    adiac += 1
+            adiac = n = 0
+            while True:
+                if n == 5 or parts[n] != parts[n + 1]:
+                    simil.add(adiac + 1)
+                    if n == 5:
+                        break
+                    adiac = -1
+                adiac += 1
                 n += 1
-            simil.add(adiac)
             if 2 in simil:
                 tot2 += 1
     return tot, tot2
