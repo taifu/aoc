@@ -43,8 +43,7 @@ class Graph:
         while vertices:
             # 3. Select the unvisited node with the smallest distance,
             # it's current node now.
-            current_vertex = min(
-                vertices, key=lambda vertex: distances[vertex])
+            current_vertex = min(vertices, key=lambda vertex: distances[vertex])
 
             # 6. Stop, if the smallest distance
             # among the unvisited nodes is infinity.
@@ -66,6 +65,12 @@ class Graph:
             # and remove it from the unvisited set.
             vertices.remove(current_vertex)
 
+            # 6. Se ho trovato il vertice di destinazione, non mi interessa
+            # continuare
+            if current_vertex == dest:
+                break
+
+        # 7. Costruisco lo shortest path
         path, current_vertex = deque(), dest
         while previous_vertices[current_vertex] is not None:
             path.appendleft(current_vertex)
