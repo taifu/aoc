@@ -72,7 +72,7 @@ class Graph:
             current_vertex = previous_vertices[current_vertex]
         if path:
             path.appendleft(current_vertex)
-        return path
+        return list(path)
 
 
 def test_orbits():
@@ -101,7 +101,7 @@ J)K
 K)L
 K)YOU
 I)SAN"""
-    assert len(Graph(maps).shortest_path("YOU", "SAN")) == 4 + 3
+    assert Graph(maps).shortest_path("YOU", "SAN") == ["YOU", "K", "J", "E", "D", "I", "SAN"]
 
 
 if __name__ == "__main__":
