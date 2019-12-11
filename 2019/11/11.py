@@ -75,7 +75,7 @@ class Computer:
         else:
             self.input = []
 
-    def run(self, input=None, reset=True):
+    def run(self, input=None, reset=False):
         if reset:
             self.reset()
         self.set_input(input)
@@ -110,18 +110,15 @@ class Computer:
                 self.program[pos_output] = result
 
 
-if __name__ == "__main__":
-    c = Computer(open('input.txt').read())
-    hull = {(0, 0): 0}
+def paint(starting):
+    hull = {(0, 0): starting}
     position = (0, 0)
     direction = 0  # 0=up 1=right 2=down 3=left
     while True:
         try:
             c.run(hull.get(position, 0))
-            print(hull)
             break
         except StopException:
-            print(c.output, len(hull))
             color, turn = c.output.pop(0), c.output.pop(0)
             assert color in (0, 1)
             assert turn in (0, 1)
@@ -139,3 +136,20 @@ if __name__ == "__main__":
                 position = (position[0], position[1] - 1)
             else:
                 position = (position[0] - 1, position[1])
+    return hull
+
+
+if __name__ == "__main__":
+    c = Computer(open('input.txt').read())
+    hull = paint(0)
+    print(len(hull))
+    c.reset()
+    hull = paint(1)
+    min_y = min(v[1] for v in hull)
+    max_y = max(v[1] for v in hull)
+    min_x = min(v[0] for v in hull)
+    max_x = max(v[0] for v in hull)
+    print()
+    for y in range(max_y, min_y - 1, -1):
+        print("".join('#' if hull.get((x, y), 0) else ' ' for x in range(min_x, max_x + 1)))
+    print()
