@@ -75,7 +75,7 @@ class Computer:
         else:
             self.input = []
 
-    def run(self, input=None, reset=True):
+    def run(self, input=None, reset=False):
         if reset:
             self.reset()
         self.set_input(input)
@@ -159,5 +159,6 @@ if __name__ == "__main__":
     c = Computer(open('input.txt').read())
     c.run(1)
     print(c.output.pop())
+    c.reset()
     c.run(2)
     print(c.output.pop())
