@@ -1,3 +1,4 @@
+import time
 from collections import defaultdict
 
 
@@ -119,6 +120,7 @@ class Game:
         self.height = max(y for x, y in self.screen.keys()) + 1
 
     def paint(self):
+        print("\033[0;0H")
         for y in range(self.height):
             row = ""
             for x in range(self.width):
@@ -146,10 +148,11 @@ if __name__ == "__main__":
     c.run(input=0, reset=True)
     g = Game(c.output)
     g.paint()
-    print(sum(1 for t in g.screen.values() if t == 2))
+    part1 = sum(1 for t in g.screen.values() if t == 2)
     c.reset()
     c.program[0] = 2
     stop = False
+    print("\033[2J")
     while not stop:
         try:
             c.run()
@@ -164,3 +167,6 @@ if __name__ == "__main__":
             c.set_input(-1)
         else:
             c.set_input(0)
+        time.sleep(0.05)
+    print(part1)
+    print(g.score)
