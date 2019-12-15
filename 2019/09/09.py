@@ -94,7 +94,7 @@ class Computer:
                 elif parameter_mode == '0':  # Position mode (the value stored at value position)
                     parameter = self.program[parameter]
                 elif parameter_mode != '1':  # Immediate (the value)
-                    raise Exception("Unexpected paramater mode: {}".format(parameter_mode))
+                    raise Exception("Unexpected parameter mode: {}".format(parameter_mode))
                 parameters.append(parameter)
             if parameters_output:
                 assert parameters_output == 1

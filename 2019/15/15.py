@@ -1,5 +1,4 @@
-import time
-from collections import defaultdict
+from collections import defaultdict, deque
 
 
 class StopException(Exception):
@@ -112,61 +111,88 @@ class Computer:
                 self.program[pos_output] = result
 
 
-class Game:
-    def __init__(self, output):
-        self.screen = dict(((x, y), t) for x, y, t in zip(*(iter(output),) * 3))
-        self.score = self.screen.pop((-1, 0), 0)
-        self.width = max(x for x, y in self.screen.keys()) + 1
-        self.height = max(y for x, y in self.screen.keys()) + 1
+class Section:
+    def __init__(self):
+        self.cells = {}
+        self.min_x = self.max_x = self.min_y = self.max_y = 0
+
+    def add(self, position, status):
+        x, y = position
+        self.cells[x, y] = status
+        if status == 'o':
+            self.oxygen = (x, y)
+        self.min_x = min(x, self.min_x)
+        self.max_x = max(x, self.max_x)
+        self.min_y = min(y, self.min_y)
+        self.max_y = max(y, self.max_y)
 
     def paint(self):
+        print("\033[2J")
         print("\033[0;0H")
-        for y in range(self.height):
+        for y in range(self.min_y, self.max_y + 1):
             row = ""
-            for x in range(self.width):
-                tile = self.screen.get((x, y), 0)
-                if tile == 0:
-                    row += " "
-                elif tile == 1:
-                    row += "#"
-                elif tile == 2:
-                    row += "x"
-                elif tile == 3:
-                    row += "_"
-                    self.player = x
-                elif tile == 4:
-                    row += "o"
-                    self.ball = x
+            for x in range(self.min_x, self.max_x + 1):
+                if x == 0 and y == 0:
+                    row += 'x'
                 else:
-                    raise Exception("Tile unknown {} at {},{}".format(tile, x, y))
+                    row += self.cells.get((x, y), '#')
             print(row)
-        print("Score: {}".format(self.score))
+
+
+def flood_fill(computer, section, position, status):
+    section.add(position, status)
+    for direction, back_direction in ((1, 2), (2, 1), (3, 4), (4, 3)):
+        next_position = (position[0] + (1 if direction == 4 else -1 if direction == 3 else 0),
+                         position[1] + (1 if direction == 2 else -1 if direction == 1 else 0))
+        if next_position not in section.cells:
+            try:
+                computer.run(input=direction)
+                assert Exception("Unexpected halt 99")
+            except StopException:
+                pass
+            status = computer.output.pop(0)
+            if status in (1, 2):
+                flood_fill(computer, section, next_position, '.' if status == 1 else 'o')
+                try:
+                    computer.run(input=back_direction)
+                    assert Exception("Unexpected halt 99")
+                except StopException:
+                    pass
+                assert computer.output.pop() in (1, 2)
+            elif status == 0:
+                section.add(next_position, '#')
+            else:
+                raise Exception("Unexpected status {}".format(status))
+
+
+def breadth_first_search(section, pos, goal):
+    queue = deque([[pos]])
+    explored = {}
+    goal_path = None
+    while queue:
+        path = queue.popleft()
+        node = path[-1]
+        if node not in explored:
+            for next_pos in ((node[0] + 1, node[1]), (node[0] - 1, node[1]), (node[0], node[1] + 1), (node[0], node[1] - 1)):
+                if next_pos in explored:
+                    continue
+                cell = section.cells.get(next_pos, None)
+                if cell in ('.', 'o'):
+                    new_path = path + [next_pos]
+                    if next_pos == goal:
+                        goal_path = new_path
+                    queue.append(new_path)
+            explored[node] = path
+    return goal_path, explored
 
 
 if __name__ == "__main__":
-    c = Computer(open('input.txt').read())
-    c.run(input=0, reset=True)
-    g = Game(c.output)
-    g.paint()
-    part1 = sum(1 for t in g.screen.values() if t == 2)
-    c.reset()
-    c.program[0] = 2
-    stop = False
-    print("\033[2J")
-    while not stop:
-        try:
-            c.run()
-            stop = True
-        except StopException:
-            pass
-        g = Game(c.output)
-        g.paint()
-        if g.ball > g.player:
-            c.set_input(1)
-        elif g.ball < g.player:
-            c.set_input(-1)
-        else:
-            c.set_input(0)
-        time.sleep(0.05)
-    print(part1)
-    print(g.score)
+    computer = Computer(open('input.txt').read())
+    position = (0, 0)  # x, y
+    direction = 1  # 1=north 2=south 3=west 4=east
+    section = Section()
+    flood_fill(computer, section, position, '.')
+    section.paint()
+    goal, paths = breadth_first_search(section, section.oxygen, (0, 0))
+    print(len(goal) - 1)
+    print(max(len(v) - 1 for v in paths.values()))
