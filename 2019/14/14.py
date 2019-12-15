@@ -82,7 +82,6 @@ if __name__ == "__main__":
         if step == 0:
             break
         ore = ore_needed(raw, fuel)
-        last_fuel = fuel
         if ore <= cargo_ore:
             if fuel > max_fuel:
                 max_fuel = fuel
