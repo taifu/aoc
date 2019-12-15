@@ -167,14 +167,14 @@ def flood_fill(computer, section, position, status):
 
 def breadth_first_search(section, pos, goal):
     queue = deque([[pos]])
-    explored = {}
+    all_paths = {}
     goal_path = None
     while queue:
         path = queue.popleft()
         node = path[-1]
-        if node not in explored:
+        if node not in all_paths:
             for next_pos in ((node[0] + 1, node[1]), (node[0] - 1, node[1]), (node[0], node[1] + 1), (node[0], node[1] - 1)):
-                if next_pos in explored:
+                if next_pos in all_paths:
                     continue
                 cell = section.cells.get(next_pos, None)
                 if cell in ('.', 'o'):
@@ -182,8 +182,8 @@ def breadth_first_search(section, pos, goal):
                     if next_pos == goal:
                         goal_path = new_path
                     queue.append(new_path)
-            explored[node] = path
-    return goal_path, explored
+            all_paths[node] = path
+    return goal_path, all_paths
 
 
 if __name__ == "__main__":
