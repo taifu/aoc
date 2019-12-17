@@ -112,60 +112,6 @@ class Computer:
                 self.program[pos_output] = result
 
 
-class Section:
-    def __init__(self):
-        self.cells = {}
-        self.min_x = self.max_x = self.min_y = self.max_y = 0
-
-    def add(self, position, status):
-        x, y = position
-        self.cells[x, y] = status
-        if status == 'o':
-            self.oxygen = (x, y)
-        self.min_x = min(x, self.min_x)
-        self.max_x = max(x, self.max_x)
-        self.min_y = min(y, self.min_y)
-        self.max_y = max(y, self.max_y)
-
-    def paint(self):
-        print("\033[2J")
-        print("\033[0;0H")
-        for y in range(self.min_y, self.max_y + 1):
-            row = ""
-            for x in range(self.min_x, self.max_x + 1):
-                if x == 0 and y == 0:
-                    row += 'x'
-                else:
-                    row += self.cells.get((x, y), '#')
-            print(row)
-
-
-def flood_fill(computer, section, position, status):
-    section.add(position, status)
-    for direction, back_direction in ((1, 2), (2, 1), (3, 4), (4, 3)):
-        next_position = (position[0] + (1 if direction == 4 else -1 if direction == 3 else 0),
-                         position[1] + (1 if direction == 2 else -1 if direction == 1 else 0))
-        if next_position not in section.cells:
-            try:
-                computer.run(input=direction)
-                assert Exception("Unexpected halt 99")
-            except StopException:
-                pass
-            status = computer.output.pop(0)
-            if status in (1, 2):
-                flood_fill(computer, section, next_position, '.' if status == 1 else 'o')
-                try:
-                    computer.run(input=back_direction)
-                    assert Exception("Unexpected halt 99")
-                except StopException:
-                    pass
-                assert computer.output.pop() in (1, 2)
-            elif status == 0:
-                section.add(next_position, '#')
-            else:
-                raise Exception("Unexpected status {}".format(status))
-
-
 SCAFFOLD = "#"
 DIRECTIONS = {"v": 0, "<": 1, "^": 2, ">": 3}
 DELTA = {DIRECTIONS["v"]: (0, 1), DIRECTIONS["^"]: (0, -1), DIRECTIONS["<"]: (-1, 0), DIRECTIONS[">"]: (1, 0)}
