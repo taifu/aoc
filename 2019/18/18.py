@@ -81,6 +81,9 @@ class Map:
         queue = deque(((0, self.robots, frozenset()),))
         while queue:
             length, vertices, all_keys = queue.popleft()
+            if self.debug:
+                print(length, vertices, all_keys)
+
             if length > self.bests.get(all_keys, length + 1):
                 continue
             self.bests[all_keys] = length
@@ -89,9 +92,17 @@ class Map:
                     next_vertex = self.vertices[next_vertex_key]
                     next_length, doors, next_keys = self.edges[vertices[n].char, next_vertex.char]
                     if doors <= all_keys.union(next_keys):
-                        queue.append((length + next_length,
-                                      vertices[:n] + [next_vertex] + vertices[n + 1:],
-                                      all_keys.union(next_keys).union(next_vertex_key)))
+                        next_all_keys = all_keys.union(next_keys).union(next_vertex_key)
+                        if length + next_length < self.bests.get(next_all_keys, length + next_length + 1):
+                            self.bests[next_all_keys] = length + next_length
+                            queue.append((length + next_length,
+                                         vertices[:n] + [next_vertex] + vertices[n + 1:],
+                                         next_all_keys))
+                        #                all_keys.union(next_keys).union(next_vertex_key)))
+                        #if length + next_length < self.bests.get(next_all_keys, length + next_length + 1):
+                        #    queue.append((length + next_length,
+                        #                vertices[:n] + [next_vertex] + vertices[n + 1:],
+                        #                all_keys.union(next_keys).union(next_vertex_key)))
 
     def steps_recursive(self):
         # Recursive
@@ -99,7 +110,8 @@ class Map:
         self.explore_recursive(self.robots[0], frozenset())
         return self.bests[self.keys]
 
-    def steps(self):
+    def steps(self, debug=False):
+        self.debug = debug
         self.explore()
         return self.bests[self.keys]
 
@@ -135,7 +147,7 @@ def test_p18_4():
 #k.E..a...g..B.n#
 ########.########
 #l.F..d...h..C.m#
-#################""").steps() == 136
+#################""").steps(True) == 136
 
 
 def test_p18_5():
