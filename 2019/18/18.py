@@ -60,60 +60,29 @@ class Map:
                                       keys + ([] if not next_cell.islower() else [next_cell])))
         return shortest
 
-    def explore_recursive(self, vertex, keys, length=0):
-        if length > self.bests.get(keys, length + 1):
-            return
-        self.bests[keys] = length
-        for next_vertex_key in self.keys - keys:
-            next_vertex = self.vertices[next_vertex_key]
-            next_length, next_doors, next_keys = self.edges[vertex.char, next_vertex.char]
-            if next_doors <= keys.union(next_keys):
-                self.explore_recursive(next_vertex, keys.union(next_keys).union([next_vertex_key]), length + next_length)
-
-    def reduce_frozensets(self, fsets):
-        all_fset = frozenset()
-        for f in fsets:
-            all_fset = all_fset.union(f)
-        return all_fset
-
-    def explore(self):
+    def explore(self, robot, this_robot_keys):
         self.bests = {}
-        queue = deque(((0, self.robots, frozenset()),))
+        queue = deque(((0, robot, frozenset()),))
         while queue:
-            length, vertices, all_keys = queue.popleft()
-            if self.debug:
-                print(length, vertices, all_keys)
-
+            length, vertex, all_keys = queue.popleft()
             if length > self.bests.get(all_keys, length + 1):
                 continue
             self.bests[all_keys] = length
-            for n, robot in enumerate(self.robots):
-                for next_vertex_key in self.robots_keys[robot.char] - all_keys:
-                    next_vertex = self.vertices[next_vertex_key]
-                    next_length, doors, next_keys = self.edges[vertices[n].char, next_vertex.char]
-                    if doors <= all_keys.union(next_keys):
-                        next_all_keys = all_keys.union(next_keys).union(next_vertex_key)
-                        if length + next_length < self.bests.get(next_all_keys, length + next_length + 1):
-                            self.bests[next_all_keys] = length + next_length
-                            queue.append((length + next_length,
-                                         vertices[:n] + [next_vertex] + vertices[n + 1:],
-                                         next_all_keys))
-                        #                all_keys.union(next_keys).union(next_vertex_key)))
-                        #if length + next_length < self.bests.get(next_all_keys, length + next_length + 1):
-                        #    queue.append((length + next_length,
-                        #                vertices[:n] + [next_vertex] + vertices[n + 1:],
-                        #                all_keys.union(next_keys).union(next_vertex_key)))
-
-    def steps_recursive(self):
-        # Recursive
-        self.bests = {}
-        self.explore_recursive(self.robots[0], frozenset())
-        return self.bests[self.keys]
+            for next_vertex_key in this_robot_keys - all_keys:
+                next_vertex = self.vertices[next_vertex_key]
+                next_length, doors, next_keys = self.edges[vertex.char, next_vertex.char]
+                if doors.intersection(this_robot_keys) <= all_keys.union(next_keys):
+                    next_all_keys = all_keys.union(next_keys).union(next_vertex_key)
+                    queue.append((length + next_length, next_vertex, next_all_keys))
 
     def steps(self, debug=False):
         self.debug = debug
-        self.explore()
-        return self.bests[self.keys]
+        tot_best = 0
+        for robot in self.robots:
+            this_robot_keys = self.robots_keys[robot.char]
+            self.explore(robot, this_robot_keys)
+            tot_best += self.bests[this_robot_keys]
+        return tot_best
 
 
 def test_p18_1():
@@ -193,7 +162,6 @@ if __name__ == "__main__":
     raw = open("input.txt").read()
     map1 = Map(raw)
     map1.show()
-    print(map1.steps())
     pos = raw.find('@')
     raw = raw[:pos - 1] + '###' + raw[pos + 2:]
     len_row = len(map1.map[0])
@@ -201,4 +169,5 @@ if __name__ == "__main__":
         raw = raw[:pos + delta - 1] + '@#@' + raw[pos + delta + 2:]
     map2 = Map(raw)
     map2.show()
+    print(map1.steps())
     print(map2.steps())
