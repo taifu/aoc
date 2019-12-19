@@ -115,32 +115,34 @@ class Area:
     def __init__(self, computer):
         self.computer = computer
 
-    def scan(self, width, height):
+    def scan(self, width, height, start_x=0, start_y=0):
         self.width = width
         self.height = height
+        self.start_x = start_x
+        self.start_y = start_y
         self.map = {}
-        for x in range(self.width):
-            for y in range(self.height):
+        for x in range(self.start_x, self.width):
+            for y in range(self.start_y, self.height):
                 self.computer.reset()
                 self.computer.set_input([x, y])
                 self.computer.run()
                 self.map[(x, y)] = self.computer.output.pop()
         self.rows = []
-        for y in range(self.height):
+        for y in range(self.start_y, self.height):
             row = []
-            for x in range(self.width):
+            for x in range(self.start_x, self.width):
                 row.append('#' if self.map[(x, y)] == 1 else '.' if self.map[(x, y)] == 0 else '?')
             self.rows.append("".join(row))
 
     def show(self):
-        for y in range(self.height):
+        for y in range(self.start_y, self.height):
             row = []
-            for x in range(self.width):
+            for x in range(self.start_x, self.width):
                 row.append('#' if self.map[(x, y)] == 1 else '.' if self.map[(x, y)] == 0 else '?')
             print("".join(row))
 
     def count(self):
-        return sum(1 if self.map[(x, y)] == 1 else 0 for x in range(self.width) for y in range(self.height))
+        return sum(1 if self.map[(x, y)] == 1 else 0 for x in range(self.start_x, self.width) for y in range(self.start_y, self.height))
 
     def intercept(self, square):
         ship = '#' * square
@@ -162,7 +164,7 @@ class Area:
                         break
                     dx += 1
                 if found:
-                    return (x + dx) * 10000 + y
+                    return (x + dx + self.start_x) * 10000 + y + self.start_y
         return None
 
 
@@ -173,6 +175,8 @@ if __name__ == "__main__":
     area.show()
     print(area.count())
     size = 1100
+    start_x = 750
+    start_y = 750
     print("Please, wait a minute while I'm scanning a {0} by {0} map. Thank you :-)".format(size))
-    area.scan(size, size)
+    area.scan(size, size, start_x, start_y)
     print(area.intercept(100))
