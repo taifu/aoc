@@ -1,4 +1,3 @@
-import time
 from collections import defaultdict
 
 
@@ -126,6 +125,12 @@ class Area:
                 self.computer.set_input([x, y])
                 self.computer.run()
                 self.map[(x, y)] = self.computer.output.pop()
+        self.rows = []
+        for y in range(self.height):
+            row = []
+            for x in range(self.width):
+                row.append('#' if self.map[(x, y)] == 1 else '.' if self.map[(x, y)] == 0 else '?')
+            self.rows.append("".join(row))
 
     def show(self):
         for y in range(self.height):
@@ -137,6 +142,29 @@ class Area:
     def count(self):
         return sum(1 if self.map[(x, y)] == 1 else 0 for x in range(self.width) for y in range(self.height))
 
+    def intercept(self, square):
+        ship = '#' * square
+        for y, row in enumerate(self.rows):
+            x = row.find(ship)
+            if x >= 0:
+                found = False
+                dx = 0
+                while not found:
+                    if x + dx + square == self.width or row[x + dx:x + dx + square] != ship:
+                        break
+                    if y + square == self.height:
+                        break
+                    for dy in range(y, y + square):
+                        if self.rows[dy][x + dx:x + dx + square] != ship:
+                            break
+                    else:
+                        found = True
+                        break
+                    dx += 1
+                if found:
+                    return (x + dx) * 10000 + y
+        return None
+
 
 if __name__ == "__main__":
     computer = Computer(open('input.txt').read())
@@ -144,5 +172,7 @@ if __name__ == "__main__":
     area.scan(50, 50)
     area.show()
     print(area.count())
-    area.scan(1000, 1000)
-    area.show()
+    size = 1100
+    print("Please, wait a minute while I'm scanning a {0} by {0} map. Thank you :-)".format(size))
+    area.scan(size, size)
+    print(area.intercept(100))
