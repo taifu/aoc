@@ -28,5 +28,3 @@ assert(fuel_inc(1969) == 966)
 assert(fuel_inc(100756) == 50346)
 
 print(sum(fuel_inc(int(mass.strip())) for mass in open("input.txt").readlines()))
-
-print(sum(fuel_rec(int(mass.strip())) for mass in open("input.txt").readlines()))
