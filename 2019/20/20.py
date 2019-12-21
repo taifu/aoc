@@ -107,16 +107,32 @@ class Maze:
                 self.edges[v2, v1] = Edge(v2, v1, 1)
         if self.part == 2:
             new_edges = {}
-            for level in range(15):
+            for level in range(40):
                 for v1 in self.vertices_in.keys():
                     v1i = v1[:2] + 'i' + str(level)
                     v2o = v1[:2] + 'o' + str(level + 1)
                     new_edges[v1i, v2o] = Edge(v1i, v2o, 1)
                     new_edges[v2o, v1i] = Edge(v2o, v1i, 1)
+                    for v2 in self.vertices_in.keys():
+                        if v1[:2] != v2[:2]:
+                            edge = self.edges.get((v1, v2), None)
+                            if edge:
+                                v1i = v1[:2] + 'i' + str(level)
+                                v2i = v2[:2] + 'i' + str(level)
+                                new_edges[v1i, v2i] = Edge(v1i, v2i, edge.cost)
+                                new_edges[v2i, v1i] = Edge(v2i, v1i, edge.cost)
                 if level > 0:
                     for v1 in self.vertices_out.keys():
+                        for v2 in self.vertices_out.keys():
+                            if v1[:2] != v2[:2]:
+                                edge = self.edges.get((v1, v2), None)
+                                if edge:
+                                    v1o = v1[:2] + 'o' + str(level)
+                                    v2o = v2[:2] + 'o' + str(level)
+                                    new_edges[v1o, v2o] = Edge(v1o, v2o, edge.cost)
+                                    new_edges[v2o, v1o] = Edge(v2o, v1o, edge.cost)
                         for v2 in self.vertices_in.keys():
-                            if v1 != v2:
+                            if v1[:2] != v2[:2]:
                                 edge = self.edges.get((v1, v2), None)
                                 if edge:
                                     v1o = v1[:2] + 'o' + str(level)
@@ -286,57 +302,54 @@ RE....#.#                           #......RF
     assert maze.edges['RFo6', 'NMi6'].cost == 8
     assert maze.edges['NMi6', 'NMo7'].cost == 1
     assert maze.edges['NMo7', 'LPi7'].cost == 12
-
-    """
-Recurse into level 8 through LP (1 step)
-Walk from LP to FD (24 steps)
-Recurse into level 9 through FD (1 step)
-Walk from FD to XQ (8 steps)
-Recurse into level 10 through XQ (1 step)
-Walk from XQ to WB (4 steps)
-Return to level 9 through WB (1 step)
-Walk from WB to ZH (10 steps)
-Return to level 8 through ZH (1 step)
-Walk from ZH to CK (14 steps)
-Return to level 7 through CK (1 step)
-Walk from CK to XF (10 steps)
-Return to level 6 through XF (1 step)
-Walk from XF to OA (14 steps)
-Return to level 5 through OA (1 step)
-Walk from OA to CJ (8 steps)
-Return to level 4 through CJ (1 step)
-Walk from CJ to RE (8 steps)
-Return to level 3 through RE (1 step)
-Walk from RE to IC (4 steps)
-Recurse into level 4 through IC (1 step)
-Walk from IC to RF (10 steps)
-Recurse into level 5 through RF (1 step)
-Walk from RF to NM (8 steps)
-Recurse into level 6 through NM (1 step)
-Walk from NM to LP (12 steps)
-Recurse into level 7 through LP (1 step)
-Walk from LP to FD (24 steps)
-Recurse into level 8 through FD (1 step)
-Walk from FD to XQ (8 steps)
-Recurse into level 9 through XQ (1 step)
-Walk from XQ to WB (4 steps)
-Return to level 8 through WB (1 step)
-Walk from WB to ZH (10 steps)
-Return to level 7 through ZH (1 step)
-Walk from ZH to CK (14 steps)
-Return to level 6 through CK (1 step)
-Walk from CK to XF (10 steps)
-Return to level 5 through XF (1 step)
-Walk from XF to OA (14 steps)
-Return to level 4 through OA (1 step)
-Walk from OA to CJ (8 steps)
-Return to level 3 through CJ (1 step)
-Walk from CJ to RE (8 steps)
-Return to level 2 through RE (1 step)
-Walk from RE to XQ (14 steps)
-Return to level 1 through XQ (1 step)
-Walk from XQ to FD (8 steps)
-"""
+    assert maze.edges['LPi7', 'LPo8'].cost == 1
+    assert maze.edges['LPo8', 'FDi8'].cost == 24
+    assert maze.edges['FDi8', 'FDo9'].cost == 1
+    assert maze.edges['FDo9', 'XQi9'].cost == 8
+    assert maze.edges['XQi9', 'XQo10'].cost == 1
+    assert maze.edges['XQo10', 'WBo10'].cost == 4
+    assert maze.edges['WBo10', 'WBi9'].cost == 1
+    assert maze.edges['WBi9', 'ZHo9'].cost == 10
+    assert maze.edges['ZHo9', 'ZHi8'].cost == 1
+    assert maze.edges['ZHi8', 'CKo8'].cost == 14
+    assert maze.edges['CKo8', 'CKi7'].cost == 1
+    assert maze.edges['CKi7', 'XFo7'].cost == 10
+    assert maze.edges['XFo7', 'XFi6'].cost == 1
+    assert maze.edges['XFi6', 'OAo6'].cost == 14
+    assert maze.edges['OAo6', 'OAi5'].cost == 1
+    assert maze.edges['OAi5', 'CJo5'].cost == 8
+    assert maze.edges['CJo5', 'CJi4'].cost == 1
+    assert maze.edges['CJi4', 'REo4'].cost == 8
+    assert maze.edges['REo4', 'REi3'].cost == 1
+    assert maze.edges['REi3', 'ICi3'].cost == 4
+    assert maze.edges['ICi3', 'ICo4'].cost == 1
+    assert maze.edges['ICo4', 'RFi4'].cost == 10
+    assert maze.edges['RFi4', 'RFo5'].cost == 1
+    assert maze.edges['RFo5', 'NMi5'].cost == 8
+    assert maze.edges['NMi5', 'NMo6'].cost == 1
+    assert maze.edges['NMo6', 'LPi6'].cost == 12
+    assert maze.edges['LPi6', 'LPo7'].cost == 1
+    assert maze.edges['LPo7', 'FDi7'].cost == 24
+    assert maze.edges['FDi7', 'FDo8'].cost == 1
+    assert maze.edges['FDo8', 'XQi8'].cost == 8
+    assert maze.edges['XQi8', 'XQo9'].cost == 1
+    assert maze.edges['XQo9', 'WBo9'].cost == 4
+    assert maze.edges['WBo9', 'WBi8'].cost == 1
+    assert maze.edges['WBi8', 'ZHo8'].cost == 10
+    assert maze.edges['ZHo8', 'ZHi7'].cost == 1
+    assert maze.edges['ZHi7', 'CKo7'].cost == 14
+    assert maze.edges['CKo7', 'CKi6'].cost == 1
+    assert maze.edges['CKi6', 'XFo6'].cost == 10
+    assert maze.edges['XFo6', 'XFi5'].cost == 1
+    assert maze.edges['XFi5', 'OAo5'].cost == 14
+    assert maze.edges['OAo5', 'OAi4'].cost == 1
+    assert maze.edges['OAi4', 'CJo4'].cost == 8
+    assert maze.edges['CJo4', 'CJi3'].cost == 1
+    assert maze.edges['CJi3', 'REo3'].cost == 8
+    assert maze.edges['REo3', 'REi2'].cost == 1
+    assert maze.edges['REi2', 'XQo2'].cost == 14
+    assert maze.edges['XQo2', 'XQi1'].cost == 1
+    assert maze.edges['XQi1', 'FDo1'].cost == 8
     assert maze.edges['FDo1', 'FDi0'].cost == 1
     assert maze.edges['FDi0', 'ZZ'].cost == 18
     assert maze.dijkstra('AA', 'ZZ') == 396
