@@ -43,25 +43,39 @@ class Deck:
             elif move == Deck.CUT:
                 # (ax + b) + value => ax + b + value
                 delta += value
-        # ((ax + b) steps times) % size
+        #
+        # We need to simplify:
+        #  ((ax + b) steps times) % size
+        #
+        # First steps calculation of function(x) ^ n:
+        #
         # 1 = (ax + b)
         # 2 = a*(ax + b) + b => a^2x + ab + b
         # 3 = a*(a^2x + ab + b) + b => a^3x + a^2b + a*b + b
         # 4 = a*(a^3x + a^2b + a*b + b) + b => a^4x + a^3b + a^2b + a*b + b
+        # ...
         #
-        # a^4x + a^3b + a^2b + a*b + b => a^4x + b * (a^3 + a^2 + a^1 + a^0)
+        #  a^4x + a^3b + a^2b + a*b + b => a^4x + b * (a^3 + a^2 + a^1 + a^0)
+        #  a^nx + ... + a^3b + a^2b + a*b + b => a^nx + b * (a^(n-1) ... + a^3 + a^2 + a^1 + a^0)
         #
-        # https://en.wikipedia.org/wiki/Geometric_progression#Geometric_series
-        # (a^3 + a^2 + a^1 + a^0) => (1 - a^3)/(1 - a)
+        # Factorize b:
+        #  a^nx + a^(n-1)b ... a^3b + a^2b + a*b + b => a^nx + b * (a^n-1 ... a^3 + a^2 + a^1 + a^0)
         #
-
-        # if steps == 1:
-        #     return (multiplier * position + delta) % self.size
-        # if steps == 2:
-        #     return (multiplier**2 * position + multiplier * delta + delta) % self.size
-
-        # https://stackoverflow.com/a/3530661
-        # https://stackoverflow.com/questions/4798654/modular-multiplicative-inverse-function-in-python
+        # Use geometric series formula
+        #  https://en.wikipedia.org/wiki/Geometric_progression#Geometric_series
+        #  (a^(n-1) + ... + a^3 + a^2 + a^1 + a^0) => (1 - a^n)/(1 - a)
+        #
+        # You need to simplify a^n using pow(...)
+        # Modular aritmetic https://stackoverflow.com/a/3530661
+        #  A / B (mod C)
+        #  A * (1/B) (mod C)
+        #  A * B^(-1)(mod C).
+        #
+        # B^(-1) modular-multiplicative-inverse
+        #
+        # Hera python algorithm for modinv function:
+        #  https://stackoverflow.com/questions/4798654/modular-multiplicative-inverse-function-in-python
+        #
         return (position * pow(multiplier, steps, self.size) + delta * (1 - pow(multiplier, steps, self.size)) * (self.modinv(1 - multiplier, self.size))) % self.size
 
     def process(self):
