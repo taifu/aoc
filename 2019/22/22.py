@@ -37,6 +37,13 @@ class Deck:
                 multiplier = -multiplier
                 delta = self.size - 1 - delta
             elif move == Deck.INC:
+                # Inverse modulus if modulus is prime is:
+                #  https://stackoverflow.com/questions/4798654/modular-multiplicative-inverse-function-in-python/4798776#4798776
+                #    y = x**(p-2) mod p  # Pseudocode
+                #  or in Python proper:
+                #    y = pow(x, p-2, p)
+                #
+                # So:
                 # (ax + b) * pow(...) => a*pow(...)x +b*pow(...)
                 multiplier = multiplier * pow(value, self.size - 2, self.size)
                 delta = delta * pow(value, self.size - 2, self.size)
