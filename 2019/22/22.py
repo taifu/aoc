@@ -35,7 +35,8 @@ class Deck:
             if move == Deck.NEW:
                 # self.size -(ax + b) -1 => -ax -b + self.size - 1
                 multiplier = -multiplier
-                delta = self.size - 1 - delta
+                # Could remove self.size:
+                delta = - 1 - delta
             elif move == Deck.INC:
                 # Inverse modulus if modulus is prime is:
                 #  https://stackoverflow.com/questions/4798654/modular-multiplicative-inverse-function-in-python/4798776#4798776
