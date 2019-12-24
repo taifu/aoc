@@ -53,5 +53,10 @@ class Life:
 
 if __name__ == "__main__":
     life = Life(open("input.txt").read().strip())
+    life = Life("""....#
+#..#.
+#..##
+..#..
+#....""")
     life.evolve()
     print(life.biodiversity)
