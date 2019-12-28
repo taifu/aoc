@@ -94,16 +94,11 @@ class LifeRec:
                         count = sum(1 for cell2 in self.around(*cell) if cell2 in self.bugs)
                         if count in (1, 2):
                             bugs.add(cell)
-                	
             self.bugs = bugs
-            
-            
+
+
 if __name__ == "__main__":
-    raw = """#....
-#...#
-##.##
-....#
-#.##."""
+    raw = open("input.txt").read().strip()
     life = Life(raw)
     life.evolve()
     print(life.biodiversity)
