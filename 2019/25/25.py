@@ -181,4 +181,8 @@ if __name__ == "__main__":
             computer.do(action + " " + item)
         ret = computer.do("east")
         if "heavier" not in ret and "lighter" not in ret:
+            print()
+            for n, item in enumerate(items):
+                if which[n] == '1':
+                    print(item)
             break
