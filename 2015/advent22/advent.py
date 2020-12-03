@@ -243,8 +243,6 @@ if __name__ == "__main__":
             print("t0", s0.name, wizard.current_mana)
             for s1 in Spell.GET:
                 print("  t1", s0.name, s1.name, wizard.current_mana)
-                if s0 == POISON and s1 == RECHARGE:
-                    import pdb; pdb.set_trace()
                 print("  ", s1.name)
                 if s1.current_timer > 0:
                     continue
@@ -272,8 +270,6 @@ if __name__ == "__main__":
                         if r == "b":
                             break
                         for s4 in Spell.GET:
-                            if s0 == POISON and s1 == RECHARGE and s2 == DRAIN and s3 == POISON and s4 == RECHARGE:
-                                import pdb; pdb.set_trace()
                             print("        ", s4.name)
                             if s4.current_timer > 0:
                                 continue
@@ -284,8 +280,6 @@ if __name__ == "__main__":
                                 break
                             for s5 in Spell.GET:
                                 print("          ", s4.name)
-                                #if s0 == POISON and s1 == RECHARGE and s2 == DRAIN and s3 == POISON and s4 == RECHARGE and s5 == SHIELD:
-                                #    import pdb; pdb.set_trace()
                                 if s5.current_timer > 0:
                                     continue
                                 r = manage(game, s5, [s0, s1, s2, s3, s4])
