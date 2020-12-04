@@ -6,7 +6,7 @@ FIELDS = set(['byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid', 'cid'])
 def load_passports(data):
     passports = []
     current = {}
-    for line in data.split("\n"):
+    for line in (data + "\n").split("\n"):
         if not line:
             if current:
                 passports.append(current)
@@ -15,8 +15,6 @@ def load_passports(data):
         for part in line.strip().split(" "):
             k, v = part.split(":")
             current[k] = v
-    if current:
-        passports.append(current)
     return passports
 
 
