@@ -13,14 +13,23 @@ def calc(strip, low):
     return int(t)
 
 
+def row_col(line):
+    row = calc(line[:7], 'F')
+    col = calc(line[7:], 'L')
+    return row, col
+
+
+def calc_id(row, col):
+    return row * 8 + col
+
+
 def fill(data):
     seats = defaultdict(list)
     max_id = 0
     for line in data.strip().split('\n'):
-        row = calc(line[:7], 'F')
-        col = calc(line[7:], 'L')
+        row, col = row_col(line)
         seats[row].append(col)
-        max_id = max(max_id, row * 8 + col)
+        max_id = max(calc_id(row, col), max_id)
     return max_id, seats
 
 
@@ -32,5 +41,5 @@ if __name__ == "__main__":
         if n == 0:
             continue
         if len(cols) < 8:
-            print(row * 8 + (set(range(8)) - set(cols)).pop())
+            print(calc_id(row, (set(range(8)) - set(cols)).pop()))
             break

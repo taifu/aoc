@@ -1,6 +1,6 @@
 import unittest
 
-import day
+import day_04
 
 
 class TestDay(unittest.TestCase):
@@ -45,10 +45,10 @@ eyr:2022
 iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719"""
 
     def test_part_1(self):
-        self.assertEqual(2, day.part1(self.data))
+        self.assertEqual(2, day_04.part1(self.data))
 
     def test_part_2_valid(self):
-        self.assertEqual(4, day.part1(self.valid, True))
+        self.assertEqual(4, day_04.part1(self.valid, True))
 
     def test_part_2_invalid(self):
-        self.assertEqual(0, day.part1(self.invalid, True))
+        self.assertEqual(0, day_04.part1(self.invalid, True))
