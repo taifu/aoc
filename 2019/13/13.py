@@ -167,6 +167,6 @@ if __name__ == "__main__":
             c.set_input(-1)
         else:
             c.set_input(0)
-        time.sleep(0.05)
+        #time.sleep(0.05)
     print(part1)
     print(g.score)
