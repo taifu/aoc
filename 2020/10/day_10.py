@@ -3,11 +3,11 @@ from collections import defaultdict
 
 def parse(data):
     values = [int(x) for x in data.strip().split("\n")]
-    return values + [max(values) + 3]
+    return sorted(values) + [max(values) + 3]
 
 
 def solve(data):
-    adapters = sorted(parse(data))
+    adapters = parse(data)
     differences = defaultdict(int)
     jolt = 0
     while True:
@@ -19,26 +19,24 @@ def solve(data):
             if jolt > adapters[-1]:
                 return differences
         differences[jolt - last_jolt] += 1
-    return differences
 
 
 def explore(adapters, jolt, cached):
     try:
         return cached[jolt]
     except KeyError:
-        pass
-    ways = 0
-    for n in range(1, 4):
-        if jolt + n == adapters[-1]:
-            ways += 1
-        elif jolt + n in adapters:
-            ways += explore(adapters, jolt + n, cached)
-    cached[jolt] = ways
-    return ways
+        ways = 0
+        for n in range(1, 4):
+            if jolt + n == adapters[-1]:
+                ways += 1
+            elif jolt + n in adapters:
+                ways += explore(adapters, jolt + n, cached)
+        cached[jolt] = ways
+        return ways
 
 
 def solve2(data):
-    return explore(sorted(parse(data)), 0, {})
+    return explore(parse(data), 0, {})
 
 
 if __name__ == "__main__":
