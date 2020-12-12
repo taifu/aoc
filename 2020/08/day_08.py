@@ -69,5 +69,5 @@ def solve2(data):
 
 if __name__ == "__main__":
     data = open("input.txt").read()
-    print(solve(data))
+    print(solve(data)[0])
     print(solve2(data))

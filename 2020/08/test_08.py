@@ -1,6 +1,6 @@
 import unittest
 
-import day_08
+import day_08 as day
 
 
 class TestDay(unittest.TestCase):
@@ -16,10 +16,10 @@ jmp -4
 acc +6"""
 
     def test_part_1(self):
-        acc, res = day_08.solve(self.data)
+        acc, res = day.solve(self.data)
         self.assertEqual(res, False)
         self.assertEqual(acc, 5)
 
     def test_part_2(self):
-        acc = day_08.solve2(self.data)
+        acc = day.solve2(self.data)
         self.assertEqual(acc, 8)
