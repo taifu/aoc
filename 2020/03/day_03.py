@@ -1,4 +1,4 @@
-def slope(wood, right, down):
+def solve(wood, right, down):
     wood = [[1 if square == '#' else 0 for square in line] for line in wood.strip().split('\n')]
     start, trees, depth, width = [0, 0], 0, len(wood), len(wood[0])
     while start[0] < depth:
@@ -7,15 +7,14 @@ def slope(wood, right, down):
     return trees
 
 
-def multi_slope(wood):
+def solve2(wood):
     tot = 1
     for right, down in ((1, 1), (3, 1), (5, 1), (7, 1), (1, 2)):
-        tot *= slope(wood, right, down)
+        tot *= solve(wood, right, down)
     return tot
 
 
 if __name__ == "__main__":
     wood = open("input.txt").read()
-    print(slope(wood, 3, 1))
-
-    print(multi_slope(wood))
+    print(solve(wood, 3, 1))
+    print(solve2(wood))

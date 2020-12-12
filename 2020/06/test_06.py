@@ -1,6 +1,6 @@
 import unittest
 
-import day_06
+import day_06 as day
 
 
 class TestDay(unittest.TestCase):
@@ -23,7 +23,7 @@ b
 """
 
     def test_part_1(self):
-        self.assertEqual(11, day_06.part1(self.data)[0])
+        self.assertEqual(11, day.solve(self.data)[0])
 
     def test_part_2(self):
-        self.assertEqual(6, day_06.part1(self.data)[1])
+        self.assertEqual(6, day.solve(self.data)[1])

@@ -1,4 +1,4 @@
-def part1(data):
+def solve(data):
     tot = common = 0
     for group in data.split("\n\n"):
         subcommon = None
@@ -15,6 +15,6 @@ def part1(data):
 
 if __name__ == "__main__":
     data = open("input.txt").read()
-    tot, common = part1(data)
+    tot, common = solve(data)
     print(tot)
     print(common)

@@ -1,6 +1,6 @@
 import unittest
 
-import day_07
+import day_07 as day
 
 
 class TestDay(unittest.TestCase):
@@ -23,10 +23,10 @@ dark blue bags contain 2 dark violet bags.
 dark violet bags contain no other bags."""
 
     def test_part_1(self):
-        self.assertEqual(4, day_07.solve(self.data)[0])
+        self.assertEqual(4, day.solve(self.data)[0])
 
     def test_part_2_1(self):
-        self.assertEqual(32, day_07.solve(self.data)[1])
+        self.assertEqual(32, day.solve(self.data)[1])
 
     def test_part_2_2(self):
-        self.assertEqual(126, day_07.solve(self.data2)[1])
+        self.assertEqual(126, day.solve(self.data2)[1])

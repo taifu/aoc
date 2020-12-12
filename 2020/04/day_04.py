@@ -18,7 +18,7 @@ def load_passports(data):
     return passports
 
 
-def part1(data, validation=False):
+def solve(data, validation=False):
     passports = load_passports(data)
     optionals = set(['cid'])
     valid = 0
@@ -57,6 +57,5 @@ def part1(data, validation=False):
 
 if __name__ == "__main__":
     data = open("input.txt").read()
-    print(part1(data))
-
-    print(part1(data, True))
+    print(solve(data))
+    print(solve(data, True))
