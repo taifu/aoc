@@ -1,8 +1,6 @@
 def parse(data):
     lines = data.strip().split()
-    time = int(lines[0])
-    busses = [int(x) if x.isdigit() else 0 for x in lines[1].strip().split(',')]
-    return time, busses
+    return int(lines[0]), [int(x) if x.isdigit() else 0 for x in lines[1].split(',')]
 
 
 def solve(data):
