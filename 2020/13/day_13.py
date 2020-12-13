@@ -25,9 +25,7 @@ def solve2(data):
     while rest < len(busses):
         bus = busses[rest]
         rest += 1
-        if bus == 0:
-            continue
-        while True:
+        while bus != 0:
             if ((bus0 * n) + rest - 1) % bus == 0:
                 step *= bus
                 break
