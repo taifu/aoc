@@ -17,7 +17,13 @@ mem[26] = 1
 """
 
     def test_part_1(self):
-        self.assertEqual(day.solve(self.data1), 165)
+        self.assertEqual(day.solve1(self.data1), 165)
 
     def test_part_2(self):
         self.assertEqual(day.solve2(self.data2), 208)
+
+    def test_solution(self):
+        import os
+        data = open(os.path.dirname(__file__) + "/input.txt").read()
+        self.assertEqual(day.solve1(data), 13105044880745)
+        self.assertEqual(day.solve2(data), 3505392154485)

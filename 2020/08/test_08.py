@@ -16,10 +16,16 @@ jmp -4
 acc +6"""
 
     def test_part_1(self):
-        acc, res = day.solve(self.data)
+        acc, res = day.solve1(self.data)
         self.assertEqual(res, False)
         self.assertEqual(acc, 5)
 
     def test_part_2(self):
         acc = day.solve2(self.data)
         self.assertEqual(acc, 8)
+
+    def test_solution(self):
+        import os
+        data = open(os.path.dirname(__file__) + "/input.txt").read()
+        self.assertEqual(day.solve1(data)[0], 1614)
+        self.assertEqual(day.solve2(data), 1260)

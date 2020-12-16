@@ -47,9 +47,8 @@ class CPU:
         print("\nstopped")
 
 
-def solve(data):
-    cpu = CPU(data)
-    return cpu.run()
+def solve1(data):
+    return CPU(data).run()
 
 
 def solve2(data):
@@ -69,5 +68,5 @@ def solve2(data):
 
 if __name__ == "__main__":
     data = open("input.txt").read()
-    print(solve(data)[0])
+    print(solve1(data)[0])
     print(solve2(data))

@@ -49,7 +49,7 @@ def apply_mask2(mask, value):
     return addrs
 
 
-def solve(data, step=1):
+def solve1(data, step=1):
     masks = parse(data)
     values = defaultdict(int)
     for mask, ops in masks:
@@ -63,10 +63,10 @@ def solve(data, step=1):
 
 
 def solve2(data):
-    return solve(data, 2)
+    return solve1(data, 2)
 
 
 if __name__ == "__main__":
     data = open("input.txt").read()
-    print(solve(data))
+    print(solve1(data))
     print(solve2(data))

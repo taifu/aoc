@@ -30,3 +30,11 @@ class TestDay(unittest.TestCase):
     def test_row_id_3(self):
         row, col = 102, 4
         self.assertEqual(820, day.calc_id(row, col))
+
+    def test_solution(self):
+        import os
+        data = open(os.path.dirname(__file__) + "/input.txt").read()
+        part1, seats = day.solve1(data)
+        part2 = day.solve2(seats)
+        self.assertEqual(part1, 904)
+        self.assertEqual(part2, 669)

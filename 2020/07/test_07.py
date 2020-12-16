@@ -30,3 +30,10 @@ dark violet bags contain no other bags."""
 
     def test_part_2_2(self):
         self.assertEqual(126, day.solve(self.data2)[1])
+
+    def test_solution(self):
+        import os
+        data = open(os.path.dirname(__file__) + "/input.txt").read()
+        part1, part2 = day.solve(data)
+        self.assertEqual(part1, 103)
+        self.assertEqual(part2, 1469)

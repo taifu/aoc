@@ -22,3 +22,10 @@ L.LLLLL.LL
 
     def test_part_2(self):
         self.assertEqual(day.solve(self.data, step=2), 26)
+
+    def test_solution(self):
+        import os
+        data = open(os.path.dirname(__file__) + "/input.txt").read()
+        # Ok but slow!
+        # self.assertEqual(day.solve(data), 2412)
+        # self.assertEqual(day.solve(data, step=2), 2176)

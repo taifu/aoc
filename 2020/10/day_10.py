@@ -6,7 +6,7 @@ def parse(data):
     return sorted(values) + [max(values) + 3]
 
 
-def solve(data):
+def solve1(data):
     adapters = parse(data)
     differences = defaultdict(int)
     jolt = 0
@@ -41,6 +41,6 @@ def solve2(data):
 
 if __name__ == "__main__":
     data = open("input.txt").read()
-    differences = solve(data)
+    differences = solve1(data)
     print(differences[1] * differences[3])
     print(solve2(data))

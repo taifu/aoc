@@ -47,7 +47,7 @@ def solve2(data):
     return sum(abs(x) for x in pos)
 
 
-def solve(data):
+def solve1(data):
     pos = [0, 0]
     # EAST=0 SOUTH=1 WEST=2 NORTH=3
     direction = POINTS.index(EAST)
@@ -66,5 +66,5 @@ def solve(data):
 
 if __name__ == "__main__":
     data = open("input.txt").read()
-    print(solve(data))
+    print(solve1(data))
     print(solve2(data))

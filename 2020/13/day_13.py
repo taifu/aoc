@@ -3,7 +3,7 @@ def parse(data):
     return int(lines[0]), [int(x) if x.isdigit() else 0 for x in lines[1].split(',')]
 
 
-def solve(data):
+def solve1(data):
     time, busses = parse(data)
     best_rest = (time, 0)
     for bus in busses:
@@ -33,5 +33,5 @@ def solve2(data):
 
 if __name__ == "__main__":
     data = open("input.txt").read()
-    print(solve(data))
+    print(solve1(data))
     print(solve2(data))

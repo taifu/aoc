@@ -52,3 +52,9 @@ iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719"""
 
     def test_part_2_invalid(self):
         self.assertEqual(0, day.solve(self.invalid, True))
+
+    def test_solution(self):
+        import os
+        data = open(os.path.dirname(__file__) + "/input.txt").read()
+        self.assertEqual(day.solve(data), 196)
+        self.assertEqual(day.solve(data, True), 114)

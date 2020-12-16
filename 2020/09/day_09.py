@@ -18,7 +18,7 @@ def solve2(data, value):
                 return(min(numbers[pos:pos + n]) + max(numbers[pos:pos + n]))
 
 
-def solve(data, preamble):
+def solve1(data, preamble):
     numbers = parse(data)
     pos = preamble
     while True:
@@ -29,6 +29,6 @@ def solve(data, preamble):
 
 if __name__ == "__main__":
     data = open("input.txt").read()
-    n = solve(data, 25)
+    n = solve1(data, 25)
     print(n)
     print(solve2(data, n))

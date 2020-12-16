@@ -51,12 +51,12 @@ class TestDay(unittest.TestCase):
 """
 
     def test_part_1(self):
-        differences = day.solve(self.data)
+        differences = day.solve1(self.data)
         self.assertEqual(differences[1], 7)
         self.assertEqual(differences[3], 5)
 
     def test_part_1_larger(self):
-        differences = day.solve(self.data_larger)
+        differences = day.solve1(self.data_larger)
         self.assertEqual(differences[1], 22)
         self.assertEqual(differences[3], 10)
 
@@ -65,3 +65,10 @@ class TestDay(unittest.TestCase):
 
     def test_part_2_larger(self):
         self.assertEqual(day.solve2(self.data_larger), 19208)
+
+    def test_solution(self):
+        import os
+        data = open(os.path.dirname(__file__) + "/input.txt").read()
+        differences = day.solve1(data)
+        self.assertEqual(differences[1] * differences[3], 2664)
+        self.assertEqual(day.solve2(data), 148098383347712)

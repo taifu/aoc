@@ -27,3 +27,10 @@ b
 
     def test_part_2(self):
         self.assertEqual(6, day.solve(self.data)[1])
+
+    def test_solution(self):
+        import os
+        data = open(os.path.dirname(__file__) + "/input.txt").read()
+        part1, part2 = day.solve(data)
+        self.assertEqual(part1, 6775)
+        self.assertEqual(part2, 3356)

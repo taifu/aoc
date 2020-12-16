@@ -5,7 +5,7 @@ def load(data):
     return [int(line) for line in data.strip().split("\n")]
 
 
-def solve(data):
+def solve1(data):
     numbers = load(data)
     for a, b in combinations(numbers, 2):
         if a + b == 2020:
@@ -21,5 +21,5 @@ def solve2(data):
 
 if __name__ == "__main__":
     data = open("input.txt").read()
-    print(solve(data))
+    print(solve1(data))
     print(solve2(data))

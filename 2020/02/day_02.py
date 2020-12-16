@@ -13,4 +13,6 @@ def solve(data):
 
 
 if __name__ == "__main__":
-    print(solve(open("input.txt").read()))
+    part1, part2, = solve(open("input.txt").read())
+    print(part1)
+    print(part2)

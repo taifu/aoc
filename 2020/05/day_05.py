@@ -23,7 +23,7 @@ def calc_id(row, col):
     return row * 8 + col
 
 
-def fill(data):
+def solve1(data):
     seats = defaultdict(list)
     max_id = 0
     for line in data.strip().split('\n'):
@@ -33,13 +33,17 @@ def fill(data):
     return max_id, seats
 
 
-if __name__ == "__main__":
-    data = open("input.txt").read()
-    max_id, seats = fill(data)
-    print(max_id)
+def solve2(seats):
     for n, (row, cols) in enumerate(sorted(seats.items())):
         if n == 0:
             continue
         if len(cols) < 8:
-            print(calc_id(row, (set(range(8)) - set(cols)).pop()))
+            return(calc_id(row, (set(range(8)) - set(cols)).pop()))
             break
+
+
+if __name__ == "__main__":
+    data = open("input.txt").read()
+    max_id, seats = solve1(data)
+    print(max_id)
+    print(solve2(seats))

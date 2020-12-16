@@ -15,3 +15,10 @@ class TestDay(unittest.TestCase):
 
     def test_part_2(self):
         self.assertEqual(1, day.solve(self.data)[1])
+
+    def test_solution(self):
+        import os
+        data = open(os.path.dirname(__file__) + "/input.txt").read()
+        part1, part2, = day.solve(data)
+        self.assertEqual(part1, 580)
+        self.assertEqual(part2, 611)

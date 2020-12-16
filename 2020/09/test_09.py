@@ -28,9 +28,14 @@ class TestDay(unittest.TestCase):
 """
 
     def test_part_1(self):
-        res = day.solve(self.data, 5)
-        self.assertEqual(res, 127)
+        self.assertEqual(day.solve1(self.data, 5), 127)
 
     def test_part_2(self):
-        res = day.solve2(self.data, 127)
-        self.assertEqual(res, 62)
+        self.assertEqual(day.solve2(self.data, 127), 62)
+
+    def test_solution(self):
+        import os
+        data = open(os.path.dirname(__file__) + "/input.txt").read()
+        part1 = day.solve1(data, 25)
+        self.assertEqual(part1, 133015568)
+        self.assertEqual(day.solve2(data, part1), 16107959)
