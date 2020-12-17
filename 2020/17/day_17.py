@@ -1,12 +1,13 @@
+from collections import defaultdict
 from itertools import product
 
 
 def parse(data, dimensions):
-    space = {}
+    space = set()
     for row, line in enumerate(data.strip().split('\n')):
         for col, pos in enumerate(list(line)):
             if pos == '#':
-                space[(row, col) + (0,) * (dimensions - 2)] = 1
+                space.add((col, row) + (0,) * (dimensions - 2))
     return space
 
 
@@ -18,18 +19,21 @@ def around(point, dimensions):
 def solve(data, dimensions=3, cycle=6):
     space = parse(data, dimensions)
     for cont in range(cycle):
-        new_space, visited = {}, set()
-        for point in space.keys():
-            for new in around(point, dimensions):
-                if new in visited:
-                    continue
-                visited.add(new)
-                current = space.get(new, 0)
-                active = sum(space.get(neigh, 0) for neigh in around(new, dimensions)) - current
-                if current == 1 and active in (2, 3) or active == 3:
-                    new_space[new] = 1
+        adjacents = defaultdict(int)
+        for point in space:
+            for neigh in around(point, dimensions):
+                if neigh != point:
+                    adjacents[neigh] += 1
+        new_space = set()
+        for point, tot in adjacents.items():
+            if point in space:
+                if tot in (2, 3):
+                    new_space.add(point)
+            else:
+                if tot == 3:
+                    new_space.add(point)
         space = new_space
-    return sum(space.values())
+    return len(space)
 
 
 if __name__ == "__main__":
