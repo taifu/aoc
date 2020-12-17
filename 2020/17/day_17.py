@@ -2,12 +2,9 @@ from itertools import product
 
 
 def parse(data, dimensions):
-    space = set()
-    for row, line in enumerate(data.strip().split('\n')):
-        for col, pos in enumerate(list(line)):
-            if pos == '#':
-                space.add((col, row) + (0,) * (dimensions - 2))
-    return space
+    return set(((col, row) + (0,) * (dimensions - 2))
+               for row, line in enumerate(data.strip().split('\n'))
+               for col, pos in enumerate(line) if pos == '#')
 
 
 def around(point, dimensions):
@@ -26,15 +23,7 @@ def solve(data, dimensions=3, cycle=6):
                         adjacents[neigh] += 1
                     except KeyError:
                         adjacents[neigh] = 1
-        new_space = set()
-        for point, tot in adjacents.items():
-            if point in space:
-                if tot in (2, 3):
-                    new_space.add(point)
-            else:
-                if tot == 3:
-                    new_space.add(point)
-        space = new_space
+        space = set(point for point, tot in adjacents.items() if tot == 3 or point in space and tot == 2)
     return len(space)
 
 
