@@ -1,4 +1,3 @@
-from collections import defaultdict
 from itertools import product
 
 
@@ -19,11 +18,14 @@ def around(point, dimensions):
 def solve(data, dimensions=3, cycle=6):
     space = parse(data, dimensions)
     for cont in range(cycle):
-        adjacents = defaultdict(int)
+        adjacents = {}
         for point in space:
             for neigh in around(point, dimensions):
                 if neigh != point:
-                    adjacents[neigh] += 1
+                    try:
+                        adjacents[neigh] += 1
+                    except KeyError:
+                        adjacents[neigh] = 1
         new_space = set()
         for point, tot in adjacents.items():
             if point in space:
