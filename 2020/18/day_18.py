@@ -46,4 +46,3 @@ if __name__ == "__main__":
     data = open("input.txt").read()
     print(solve(data))
     print(solve(data, precedence=add))
-    print(solve(data, precedence=mul))
