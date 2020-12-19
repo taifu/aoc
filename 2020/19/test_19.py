@@ -68,16 +68,17 @@ aabbbbbaabbbaaaaaabbbbbababaaaaabbaaabba
 """
 
     def test_parse(self):
-        rules, messages = day.parse(self.data1)
+        rules, messages, chars = day.parse(self.data1)
         self.assertEqual(rules, {0: [[4, 1, 5]], 1: [[2, 3], [3, 2]], 2: [[4, 4], [5, 5]], 3: [[4, 5], [5, 4]], 4: 'a', 5: 'b'})
         self.assertEqual(messages, ['ababbb', 'bababa', 'abbbab', 'aaabbb', 'aaaabbb'])
+        self.assertEqual(chars, set(['a', 'b']))
 
     def test_find_root_1(self):
-        rules, messages = day.parse(self.data1)
+        rules, messages, chars = day.parse(self.data1)
         self.assertEqual(day.find_root(rules), 0)
 
     def test_find_root_2(self):
-        rules, messages = day.parse(self.data2)
+        rules, messages, chars = day.parse(self.data2)
         self.assertEqual(day.find_root(rules), 0)
 
     def test_solve1(self):
