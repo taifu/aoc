@@ -1,5 +1,4 @@
 import unittest
-from operator import add, mul
 
 import day_19 as day
 
