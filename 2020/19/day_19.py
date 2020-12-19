@@ -1,5 +1,5 @@
 def parse(data):
-    raw_rules, messages = list(map(lambda part: part.splitlines(), data.split('\n\n')))
+    raw_rules, messages = (list(s.split('\n')) for s in data.strip().split('\n\n'))
     rules = {}
     chars = set()
     for raw_rule in raw_rules:
@@ -14,7 +14,7 @@ def parse(data):
 
 
 def find_root(rules):
-    # In realtà questa è inutile (lo dice già il testo che la regola princilare è la '0'
+    # In realtà questa funzione è inutile (lo dice già il testo che la regola princilare è la '0'
     keys = set(rules.keys())
     for rule, matches in rules.items():
         for match in matches:
