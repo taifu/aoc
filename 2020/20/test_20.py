@@ -146,6 +146,25 @@ Tile 3079:
                                                      (1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1),
                                                      (0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0)))
 
+    def test_rotate_file(self):
+        self.assertEqual(list(day.rotate_flip(self.tile)), [[(0, 0, 0, 1, 1), (0, 1, 0, 0, 0), (0, 1, 0, 0, 1), (0, 0, 1, 0, 0), (1, 1, 1, 1, 0)],
+                                                            [[1, 0, 1, 0, 0], [1, 0, 0, 0, 1], [0, 0, 0, 1, 1], [0, 1, 1, 0, 1], [0, 0, 0, 0, 1]],
+                                                            [[0, 1, 1, 1, 1], [0, 0, 1, 0, 0], [1, 0, 0, 1, 0], [0, 0, 0, 1, 0], [1, 1, 0, 0, 0]],
+                                                            [[1, 0, 0, 0, 0], [1, 0, 1, 1, 0], [1, 1, 0, 0, 0], [1, 0, 0, 0, 1], [0, 0, 1, 0, 1]],
+                                                            [(1, 1, 0, 0, 0), (0, 0, 0, 1, 0), (1, 0, 0, 1, 0), (0, 0, 1, 0, 0), (0, 1, 1, 1, 1)],
+                                                            [[0, 0, 0, 0, 1], [0, 1, 1, 0, 1], [0, 0, 0, 1, 1], [1, 0, 0, 0, 1], [1, 0, 1, 0, 0]],
+                                                            [[1, 1, 1, 1, 0], [0, 0, 1, 0, 0], [0, 1, 0, 0, 1], [0, 1, 0, 0, 0], [0, 0, 0, 1, 1]],
+                                                            [[0, 0, 1, 0, 1], [1, 0, 0, 0, 1], [1, 1, 0, 0, 0], [1, 0, 1, 1, 0], [1, 0, 0, 0, 0]]])
+
+    def test_get_adjacents(self):
+        tiles = day.parse(self.data)
+        tile = tiles[2311]
+        self.assertEqual(day.get_adjacents(2311, tile, day.get_all_borders(tiles)), [{1427}, {3079}, set(), {1951}])
+
+    def test_find_corners(self):
+        tiles = day.parse(self.data)
+        self.assertEqual(day.find_corners(tiles, day.get_all_borders(tiles)), [1951, 1171, 2971, 3079])
+
     def test_solution(self):
         import os
         data = open(os.path.dirname(__file__) + "/input.txt").read()
