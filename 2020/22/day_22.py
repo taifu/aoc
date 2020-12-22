@@ -22,7 +22,7 @@ def win(decks, cards, step):
 def game(decks, step):
     previous = set()
     while all(decks):
-        this_round = tuple((tuple(decks[0]), tuple(decks[1])))
+        this_round = tuple(decks[0])
         if this_round in previous:
             return 0
         previous.add(this_round)
