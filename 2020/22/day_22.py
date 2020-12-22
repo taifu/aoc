@@ -1,8 +1,5 @@
-from collections import deque
-
-
 def parse(data):
-    return [deque(int(c) for c in cards.split('\n')[1:]) for cards in data.strip().split('\n\n')]
+    return [list(int(c) for c in cards.split('\n')[1:]) for cards in data.strip().split('\n\n')]
 
 
 def points(deck):
@@ -10,12 +7,12 @@ def points(deck):
 
 
 def dealt(decks):
-    return [deck.popleft() for deck in decks]
+    return [deck.pop(0) for deck in decks]
 
 
 def win(decks, cards, step):
     if step == 2 and all(len(decks[n]) >= cards[n] for n in range(2)):
-        return game([deque(list(decks[0])[:cards[0]]), deque(list(decks[1])[:cards[1]])], step)
+        return game([decks[0][:cards[0]], decks[1][:cards[1]]], step)
     return cards.index(max(cards))
 
 
