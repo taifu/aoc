@@ -1,16 +1,14 @@
 def step(p, n):
-    r = 20201227
-    return (p * n) % r
+    return (p * n) % 20201227
 
 
 def loop_size(e):
-    n = m = 7
-    s = 1
+    n, m, s = 7, 1, 0
     while True:
-        s += 1
-        m = step(m, n)
         if m == e:
             return s
+        m = step(m, n)
+        s += 1
 
 
 def transform(m, s):
