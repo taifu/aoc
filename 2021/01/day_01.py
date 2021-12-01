@@ -6,17 +6,29 @@ def load(data):
 
 
 def solve1(data):
+    increased = 0
+    last = None
     numbers = load(data)
-    for a, b in combinations(numbers, 2):
-        if a + b == 2020:
-            return (a * b)
+    for height in numbers:
+        if last is not None:
+            if height > last:
+                increased += 1
+        last = height
+    return increased
 
 
 def solve2(data):
+    increased = 0
+    a = b = c = None
     numbers = load(data)
-    for a, b, c in combinations(numbers, 3):
-        if a + b + c == 2020:
-            return (a * b * c)
+    for height in numbers:
+        if a is not None:
+            if height > a:
+                increased += 1
+        a = b
+        b = c
+        c = height
+    return increased
 
 
 if __name__ == "__main__":
