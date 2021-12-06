@@ -2,33 +2,29 @@ from collections import defaultdict
 
 
 class Lanterfishes:
-    def __init__(self, days):
+    def __init__(self, data):
         self.families = defaultdict(int)
-        for day in days:
+        for day in [int(d) for d in data.strip().split(",")]:
             self.families[day] += 1
 
-    def live(self):
-        new_families = defaultdict(int)
-        for day, count in sorted(self.families.items()):
-            day -= 1
-            if day == -1:
-                new_families[8] = count
-                day = 6
-            new_families[day] += count
-        self.families = new_families
+    def live(self, days):
+        for day in range(days):
+            new_families = defaultdict(int)
+            for day, count in sorted(self.families.items()):
+                day -= 1
+                if day == -1:
+                    new_families[8] = count
+                    day = 6
+                new_families[day] += count
+            self.families = new_families
 
     def count(self):
         return sum(self.families.values())
 
 
-def load(data):
-    return Lanterfishes([int(d) for d in data.strip().split(",")])
-
-
 def solve1(data, days=80):
-    lanterfishes = load(data)
-    for day in range(days):
-        lanterfishes.live()
+    lanterfishes = Lanterfishes(data)
+    lanterfishes.live(days)
     return lanterfishes.count()
 
 
