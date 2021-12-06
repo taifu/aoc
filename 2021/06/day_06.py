@@ -21,8 +21,7 @@ class Lanterfishes:
 
 
 def solve1(data, days=80):
-    lanterfishes = Lanterfishes(data)
-    return lanterfishes.live(days)
+    return Lanterfishes(data).live(days)
 
 
 def solve2(data):
