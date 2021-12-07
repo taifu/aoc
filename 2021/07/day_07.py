@@ -2,30 +2,24 @@ from collections import Counter
 
 
 class Crabs:
-    def __init__(self, data, inc=False):
+    def __init__(self, data):
         self.positions = Counter(int(n) for n in data.strip().split(","))
-        self.start = min(self.positions.keys())
-        self.max = max(self.positions.keys())
-        self.inc = inc
+        self.pos = min(self.positions.keys())
 
-    def dist(self, dist):
-        if self.inc:
-            return (dist * (dist + 1)) // 2
-        return dist
+    def dist(self, dist, inc):
+        return (dist * (dist + 1)) // 2 if inc else dist
 
-    def carb(self, pos):
-        tot_carb = 0
-        for inc, (p, n) in enumerate(self.positions.items()):
-            tot_carb += self.dist(abs(pos - p)) * n
-        return tot_carb
+    def carb(self, pos, inc):
+        return sum(self.dist(abs(pos - p), inc) * n for p, n in self.positions.items())
 
-    def best(self):
-        less_carb = None
-        for pos in range(self.start, self.max + 1):
-            carb = self.carb(pos)
-            if less_carb is None or carb < less_carb:
-                less_carb = carb
-        return less_carb
+    def best(self, inc=False):
+        prev_carb = float("inf")
+        while True:
+            carb = self.carb(self.pos, inc)
+            if prev_carb < carb:
+                return prev_carb
+            prev_carb = carb
+            self.pos += 1
 
 
 def solve1(data):
@@ -33,7 +27,7 @@ def solve1(data):
 
 
 def solve2(data):
-    return Crabs(data, inc=True).best()
+    return Crabs(data).best(inc=True)
 
 
 if __name__ == "__main__":
