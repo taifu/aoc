@@ -5,6 +5,7 @@ import day_08 as day
 
 class TestDay(unittest.TestCase):
     def setUp(self):
+        self.data_simple = "acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf"
         self.data = """be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe
 edbfga begcd cbg gc gcadebf fbgde acbgfd abcde gfcbed gfec | fcgedb cgb dgebacf gc
 fgaebd cg bdaec gdafb agbcfd gdcbef bgcad gfac gcb cdgabef | cg cg fdcagb cbg
@@ -21,7 +22,7 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
         self.assertEqual(26, day.solve1(self.data))
 
     def test_decode(self):
-        self.assertEqual(5353, day.Digits("acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf").decode())
+        self.assertEqual(5353, day.Digits(self.data_simple).decode())
 
     def test_part_2(self):
         self.assertEqual(61229, day.solve2(self.data))

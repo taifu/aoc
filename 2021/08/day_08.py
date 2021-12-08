@@ -19,11 +19,10 @@ class Digits:
         digits[1], left_02345679 = self.discover(left_012345679, 2)
         digits[4], left_0235679 = self.discover(left_02345679, 4)
         digits[7], left_023569 = self.discover(left_0235679, 3)
-        segment_a = digits[7] - digits[1]
         digits[3], left_02569 = self.discover(left_023569, 3, digits[1])
         digits[6], left_0259 = self.discover(left_02569, 5, digits[1])
         digits[0], left_259 = self.discover(left_0259, 2, digits[3])
-        digits[9], left_25 = self.discover(left_259, 5, segment_a)
+        digits[9], left_25 = self.discover(left_259, 5, digits[7] - digits[1])
         digits[2], left_5 = self.discover(left_25, 3, digits[4])
         digits[5] = left_5[0]
         return self.value({frozenset(v): k for k, v in digits.items()})
