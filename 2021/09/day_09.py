@@ -24,9 +24,7 @@ class Floor:
     def explore(self, basin):
         p, x, y = basin[-1]
         for p0, x0, y0 in self.adj(x, y):
-            if p0 == 9 or (p0, x0, y0) in basin:
-                continue
-            if p0 > p:
+            if p0 > p and not (p0 == 9 or (p0, x0, y0) in basin):
                 basin.append((p0, x0, y0))
                 self.explore(basin)
         return basin
