@@ -26,7 +26,7 @@ class TestDay(unittest.TestCase):
     def test_part_1_little(self):
         self.assertEqual(9, day.solve1(self.data_little, 2))
 
-    def _test_part_1(self):
+    def test_part_1(self):
         self.assertEqual(1656, day.solve1(self.data))
 
     def test_part_2(self):
