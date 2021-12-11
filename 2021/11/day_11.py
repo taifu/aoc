@@ -1,6 +1,3 @@
-from collections import deque
-
-
 class Octopuses:
     def __init__(self, data):
         self.octopuses = list(list(int(x) for x in list(line)) for line in data.strip().split("\n"))
@@ -14,16 +11,16 @@ class Octopuses:
             for x0 in range(max(0, x - 1), min(self.size, x + 2)):
                 self.octopuses[y0][x0] = (octopus := self.octopuses[y0][x0] + 1)
                 if octopus > 9:
-                    if not (x0, y0) in flashed and not (x0, y0) in flashing:
-                        flashing.append((x0, y0))
+                    if not (x0, y0) in flashed:
+                        flashing.add((x0, y0))
 
     def loop(self):
         flashed = set()
-        flashing = deque()
+        flashing = set()
         for y, line in enumerate(self.octopuses):
             for x, octopus in enumerate(line):
                 if (octopus := octopus + 1) > 9:
-                    flashing.append((x, y))
+                    flashing.add((x, y))
                 self.octopuses[y][x] = octopus
         while flashing:
             x, y = flashing.pop()
