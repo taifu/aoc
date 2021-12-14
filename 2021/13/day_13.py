@@ -1,7 +1,7 @@
 class Fold:
     def __init__(self, data):
         dots_lines, folds_lines = [p.strip().split("\n") for p in data.strip().split("\n\n")]
-        self.dots = set((tuple(int(p)for p in line.split(","))) for line in dots_lines)
+        self.dots = set((tuple(int(p) for p in line.split(","))) for line in dots_lines)
         self.folds = []
         for line in folds_lines:
             parts = line.split("=")
