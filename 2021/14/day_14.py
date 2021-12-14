@@ -17,7 +17,7 @@ class Polymer:
             self.letters[c2] -= 1
         self.letters[c2] += 1
 
-    def most_common(self, steps):
+    def most_least_common_difference(self, steps):
         for step in range(steps):
             next_count = defaultdict(int)
             for left, how_many in self.count.items():
@@ -35,11 +35,11 @@ class Polymer:
 
 
 def solve1(data):
-    return Polymer(data).most_common(10)
+    return Polymer(data).most_least_common_difference(10)
 
 
 def solve2(data):
-    return Polymer(data).most_common(40)
+    return Polymer(data).most_least_common_difference(40)
 
 
 if __name__ == "__main__":
