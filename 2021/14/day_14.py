@@ -20,19 +20,16 @@ class Polymer:
     def most_common(self, steps):
         for step in range(steps):
             next_count = defaultdict(int)
-            for n, (left, how_many) in enumerate(self.count.items()):
-                if len(left) == 2:
-                    for what, add in self.rules[left]:
+            for left, how_many in self.count.items():
+                for what, add in self.rules[left]:
+                    if len(what) == 2:
                         next_count[what] += add * how_many
-                else:
-                    self.letters[left] += how_many
+                    else:
+                        self.letters[what] += add * how_many
             self.count = next_count
         for left, how_many in self.count.items():
-            if len(left) == 2:
-                self.letters[left[0]] += how_many
-                self.letters[left[1]] += how_many
-            else:
-                self.letters[left] += how_many
+            self.letters[left[0]] += how_many
+            self.letters[left[1]] += how_many
         most_common = Counter(self.letters).most_common()
         return most_common[0][1] - most_common[-1][1]
 
