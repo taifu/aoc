@@ -1,4 +1,5 @@
 import unittest
+import pytest
 
 import day_12 as day
 
@@ -60,6 +61,7 @@ start-RW"""
     def test_part_2_3(self):
         self.assertEqual(3509, day.solve2(self.data_3))
 
+    @pytest.mark.slow
     def test_solution(self):
         import os
         data = open(os.path.dirname(__file__) + "/input.txt").read()
