@@ -68,7 +68,7 @@ class TestDay(unittest.TestCase):
         packet = day.compile("""9C0141080250320F1802104A08""")
         self.assertEqual(packet.compute(), 1)
 
-    def _test_solution(self):
+    def test_solution(self):
         import os
         data = open(os.path.dirname(__file__) + "/input.txt").read()
         self.assertEqual(day.solve1(data), 879)
