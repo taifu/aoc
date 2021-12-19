@@ -1,4 +1,5 @@
 import unittest
+import pytest
 
 import day_19 as day
 
@@ -149,6 +150,7 @@ class TestDay(unittest.TestCase):
     def test_part_2(self):
         self.assertEqual(day.solve2(self.data), 3621)
 
+    @pytest.mark.slow
     def test_solution(self):
         import os
         data = open(os.path.dirname(__file__) + "/input.txt").read()
