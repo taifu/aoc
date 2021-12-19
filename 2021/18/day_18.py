@@ -9,13 +9,9 @@ def explode(snailfish):
         if opened >= 5 and (pair_match := re.match(r'^(\d+,\d+).*$', snailfish[pos_opened + 1:])):
             pair = pair_match.group(1)
             pos_closed = pos_opened + len(pair) + 2
-            left, right = snailfish[:pos_opened], snailfish[pos_closed:]
-            n1, n2 = (int(p) for p in pair.split(','))
-            if (last_digit := re.match(r'(.*)(?<!\d)(\d+)([^\d]*)$', left)) is not None:
-                left = last_digit.group(1) + str(n1 + int(last_digit.group(2))) + last_digit.group(3)
-            if (first_digit := re.match(r'([^\d]+)(\d+)(.*)$', right)) is not None:
-                right = first_digit.group(1) + str(n2 + int(first_digit.group(2))) + first_digit.group(3)
-            return left + "0" + right, True
+            return "0".join((part if (digit := re.match(regex, part)) is None else digit.group(1) + str(number + int(digit.group(2))) + digit.group(3))
+                            for part, number, regex in zip((snailfish[:pos_opened], snailfish[pos_closed:]),
+                            (int(p) for p in pair.split(',')), (r'(.*)(?<!\d)(\d+)([^\d]*)$', (r'([^\d]+)(\d+)(.*)$')))), True
     return snailfish, False
 
 
