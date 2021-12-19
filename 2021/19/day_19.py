@@ -1,8 +1,33 @@
 import itertools
 
 
-ALL_ROTATIONS = tuple((xyz, signs) for xyz in itertools.permutations((0, 1, 2))
-                      for signs in itertools.product((1, -1), repeat=3))
+# See rotations.py
+ALL_ROTATIONS = (
+    lambda x, y, z: (z, y, -x),
+    lambda x, y, z: (-y, x, z),
+    lambda x, y, z: (y, -z, -x),
+    lambda x, y, z: (y, -x, z),
+    lambda x, y, z: (-x, y, -z),
+    lambda x, y, z: (-z, -y, -x),
+    lambda x, y, z: (z, x, y),
+    lambda x, y, z: (-x, -z, -y),
+    lambda x, y, z: (-y, -z, x),
+    lambda x, y, z: (-x, -y, z),
+    lambda x, y, z: (y, x, -z),
+    lambda x, y, z: (-z, y, x),
+    lambda x, y, z: (-x, z, y),
+    lambda x, y, z: (x, y, z),
+    lambda x, y, z: (x, z, -y),
+    lambda x, y, z: (y, z, x),
+    lambda x, y, z: (x, -y, -z),
+    lambda x, y, z: (x, -z, y),
+    lambda x, y, z: (-y, z, -x),
+    lambda x, y, z: (z, -y, x),
+    lambda x, y, z: (z, -x, -y),
+    lambda x, y, z: (-z, -x, y),
+    lambda x, y, z: (-z, x, -y),
+    lambda x, y, z: (-y, -x, -z),
+)
 NUM_ROTATIONS = tuple(range(len(ALL_ROTATIONS)))
 
 
@@ -12,7 +37,7 @@ class Scanner:
         self.origin = None
 
     def rotate(self, beacon, rotation):
-        return tuple(beacon[ALL_ROTATIONS[rotation][0][n]] * ALL_ROTATIONS[rotation][1][n] for n in range(3))
+        return ALL_ROTATIONS[rotation](*beacon)
 
     def rotations(self):
         for n in NUM_ROTATIONS:
