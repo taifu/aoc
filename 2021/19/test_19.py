@@ -149,7 +149,7 @@ class TestDay(unittest.TestCase):
     def test_part_2(self):
         self.assertEqual(day.solve2(self.data), 3621)
 
-    def _test_solution(self):
+    def test_solution(self):
         import os
         data = open(os.path.dirname(__file__) + "/input.txt").read()
         self.assertEqual(day.solve1(data), 434)

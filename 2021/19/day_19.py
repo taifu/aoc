@@ -39,9 +39,14 @@ class Scanner:
     def rotate(self, beacon, rotation):
         return ALL_ROTATIONS[rotation](*beacon)
 
-    def rotations(self):
-        for n in NUM_ROTATIONS:
-            yield n, set(self.rotate(beacon, n) for beacon in self.beacons)
+    def rotation(self, n, cache={}):
+        try:
+            return cache[self.__hash__, n]
+        except KeyError:
+            pass
+        result = frozenset(self.rotate(beacon, n) for beacon in self.beacons)
+        cache[self.__hash__, n] = result
+        return result
 
     def set_origin(self, rotation=0, delta=(0, 0, 0)):
         self.origin = tuple(p - delta[n] for n, p in enumerate(self.rotate((0, 0, 0), rotation)))
@@ -57,45 +62,41 @@ class Scanners:
     def offset(self, delta, beacons):
         return set(tuple(beacon[n] - delta[n] for n in range(3)) for beacon in beacons)
 
+    def match_one(self, scanner, not_found=set()):
+        for beacon1 in self.all_beacons:
+            for rotation in NUM_ROTATIONS:
+                if (beacon1, rotation, scanner) in not_found:
+                    continue
+                beacons = scanner.rotation(rotation)
+                for beacon2 in beacons:
+                    delta = tuple((beacon2[n] - beacon1[n]) for n in range(3))
+                    offset_beacons = self.offset(delta, beacons)
+                    if len(offset_beacons.intersection(self.all_beacons)) >= 12:
+                        return True, rotation, delta, offset_beacons
+                else:
+                    not_found.add((beacon1, rotation, scanner))
+        return False, None, None, None
+
     def match_all(self):
         try:
             self.all_beacons, self.all_origins = Scanners.cache[self.data]
             return
         except KeyError:
             pass
-        scanner = self.scanners.pop(0)
+        scanner, *scanners = self.scanners
         scanner.set_origin()
-        positioned = [scanner]
         self.all_beacons = scanner.beacons.copy()
         self.all_origins = [scanner.origin]
-        import time
-        s = time.time()
-        while self.scanners:
-            print(time.time() - s, len(self.all_beacons), len(self.scanners))
-            s = time.time()
-            found = False
-            for scanner in self.scanners:
-                for rotation, beacons in scanner.rotations():
-                    for beacon1 in self.all_beacons:
-                        for beacon2 in beacons:
-                            delta = tuple((beacon2[n] - beacon1[n]) for n in range(3))
-                            offset_beacons = self.offset(delta, beacons)
-                            if len(offset_beacons.intersection(self.all_beacons)) >= 12:
-                                found = True
-                                break
-                        if found:
-                            break
-                    if found:
-                        break
+        while scanners:
+            for scanner in scanners:
+                found, rotation, delta, offset_beacons = self.match_one(scanner)
                 if found:
-                    break
-            if found:
-                positioned.append(scanner)
-                scanner.set_origin(rotation, delta)
-                self.scanners.remove(scanner)
-                self.all_beacons |= offset_beacons
-                self.all_origins.append(scanner.origin)
-        Scanners.cache[self.data] = self.scanners, self.all_origins
+                    scanner.set_origin(rotation, delta)
+                    scanners.remove(scanner)
+                    self.all_beacons |= offset_beacons
+                    self.all_origins.append(scanner.origin)
+            print(len(self.all_beacons), len(scanners))
+        Scanners.cache[self.data] = self.all_beacons, self.all_origins
 
 
 def solve1(data):
