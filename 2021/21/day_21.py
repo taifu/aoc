@@ -38,8 +38,7 @@ class Game:
             if new_scores[turn] >= 21:
                 wins[turn] += times
             else:
-                new_wins = self.play_dirac(1 - turn, new_scores, new_places)
-                wins = [wins[n] + times * new_wins[n] for n in range(2)]
+                wins = [wins[n] + times * self.play_dirac(1 - turn, new_scores, new_places)[n] for n in range(2)]
         cache[key] = wins
         return wins
 
