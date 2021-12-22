@@ -23,10 +23,8 @@ class Cuboid:
             return [self]
 
     def __and__(self, cuboid):
-        all_coords = []
-        for n in range(3):
-            if cuboid.coords[n][0] < self.coords[n][1] and self.coords[n][0] < cuboid.coords[n][1]:
-                all_coords.append((max(cuboid.coords[n][0], self.coords[n][0]), min(cuboid.coords[n][1], self.coords[n][1])))
+        all_coords = [(max(cuboid.coords[n][0], self.coords[n][0]), min(cuboid.coords[n][1], self.coords[n][1])) for n in range(3)
+                      if cuboid.coords[n][0] < self.coords[n][1] and self.coords[n][0] < cuboid.coords[n][1]]
         if len(all_coords) == 3:
             return Cuboid(self.on, all_coords)
         return None
@@ -40,17 +38,12 @@ class Reactor:
         self.cuboids = []
         for line in data.strip().split('\n'):
             parts = line.split(" ")
-            on = (parts[0] == 'on')
-            coords = tuple(tuple((int(p) + n) for n, p in enumerate(part.split('=')[1].split('..'))) for part in parts[1].split(','))
-            self.cuboids.append(Cuboid(on, coords))
+            self.cuboids.append(Cuboid((parts[0] == 'on'), tuple(tuple((int(p) + n) for n, p in enumerate(part.split('=')[1].split('..'))) for part in parts[1].split(','))))
 
     def cubes(self, max_coord=None):
         cuboids = []
         for cuboid in self.cuboids:
-            old_cuboids = cuboids.copy()
-            cuboids = []
-            for old_cuboid in old_cuboids:
-                cuboids.extend(old_cuboid - cuboid)
+            cuboids = [sub_cuboid for prev_cuboid in cuboids for sub_cuboid in prev_cuboid - cuboid]
             if cuboid.on:
                 cuboids.append(cuboid)
         return sum(cuboid.volume for cuboid in cuboids if max_coord is None or abs(cuboid.coords[0][0]) <= max_coord)
