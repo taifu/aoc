@@ -10,26 +10,19 @@ class Cuboid:
     def volume(self):
         return math.prod(((self.coords[n][1] - self.coords[n][0]) for n in range(3)))
 
-    def subtract(self, cuboid):
-        if (overlap := self.overlap(cuboid)):
+    def __sub__(self, cuboid):
+        if (overlap := self & cuboid):
             cuboids = []
-            if self.coords[0][0] < overlap.coords[0][0]:
-                cuboids.append(Cuboid(True, ((self.coords[0][0], overlap.coords[0][0]), self.coords[1], self.coords[2])))
-            if overlap.coords[0][1] < self.coords[0][1]:
-                cuboids.append(Cuboid(True, ((overlap.coords[0][1], self.coords[0][1]), self.coords[1], self.coords[2])))
-            if self.coords[1][0] < overlap.coords[1][0]:
-                cuboids.append(Cuboid(True, (overlap.coords[0], (self.coords[1][0], overlap.coords[1][0]), self.coords[2])))
-            if overlap.coords[1][1] < self.coords[1][1]:
-                cuboids.append(Cuboid(True, (overlap.coords[0], (overlap.coords[1][1], self.coords[1][1]), self.coords[2])))
-            if self.coords[2][0] < overlap.coords[2][0]:
-                cuboids.append(Cuboid(True, (overlap.coords[0], overlap.coords[1], (self.coords[2][0], overlap.coords[2][0]))))
-            if overlap.coords[2][1] < self.coords[2][1]:
-                cuboids.append(Cuboid(True, (overlap.coords[0], overlap.coords[1], (overlap.coords[2][1], self.coords[2][1]))))
+            for n in range(3):
+                if self.coords[n][0] < overlap.coords[n][0]:
+                    cuboids.append(Cuboid(True, overlap.coords[:n] + ((self.coords[n][0], overlap.coords[n][0]),) + self.coords[n + 1:]))
+                if overlap.coords[n][1] < self.coords[n][1]:
+                    cuboids.append(Cuboid(True, overlap.coords[:n] + ((overlap.coords[n][1], self.coords[n][1]),) + self.coords[n + 1:]))
             return cuboids
         else:
             return [self]
 
-    def overlap(self, cuboid):
+    def __and__(self, cuboid):
         all_coords = []
         for n in range(3):
             if cuboid.coords[n][0] < self.coords[n][1] and self.coords[n][0] < cuboid.coords[n][1]:
@@ -57,7 +50,7 @@ class Reactor:
             old_cuboids = cuboids.copy()
             cuboids = []
             for old_cuboid in old_cuboids:
-                cuboids.extend(old_cuboid.subtract(cuboid))
+                cuboids.extend(old_cuboid - cuboid)
             if cuboid.on:
                 cuboids.append(cuboid)
         return sum(cuboid.volume for cuboid in cuboids if max_coord is None or abs(cuboid.coords[0][0]) <= max_coord)
