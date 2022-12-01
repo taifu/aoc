@@ -1,34 +1,29 @@
-from itertools import combinations
+from collections import defaultdict
 
 
 def load(data):
-    return [int(line) for line in data.strip().split("\n")]
+    elves = defaultdict(list)
+    cont = 0
+    for line in data.strip().split("\n"):
+        cal = int(line.strip() or "0")
+        if not cal:
+            cont += 1
+        elves[cont].append(cal)
+    return elves
 
 
 def solve1(data):
-    increased = 0
-    last = None
-    numbers = load(data)
-    for height in numbers:
-        if last is not None:
-            if height > last:
-                increased += 1
-        last = height
-    return increased
+    most = 0
+    for elves, items in load(data).items():
+        most = max(most, sum(items))
+    return most
 
 
 def solve2(data):
-    increased = 0
-    a = b = c = None
-    numbers = load(data)
-    for height in numbers:
-        if a is not None:
-            if height > a:
-                increased += 1
-        a = b
-        b = c
-        c = height
-    return increased
+    mostest = []
+    for elves, items in load(data).items():
+        mostest.append(sum(items))
+    return sum(list(reversed(sorted(mostest)))[:3])
 
 
 if __name__ == "__main__":
