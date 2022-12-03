@@ -1,6 +1,5 @@
 import unittest
-
-import day_03 as day
+day = __import__('day_' + __file__[-5:-3])
 
 
 class TestDay(unittest.TestCase):
