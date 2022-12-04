@@ -1,27 +1,26 @@
 def load(data):
     sections = []
     for line in data.strip().split("\n"):
-        parts = line.split(",")
-        sections.append([int(x) for part in parts for x in part.split('-')])
+        sections.append([int(x) for sec in line.split(",")for x in sec.split('-')])
     return sections
 
 
-def contain(sec):
-    return sec[0] >= sec[2] and sec[1] <= sec[3] or sec[2] >= sec[0] and sec[3] <= sec[1]
+def contain(a1, a2, b1, b2):
+    return a1 >= b1 and a2 <= b2 or b1 >= a1 and b2 <= a2
 
 
-def overlap(sec):
-    return sec[1] >= sec[2] and sec[0] <= sec[3] or sec[3] >= sec[0] and sec[2] <= sec[1]
+def overlap(a1, a2, b1, b2):
+    return a1 >= b2 and a2 <= b1 or b2 >= a1 and b1 <= a2
 
 
 def solve1(data):
     sections = load(data)
-    return sum(1 if contain(sec) else 0 for sec in sections)
+    return sum(1 if contain(*sec) else 0 for sec in sections)
 
 
 def solve2(data):
     sections = load(data)
-    return sum(1 if overlap(sec) else 0 for sec in sections)
+    return sum(1 if overlap(*sec) else 0 for sec in sections)
 
 
 if __name__ == "__main__":
