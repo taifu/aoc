@@ -1,7 +1,7 @@
 def load(data):
     sections = []
     for line in data.strip().split("\n"):
-        sections.append([int(x) for sec in line.split(",")for x in sec.split('-')])
+        sections.append([int(x) for sec in line.split(",") for x in sec.split('-')])
     return sections
 
 
