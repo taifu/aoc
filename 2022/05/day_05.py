@@ -6,8 +6,7 @@ def load(data):
         if line[1] == "1":
             piles = [[] for n in range(len(line.split()))]
         elif line[0] == "m":
-            parts = line.split()
-            moves.append([int(parts[n]) - (1 if n > 1 else 0) for n in (1, 3, 5)])
+            moves.append([int(line.split()[n]) - (1 if n > 1 else 0) for n in (1, 3, 5)])
         else:
             crates.append(line)
     for line in crates[::-1]:
@@ -18,14 +17,10 @@ def load(data):
     return piles, moves
 
 
-def move(piles, moves, normal=True):
+def move(piles, moves, stack=True):
     for how_many, pile_from, pile_to in moves:
-        if normal:
-            for n in range(how_many):
-                piles[pile_to].append(piles[pile_from].pop())
-        else:
-            for n in range(how_many, 0, -1):
-                piles[pile_to].append(piles[pile_from].pop(-n))
+        for n in range(how_many, 0, -1):
+            piles[pile_to].append(piles[pile_from].pop(-1 if stack else -n))
     return "".join(pile.pop() for pile in piles)
 
 def solve1(data):
@@ -33,7 +28,7 @@ def solve1(data):
 
 
 def solve2(data):
-    return move(*load(data), False)
+    return move(*load(data), stack=False)
 
 
 if __name__ == "__main__":
