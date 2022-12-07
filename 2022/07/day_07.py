@@ -46,11 +46,7 @@ def solve1(data):
 
 def solve2(data):
     tree = load(data)
-    needed, delete = tree.size - 40000000, tree
-    for directory in tree.dirs:
-        if directory.size >= needed and directory.size < delete.size:
-            delete = directory
-    return delete.size
+    return min(d.size for d in tree.dirs if d.size > tree.size - 40000000)
 
 
 if __name__ == "__main__":
