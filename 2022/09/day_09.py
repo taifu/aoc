@@ -1,8 +1,24 @@
 from math import copysign
+import time
 
 
 def load(data):
     return [(line[0], int(line[2:])) for line in data.strip().split("\n")]
+
+
+def draw(knots):
+    print("\033[0;0H")
+    size_x, size_y = 60, 30
+    matrix = [[' '] * size_x for n in range(size_y)]
+    for n, n_knot in enumerate(range(len(knots) - 1, -1, -1)):
+        char = 'T' if n == 0 else 'H' if n == len(knots) - 1 else str(len(knots) - n)
+        matrix[(knots[n_knot][1] + size_y // 2) % size_y][(knots[n_knot][0] + size_x // 2) % size_x] = char
+    header = f"+{'-' * size_x}+"
+    print(header)
+    for line in matrix:
+        print(f"|{''.join(line)}|")
+    print(header)
+    time.sleep(0.01)
 
 
 def follow(head, tail):
@@ -12,7 +28,7 @@ def follow(head, tail):
             tail[n] += int(copysign(min(1, moving[n]), head[n] - tail[n]))
 
 
-def move(moves, length):
+def move(moves, length, drawing=False):
     grid, knots = set(((0, 0),)), [[0, 0] for n in range(length)]
     for direction, step in moves:
         incs = {'U': (0, 1), 'D': (0, -1), 'L': (-1, 0), 'R': (1, 0)}[direction]
@@ -21,6 +37,8 @@ def move(moves, length):
                 knots[0][xy] += incs[xy]
             for head, tail in zip(knots, knots[1:]):
                 follow(head, tail)
+            if drawing:
+                draw(knots)
             grid.add(tuple(knots[-1]))
     return grid
 
@@ -29,11 +47,13 @@ def solve1(data):
     return len(move(load(data), 2))
 
 
-def solve2(data):
-    return len(move(load(data), 10))
+def solve2(data, drawing=False):
+    return len(move(load(data), 10, drawing))
 
 
 if __name__ == "__main__":
+    import sys
     data = open("input.txt").read()
+
     print(solve1(data))
-    print(solve2(data))
+    print(solve2(data, True if '-d' in sys.argv else False))
