@@ -22,7 +22,7 @@ def follow(head, tail):
     moving = [head[n] - tail[n] for n in range(2)]
     if max(map(abs, moving)) == 2:
         for n in range(2):
-            tail[n] += round((moving[n] * 1.1) / 2)
+            tail[n] += round(moving[n] / abs(moving[n] + 0.1))
 
 
 def move(moves, length, drawing=False):
