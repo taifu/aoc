@@ -22,7 +22,7 @@ def follow(head, tail):
     dist = [head[n] - tail[n] for n in range(2)]
     if max(map(abs, dist)) == 2:
         for n in range(2):
-            tail[n] += dist[n] / abs(dist[n]) if dist[n] else 0
+            tail[n] += dist[n] and dist[n] // abs(dist[n])
 
 
 def move(moves, length, drawing=False):
