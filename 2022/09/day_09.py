@@ -19,10 +19,10 @@ def draw(knots):
 
 
 def follow(head, tail):
-    moving = [head[n] - tail[n] for n in range(2)]
-    if max(map(abs, moving)) == 2:
+    dist = [head[n] - tail[n] for n in range(2)]
+    if max(map(abs, dist)) == 2:
         for n in range(2):
-            tail[n] += round(moving[n] / abs(moving[n] + 0.1))
+            tail[n] += dist[n] / abs(dist[n]) if dist[n] else 0
 
 
 def move(moves, length, drawing=False):
