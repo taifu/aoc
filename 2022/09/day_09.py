@@ -1,12 +1,9 @@
-from math import copysign
-import time
-
-
 def load(data):
     return [(line[0], int(line[2:])) for line in data.strip().split("\n")]
 
 
 def draw(knots):
+    import time
     print("\033[0;0H")
     size_x, size_y = 60, 30
     matrix = [[' '] * size_x for n in range(size_y)]
@@ -22,10 +19,10 @@ def draw(knots):
 
 
 def follow(head, tail):
-    moving = [abs(head[n] - tail[n]) for n in range(2)]
-    if max(moving) == 2:
+    moving = [head[n] - tail[n] for n in range(2)]
+    if max(map(abs, moving)) == 2:
         for n in range(2):
-            tail[n] += int(copysign(min(1, moving[n]), head[n] - tail[n]))
+            tail[n] += round((moving[n] * 1.1) / 2)
 
 
 def move(moves, length, drawing=False):
