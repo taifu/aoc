@@ -30,6 +30,7 @@ U 20"""
 
     def test_solution(self):
         import os
-        data = open(os.path.dirname(__file__) + "/input.txt").read()
-        self.assertEqual(day.solve1(data), 6067)
-        self.assertEqual(day.solve2(data), 2471)
+        with open(os.path.dirname(__file__) + "/input.txt") as f_data:
+            data = f_data.read()
+            self.assertEqual(day.solve1(data), 6067)
+            self.assertEqual(day.solve2(data), 2471)
