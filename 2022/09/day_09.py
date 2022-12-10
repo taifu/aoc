@@ -18,11 +18,15 @@ def draw(knots):
     time.sleep(0.01)
 
 
+def sign(n):
+    return (n > 0) - (n < 0)
+
+
 def follow(head, tail):
     dist = [head[n] - tail[n] for n in range(2)]
     if max(map(abs, dist)) == 2:
         for n in range(2):
-            tail[n] += dist[n] // max(abs(dist[n]), 1)
+            tail[n] += sign(dist[n])
 
 
 def move(moves, length, drawing=False):
