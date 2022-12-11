@@ -1,11 +1,11 @@
 from operator import mul, add
-from functools import reduce
+from math import prod
 
 
 class Monkey:
     def _operation(self, line):
         parts = line.split()
-        operator = {"*": mul, "+":add}[parts[1]]
+        operator = {"*": mul, "+": add}[parts[1]]
         if parts[0] == parts[2] == "old":
             return lambda old: operator(old, old)
         elif parts[0] == "old":
@@ -38,7 +38,7 @@ def load(data):
 
 
 def compute(monkeys, turns=20, divided=3):
-    divisibility = reduce(mul, [m.divisible for m in monkeys])
+    divisibility = prod([m.divisible for m in monkeys])
     for turn in range(turns):
         for monkey in monkeys:
             monkey.turn(monkeys, divided, divisibility)
