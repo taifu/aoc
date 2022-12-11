@@ -2,18 +2,18 @@ from operator import mul, add
 from math import prod
 
 
+def load(data):
+    monkeys = []
+    for lines in data.strip().split("\n\n"):
+        monkeys.append(Monkey(lines.split("\n")))
+    return monkeys
+
+
 class Monkey:
     def _operation(self, line):
         parts = line.split()
         operator = {"*": mul, "+": add}[parts[1]]
-        if parts[0] == parts[2] == "old":
-            return lambda old: operator(old, old)
-        elif parts[0] == "old":
-            return lambda old: operator(old, int(parts[2]))
-        elif parts[2] == "old":
-            return lambda old: operator(int(parts[0]), old)
-        else:
-            return lambda old: operator(int(parts[0]), int(parts[2]))
+        return lambda old: operator(old, old if parts[2] == 'old' else int(parts[2]))
 
     def __init__(self, lines):
         self.inspected = 0
@@ -29,28 +29,21 @@ class Monkey:
             item = (self.operation(self.items.pop()) // divided) % divisibility
             monkeys[self.results[item % self.divisible == 0]].items.append(item)
 
-
-def load(data):
-    monkeys = []
-    for lines in data.strip().split("\n\n"):
-        monkeys.append(Monkey(lines.split("\n")))
-    return monkeys
-
-
-def compute(monkeys, turns=20, divided=3):
-    divisibility = prod([m.divisible for m in monkeys])
-    for turn in range(turns):
-        for monkey in monkeys:
-            monkey.turn(monkeys, divided, divisibility)
-    return mul(*[m.inspected for m in sorted(monkeys, key=lambda m: m.inspected)[-2:]])
+    @staticmethod
+    def compute(monkeys, turns=20, divided=3):
+        divisibility = prod([m.divisible for m in monkeys])
+        for turn in range(turns):
+            for monkey in monkeys:
+                monkey.turn(monkeys, divided, divisibility)
+        return mul(*[m.inspected for m in sorted(monkeys, key=lambda m: m.inspected)[-2:]])
 
 
 def solve1(data):
-    return compute(load(data))
+    return Monkey.compute(load(data))
 
 
 def solve2(data):
-    return compute(load(data), 10000, 1)
+    return Monkey.compute(load(data), 10000, 1)
 
 
 if __name__ == "__main__":
