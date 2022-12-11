@@ -1,5 +1,5 @@
 from operator import mul, add
-from functools import reduce
+from math import prod
 
 
 class Monkey:
@@ -38,7 +38,7 @@ def load(data):
 
 
 def compute(monkeys, turns=20, divided=3):
-    divisibility = reduce(mul, [m.divisible for m in monkeys])
+    divisibility = prod([m.divisible for m in monkeys])
     for turn in range(turns):
         for monkey in monkeys:
             monkey.turn(monkeys, divided, divisibility)
