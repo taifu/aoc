@@ -1,8 +1,8 @@
 def my_eval(parts, stack=None):
     if stack is None:
-        stack, parts = [], line.replace(",", " ").replace("[", " [ ").replace("]", " ] ").split(" ")
+        stack, parts = [], line.replace(",", " ").replace("[", " [ ").replace("]", " ] ").split(" ")[::-1]
     while parts:
-        part = parts.pop(0)
+        part = parts.pop()
         if part.isdigit():
             stack.append(int(part))
         elif part == "[":
