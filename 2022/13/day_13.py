@@ -18,10 +18,8 @@ def compare(left, right):
     if isinstance(right, int):
         right = [right]
     assert type(left) == type(right) == list, f"{left} != {right}"
-    last_more = False
     for left_item, right_item in zip(left, right):
-        ret = compare(left_item, right_item)
-        if ret is not None:
+        if((ret := compare(left_item, right_item)) is not None):
             return ret
     if len(left) < len(right):
         return True
