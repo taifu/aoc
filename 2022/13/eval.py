@@ -1,17 +1,15 @@
-def compile(parts, stack):
+def my_eval(parts, stack=None):
+    if stack is None:
+        stack, parts = [], line.replace(",", " ").replace("[", " [ ").replace("]", " ] ").split(" ")
     while parts:
         part = parts.pop(0)
         if part.isdigit():
             stack.append(int(part))
         elif part == "[":
-            stack.append(compile(parts, []))
+            stack.append(my_eval(parts, []))
         elif part == "]":
             return stack
-    return stack
-
-
-def my_eval(line):
-    return compile([p for p in line.replace(",", " ").replace("[", " [ ").replace("]", " ] ").split(" ") if p], [])[0]
+    return stack[0]
 
 
 for line in open("input.txt").read().split("\n"):
