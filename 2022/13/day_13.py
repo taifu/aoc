@@ -21,11 +21,9 @@ def compare(left, right):
     for left_item, right_item in zip(left, right):
         if((ret := compare(left_item, right_item)) is not None):
             return ret
-    if len(left) < len(right):
-        return True
-    if len(left) > len(right):
-        return False
-    return None
+    if len(left) == len(right):
+        return None
+    return len(left) < len(right)
 
 
 def compute(pairs):
