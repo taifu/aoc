@@ -9,13 +9,14 @@ def load(data):
 
 
 class Rock:
-    def __init__(self, walls, inf=False):
+    def __init__(self, walls, inf=False, paint=False):
         source_x = 500
         self.source = (source_x, 0)
         self.grid = {}
         self.max_xy = [0, 0]
         self.min_xy = [source_x, source_x]
         self.inf = inf
+        self.paint = paint
         for wall in walls:
             for xy1, xy2 in zip(wall, wall[1:]):
                 assert xy1[0] == xy2[0] or xy1[1] == xy2[1]
@@ -32,7 +33,8 @@ class Rock:
             for x in range(self.min_xy[0], self.max_xy[0] + 1):
                 self.grid[x, self.max_xy[1]] = "#"
 
-    def paint(self):
+    def draw(self):
+        print("\033[0;0H")
         for y in range(0, self.max_xy[1] + 1):
             line = ""
             for x in range(self.min_xy[0], self.max_xy[0] + 1):
@@ -54,13 +56,15 @@ class Rock:
                 else:
                     self.grid[sand] = 'o'
                     sands += 1
+                    if self.paint:
+                        self.draw()
                     if sand == self.source:
                         return sands
                     break
 
 
-def solve1(data):
-    return Rock(load(data)).fill()
+def solve1(data, paint=False):
+    return Rock(load(data), paint=paint).fill()
 
 
 def solve2(data):
@@ -68,6 +72,7 @@ def solve2(data):
 
 
 if __name__ == "__main__":
+    import sys
     data = open("input.txt").read()
-    print(solve1(data))
+    print(solve1(data, paint=True if '-d' in sys.argv else False))
     print(solve2(data))
