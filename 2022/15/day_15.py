@@ -24,12 +24,12 @@ class Ground:
             # First zone
             if not empty:
                 empty.append([x1, x2])
-            # Extend last
-            elif x1 <= empty[-1][1]:
+            # Extend last zone
+            elif x1 <= empty[-1][1] + 1:
                 if x2 > empty[-1][1]:
                     empty[-1][1] = x2
-            # Another zone
-            elif x1 > empty[-1][1]:
+            # Add another zone
+            else:
                 empty.append([x1, x2])
         return empty
 
@@ -37,7 +37,7 @@ class Ground:
         return sum(abs(x2 - x1) for x1, x2 in self.empty_row(row))
 
     def distress(self, space):
-        for row in range(space + 1, -1, -1):
+        for row in range(space, -1, -1):
             empty = self.empty_row(row)
             if len(empty) == 2:
                 return (empty[0][1] + 1) * 4000000 + row

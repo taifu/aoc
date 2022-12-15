@@ -22,10 +22,10 @@ Sensor at x=20, y=1: closest beacon is at x=15, y=3
 """
 
     def test_part_1(self):
-        self.assertEqual(26, day.solve1(self.data, 10))
+        self.assertEqual(26, day.solve1(self.data, row=10))
 
     def test_part_2(self):
-        self.assertEqual(56000011, day.solve2(self.data))
+        self.assertEqual(56000011, day.solve2(self.data, space=20))
 
     @pytest.mark.slow
     def test_solution(self):
