@@ -37,7 +37,7 @@ class Ground:
         return sum(abs(x2 - x1) for x1, x2 in self.empty_row(row))
 
     def distress(self, space):
-        for row in range(space + 1):
+        for row in range(space + 1, -1, -1):
             empty = self.empty_row(row)
             if len(empty) == 2:
                 return (empty[0][1] + 1) * 4000000 + row
