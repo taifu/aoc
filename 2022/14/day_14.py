@@ -1,6 +1,3 @@
-from functools import cmp_to_key
-
-
 def load(data):
     walls = []
     for line in data.strip().split("\n"):
