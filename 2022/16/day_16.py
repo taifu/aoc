@@ -43,6 +43,8 @@ class Flow:
         while queue:
             valve, minutes, pressure, opened, to_open = queue.popleft()
             if pressure > max_pressure:
+                if len(opened) == 8:
+                    print(opened, pressure)
                 max_pressure = pressure
             for next_valve in to_open:
                 cost = self.paths[valve, next_valve]
@@ -54,15 +56,14 @@ class Flow:
     def flux_elephant(self):
         all_valves = set(self.pressures.keys())
         max_pressure = 0
-        for n_my_valves in range((len(all_valves) - 1)// 2 + 1, len(all_valves)):
-            for my_valves in combinations(all_valves, n_my_valves):
-                my_valves = set(my_valves)
-                elephant_valves = all_valves - my_valves
-                p1 = self.flux(max_minutes=26, valves_to_open=my_valves)
-                p2 = self.flux(max_minutes=26, valves_to_open=elephant_valves)
-                pressure = p1 + p2
-                if pressure > max_pressure:
-                    max_pressure = pressure
+        for my_valves in combinations(all_valves, (len(all_valves) - 1)// 2 + 1):
+            my_valves = set(my_valves)
+            elephant_valves = all_valves - my_valves
+            p1 = self.flux(max_minutes=26, valves_to_open=my_valves)
+            p2 = self.flux(max_minutes=26, valves_to_open=elephant_valves)
+            pressure = p1 + p2
+            if pressure > max_pressure:
+                max_pressure = pressure
         return max_pressure
 
 

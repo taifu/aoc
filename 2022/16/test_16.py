@@ -29,4 +29,4 @@ Valve JJ has flow rate=21; tunnel leads to valve II
         with open(os.path.dirname(__file__) + "/input.txt") as f_data:
             data = f_data.read()
             self.assertEqual(day.solve1(data), 1789)
-            self.assertEqual(day.solve1(data), 2496)
+            self.assertEqual(day.solve2(data), 2496)
