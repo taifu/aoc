@@ -23,9 +23,10 @@ Valve JJ has flow rate=21; tunnel leads to valve II
     def test_part_2(self):
         self.assertEqual(1707, day.solve2(self.data))
 
+    @pytest.mark.slow
     def test_solution(self):
         import os
         with open(os.path.dirname(__file__) + "/input.txt") as f_data:
             data = f_data.read()
             self.assertEqual(day.solve1(data), 1789)
-            #self.assertEqual(day.solve2(data), 12691026767556)
+            self.assertEqual(day.solve1(data), 2496)
