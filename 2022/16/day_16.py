@@ -43,8 +43,6 @@ class Flow:
         while queue:
             valve, minutes, pressure, opened, to_open = queue.popleft()
             if pressure > max_pressure:
-                if len(opened) == 8:
-                    print(opened, pressure)
                 max_pressure = pressure
             for next_valve in to_open:
                 cost = self.paths[valve, next_valve]
