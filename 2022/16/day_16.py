@@ -1,5 +1,5 @@
 from collections import deque, defaultdict
-from itertools import combinations, permutations
+from itertools import combinations
 
 
 def load(data):
