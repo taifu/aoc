@@ -6,25 +6,25 @@ class Cubes:
     def adj(self, xyz):
         for inc in ((1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, -1, 0), (0, 0, 1), (0, 0, -1)):
             xyz2 = tuple(xyz[n] + inc[n] for n in range(3))
-            if all(self.minmax[n][0] <= c <= self.minmax[n][1] for n, c in enumerate(xyz2)):
+            if all(self.minmax[n][0] < c < self.minmax[n][1] - 1 for n, c in enumerate(xyz2)):
                 yield xyz2
 
     def __init__(self, data):
-        self.cubes = set((cube for cube in data))
-        minmax = [[99, -99] for n in range(3)]
+        self.cubes = set(data)
+        self.minmax = [[999, -999] for n in range(3)]
         for xyz in self.cubes:
-            minmax = [[min(minmax[n][0], xyz[n]), max(minmax[n][1], xyz[n])] for n in range(3)]
-        self.minmax = minmax
+            self.minmax = [[min(self.minmax[n][0], xyz[n] - 1), max(self.minmax[n][1], xyz[n] + 2)] for n in range(3)]
 
     def outside(self):
         faces = 0
         scan = []
         # Cubes enveloping
-        for x in range(self.minmax[0][0] - 1, self.minmax[0][1] + 2):
-            for y in range(self.minmax[1][0] - 1, self.minmax[1][1] + 2):
-                for z in range(self.minmax[2][0] - 1, self.minmax[2][1] + 2):
-                    if (any(c in (self.minmax[n][0] - 1, self.minmax[n][1] + 1) for n, c in enumerate((x, y, z)))
-                        and not all(c in (self.minmax[n][0] - 1, self.minmax[n][1] + 1) for n, c in enumerate((x, y, z)))):
+        for x in range(*self.minmax[0]):
+            for y in range(*self.minmax[1]):
+                for z in range(*self.minmax[2]):
+                    # Not inside
+                    if sum(c in (self.minmax[n][0], self.minmax[n][1] - 1)
+                           for n, c in enumerate((x, y, z))) in (1, 2):
                         scan.append((x, y, z))
         seen = set()
         while scan:
