@@ -51,6 +51,7 @@ class Grid:
                 break
             rang = range(min(y - 1, 20), -1, -1)
             print()
+        import pdb; pdb.set_trace()
 
     def caching(self, moves):
         key = (self.n_rocks % len(self.rocks), moves, tuple(self.height.imag - t for t in self.tops))
