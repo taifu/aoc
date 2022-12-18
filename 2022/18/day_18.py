@@ -6,7 +6,7 @@ class Cubes:
     def adj(self, xyz):
         for inc in ((1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, -1, 0), (0, 0, 1), (0, 0, -1)):
             xyz2 = tuple(xyz[n] + inc[n] for n in range(3))
-            if all(self.minmax[n][0] < c < self.minmax[n][1] - 1 for n, c in enumerate(xyz2)):
+            if all(self.minmax[n][0] <= c <= self.minmax[n][1] - 1 for n, c in enumerate(xyz2)):
                 yield xyz2
 
     def __init__(self, data):
@@ -17,17 +17,8 @@ class Cubes:
                             max(self.minmax[n][1], xyz[n] + 2)] for n in range(3)]
 
     def outside(self):
-        faces = 0
-        scan = []
-        # Cubes enveloping
-        for x in range(*self.minmax[0]):
-            for y in range(*self.minmax[1]):
-                for z in range(*self.minmax[2]):
-                    # Not inside
-                    if sum(c in (self.minmax[n][0], self.minmax[n][1] - 1)
-                           for n, c in enumerate((x, y, z))) in (1, 2):
-                        scan.append((x, y, z))
-        seen = set()
+        faces, seen = 0, set()
+        scan = [tuple(c[0] for c in self.minmax)]
         while scan:
             xyz = scan.pop()
             for xyz2 in self.adj(xyz):
@@ -35,7 +26,8 @@ class Cubes:
                     seen.add((xyz, xyz2))
                     if xyz2 in self.cubes:
                         faces += 1
-                    else:
+                    elif xyz2 not in seen:
+                        seen.add(xyz2)
                         scan.append(xyz2)
         return faces
 
