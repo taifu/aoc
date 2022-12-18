@@ -7,10 +7,11 @@ class TestDay(unittest.TestCase):
         self.data = """>>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>"""
 
     def test_part_1(self):
-        self.assertEqual(3068, day.solve1(self.data, True))
+        self.assertEqual(3068, day.solve1(self.data))
 
     def test_part_2(self):
         self.assertEqual(1514285714288, day.solve2(self.data))
+        pass
 
     def test_solution(self):
         import os
