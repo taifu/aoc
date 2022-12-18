@@ -13,7 +13,8 @@ class Cubes:
         self.cubes = set(data)
         self.minmax = [[999, -999] for n in range(3)]
         for xyz in self.cubes:
-            self.minmax = [[min(self.minmax[n][0], xyz[n] - 1), max(self.minmax[n][1], xyz[n] + 2)] for n in range(3)]
+            self.minmax = [[min(self.minmax[n][0], xyz[n] - 1),
+                            max(self.minmax[n][1], xyz[n] + 2)] for n in range(3)]
 
     def outside(self):
         faces = 0
