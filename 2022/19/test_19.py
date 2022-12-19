@@ -12,8 +12,11 @@ Blueprint 2: Each ore robot costs 2 ore.  Each clay robot costs 3 ore.  Each obs
         self.assertEqual(33, day.solve1(self.data))
 
     def test_part_2(self):
-        self.assertEqual(56, day.Blueprint(day.load(self.data)[0]).best(32))
+        self.assertEqual(51, day.Blueprint(day.load(self.data)[0]).best(32))
         self.assertEqual(62, day.Blueprint(day.load(self.data)[1]).best(32))
+
+    def test_part_3(self):
+        self.assertEqual(3162, day.solve2(self.data)) 
 
     def test_solution(self):
         import os

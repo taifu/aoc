@@ -10,7 +10,8 @@ class Blueprint:
     ORE, CLAY, OBSIDIAN, GEOIDE = (0, 1, 2, 3)
 
     def __init__(self, data):
-        self.robot_costs = [[data[0], 0, 0, 0], [data[1], 0, 0, 0], [data[2], data[3], 0, 0], [data[4], 0, data[5], 0]]
+        self.id = data[0]
+        self.robot_costs = [[data[1], 0, 0, 0], [data[2], 0, 0, 0], [data[3], data[4], 0, 0], [data[5], 0, data[6], 0]]
         self.max_ore = max(cost[self.ORE] for cost in self.robot_costs)
 
     def best(self, minutes):
@@ -50,13 +51,13 @@ class Blueprints:
     def __init__(self, data):
         self.blueprints = []
         for line in data:
-            self.blueprints.append((line[0], Blueprint(line[1:])))
+            self.blueprints.append(Blueprint(line))
 
     def quality(self):
-        return sum(k * blueprint.best(24) for k, blueprint in self.blueprints)
+        return sum(blueprint.id * blueprint.best(24) for blueprint in self.blueprints)
 
     def quality2(self):
-        return prod(blueprint.best(32) for k, blueprint in self.blueprints[:3])
+        return prod(blueprint.best(32) for blueprint in self.blueprints[:3])
 
 
 def solve1(data):
