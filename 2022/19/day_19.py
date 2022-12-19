@@ -34,6 +34,10 @@ class Blueprint:
                     buildable_robots = [self.OBSIDIAN]
                 if buildable_robots:
                     for robot in buildable_robots:
+                        # Ogni minuto al massimo posso usare self.max_ore, non
+                        # ha senso avere più robot-ore
+                        if robot == self.ORE and robots[self.ORE] == self.max_ore:
+                            continue
                         next_robots = tuple(robots[n] + (1 if n == robot else 0) for n in range(4))
                         next_minerals = tuple(minerals[n] - self.robot_costs[robot][n] + robots[n] for n in range(4))
                         if not (minute, next_robots, next_minerals) in seen:
