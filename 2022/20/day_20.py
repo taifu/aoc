@@ -8,98 +8,44 @@ class Item:
         self.next = self.prev = None
 
     def move(self, delta):
-        if delta:
-            skip = sign(delta)
-            if skip == -1:
-                delta -= 1
-            item = self
-            while delta:
-                if skip == -1:
-                    item = item.prev
-                else:
-                    item = item.next
-                delta += -skip
-            if item.next is self:
-                return
-            p1, p2 = self.next, self.prev
-            p3, p4 = item, item.next
-            p5 = self
-            self.prev.next, self.next.prev = p1, p2
-            self.prev, self.next = p3, p4
-            item.next.prev, item.next = p5, p5
-
-
-def sign(n):
-    return (n > 0) - (n < 0)
-
-
-def show(first):
-    item = first
-    print()
-    print("======================")
-    while True:
-        print(item.n, end=" ")
-        item = item.next
-        if item is first:
-            break
-    print()
-    item = first.prev
-    while True:
-        print(item.n, end=" ")
-        item = item.prev
-        if item is first.prev:
-            break
-    print()
-    print("======================")
-    print()
+        assert delta > 0
+        item = self
+        while delta:
+            item = item.next
+            delta -= 1
+        if item.next is self:
+            return
+        self.prev.next, self.next.prev = self.next, self.prev
+        self.prev, self.next = item, item.next
+        item.next.prev = item.next = self
 
 
 def decrypt(data, times=1, key=1):
     length = len(data)
     msg = {}
-    last = first = zero = None
+    zero = None
     for pos, value in enumerate(data):
         value *= key
         msg[pos] = Item(value)
         if value == 0:
             zero = msg[pos]
-        if first is None:
-            first = msg[pos]
-        else:
+        if pos > 0:
             msg[pos - 1].next = msg[pos]
-        if not last is None:
-            msg[pos].prev = last
-        last = msg[pos]
-    last.next = first
-    first.prev = last
+            msg[pos].prev = msg[pos - 1]
+    msg[pos].next = msg[0]
+    msg[0].prev = msg[pos]
     for time in range(times):
-        for i, (pos, item) in enumerate(sorted(msg.items())):
-            old_prev, old_next = first.prev, first.next
-            delta = item.n
-            #if delta % length == 0:
-                #continue
-            while delta < 0:
-                delta += length - 1
-            while delta >= length:
-                delta += - (length - 1)
-            #if abs(delta) > length // 2:
-                #import pdb; pdb.set_trace()
-                #delta %= length
-                #delta = length - abs(delta) * sign(delta)
-            #print(item.n)
-            #print(delta)
-            #show(first)
-            #import pdb; pdb.set_trace()
+        for pos in range(length):
+            delta = msg[pos].n
+            skip = (length - 1) * abs(delta // (length - 1))
+            if delta < 0:
+                delta += skip
+            if delta >= length:
+                delta += -skip
             if delta:
-                item.move(delta)
-            #show(first)
-            if item is first:
-                first = old_next
-
-    #show(first)
+                msg[pos].move(delta)
     item = zero
-    n = 0
-    tot = 0
+    n = tot = 0
     which = set([1000, 2000, 3000])
     while which:
         item = item.next
@@ -115,8 +61,7 @@ def solve1(data):
 
 
 def solve2(data):
-    #return decrypt(load(data), times=10, key=811589153)
-    pass
+    return decrypt(load(data), times=10, key=811589153)
 
 
 if __name__ == "__main__":
