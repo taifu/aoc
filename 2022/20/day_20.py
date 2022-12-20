@@ -54,11 +54,12 @@ def show(first):
     print()
 
 
-def decrypt(data):
+def decrypt(data, times=1, key=1):
     length = len(data)
     msg = {}
     last = first = zero = None
     for pos, value in enumerate(data):
+        value *= key
         msg[pos] = Item(value)
         if value == 0:
             zero = msg[pos]
@@ -71,27 +72,29 @@ def decrypt(data):
         last = msg[pos]
     last.next = first
     first.prev = last
-    for i, (pos, item) in enumerate(sorted(msg.items())):
-        old_prev, old_next = first.prev, first.next
-        delta = item.n
-        #if delta % length == 0:
-            #continue
-        while delta < 0:
-            delta = length + delta - 1
-        while delta >= length:
-            delta = delta - length + 1
-        #if abs(delta) > length // 2:
+    for time in range(times):
+        for i, (pos, item) in enumerate(sorted(msg.items())):
+            old_prev, old_next = first.prev, first.next
+            delta = item.n
+            #if delta % length == 0:
+                #continue
+            while delta < 0:
+                delta += length - 1
+            while delta >= length:
+                delta += - (length - 1)
+            #if abs(delta) > length // 2:
+                #import pdb; pdb.set_trace()
+                #delta %= length
+                #delta = length - abs(delta) * sign(delta)
+            #print(item.n)
+            #print(delta)
+            #show(first)
             #import pdb; pdb.set_trace()
-            #delta %= length
-            #delta = length - abs(delta) * sign(delta)
-        #print(item.n)
-        #print(delta)
-        #show(first)
-        #import pdb; pdb.set_trace()
-        item.move(delta)
-        #show(first)
-        if item is first:
-            first = old_next
+            if delta:
+                item.move(delta)
+            #show(first)
+            if item is first:
+                first = old_next
 
     #show(first)
     item = zero
@@ -112,8 +115,8 @@ def solve1(data):
 
 
 def solve2(data):
+    #return decrypt(load(data), times=10, key=811589153)
     pass
-    #return decrypt(load(data))
 
 
 if __name__ == "__main__":
