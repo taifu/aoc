@@ -54,7 +54,6 @@ def replace(data, name, value):
 
 
 def brute_force(data):
-    # Root values for root
     my_name = 'humn'
     # Find which value is fixed
     values_zero = root(replace(data, my_name, 0), True)
