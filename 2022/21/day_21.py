@@ -70,7 +70,7 @@ def brute_force(data):
             inc *= 2
             value += inc
         else:
-            inc //= 2
+            inc = max(1, inc // 2)
             value -= inc
 
 
