@@ -63,7 +63,6 @@ def brute_force(data):
     value = inc = 1
     while True:
         new_values = root(replace(data, my_name, value), True)
-        print(new_values)
         if new_values[index] > new_values[1 - index]:
             inc *= 2
             value += inc
