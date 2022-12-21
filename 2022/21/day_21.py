@@ -53,10 +53,6 @@ def replace(data, name, value):
     return '\n'.join(f"{name}: {value}" if line[:4] == name else line for line in data.split('\n'))
 
 
-def sign(n):
-    return (n > 0) + (n < 0)
-
-
 def brute_force(data):
     # Root values for root
     my_name = 'humn'
