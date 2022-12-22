@@ -21,12 +21,60 @@ class TestDay(unittest.TestCase):
         ......#.
 
 10R5L5R10L4R5L5"""
+        grid, _ = day.load(self.real_data.replace(day.WALL, day.OPEN))
+        self.board = day.Board(grid, cube=True)
+
+    def check_wrap(self, current, turns=0, steps=1):
+        self.board.current = current
+        for n in range(turns):
+            self.board.move(day.TURN_LEFT)
+        self.board.move(steps)
+        return self.board.direction, self.board.current
 
     def test_part_1(self):
         self.assertEqual(6032, day.solve1(self.data))
 
     def test_part_2(self):
         self.assertEqual(5031, day.solve2(self.data))
+
+    def test_part_cube_wrap_1_6(self):
+        self.assertEqual((1, 1j * (3 * self.board.width)), self.check_wrap(self.board.width, turns=1))
+
+    def test_part_cube_wrap_1_4(self):
+        self.assertEqual((1, 1j * (3 * self.board.width - 1)), self.check_wrap(self.board.width, turns=2))
+
+    def test_part_cube_wrap_2_5(self):
+        self.assertEqual((-1, 2 * self.board.width - 1 + 1j * (self.board.width * 3 - 1)), self.check_wrap(self.board.width * 3 - 1))
+
+    def test_part_cube_wrap_2_6(self):
+        self.assertEqual((-1j, 1j * (4 * self.board.width - 1)), self.check_wrap(self.board.width * 2, turns=1))
+
+    def test_part_cube_wrap_2_3(self):
+        self.assertEqual((-1, self.board.width * 2 - 1 + 1j * self.board.width), self.check_wrap(self.board.width * 2 + 1j * (self.board.width - 1), turns=3))
+
+    def test_part_cube_wrap_3_4(self):
+        self.assertEqual((1j, 1j * (2 * self.board.width)), self.check_wrap(self.board.width + 1j * self.board.width, turns=2))
+
+    def test_part_cube_wrap_3_2(self):
+        self.assertEqual((-1j, self.board.width * 2 + 1j * (self.board.width - 1)), self.check_wrap(self.board.width * 2 - 1 + 1j * self.board.width))
+
+    def test_part_cube_wrap_4_3(self):
+        self.assertEqual((1, self.board.width + 1j * self.board.width), self.check_wrap(1j * (self.board.width * 2), turns=1))
+
+    def test_part_cube_wrap_4_1(self):
+        self.assertEqual((1, self.board.width), self.check_wrap(1j * (self.board.width * 3 - 1), turns=2))
+
+    def test_part_cube_wrap_5_2(self):
+        self.assertEqual((-1, self.board.width * 3 - 1 + 1j * (self.board.width - 1)), self.check_wrap(self.board.width * 2 - 1 + 1j * (self.board.width * 2)))
+
+    def test_part_cube_wrap_5_6(self):
+        self.assertEqual((-1, self.board.width - 1 + 1j * (self.board.width * 4 - 1)), self.check_wrap(self.board.width * 2 - 1 + 1j * (self.board.width * 3 - 1), turns=3))
+
+    def test_part_cube_wrap_6_1(self):
+        self.assertEqual((1j, self.board.width), self.check_wrap(1j * (self.board.width * 3), turns=2))
+
+    def test_part_cube_wrap_6_2(self):
+        self.assertEqual((1j, self.board.width * 2), self.check_wrap(1j * (self.board.width * 4 - 1), turns=3))
 
     def test_solution_part_1(self):
         self.assertEqual(36518, day.solve1(self.real_data))
