@@ -34,9 +34,6 @@ class TestDay(unittest.TestCase):
     def test_part_1(self):
         self.assertEqual(6032, day.solve1(self.data))
 
-    def test_part_2(self):
-        self.assertEqual(5031, day.solve2(self.data))
-
     def test_part_cube_wrap_1_6(self):
         self.assertEqual((1, 1j * (3 * self.board.width)), self.check_wrap(self.board.width, turns=1))
 

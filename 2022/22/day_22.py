@@ -36,12 +36,7 @@ class Board:
         self.max_x = max(p.real for p in self.board)
         self.max_y = max(p.imag for p in self.board)
         if self.cube:
-            if (self.max_x + 1) % 4 == 0:
-                self.folding = 1
-                self.width = int(self.max_x + 1)/4
-            elif (self.max_x + 1) % 3 == 0:
-                self.folding = 2
-                self.width = int(self.max_x + 1)/3
+            self.width = int(self.max_x + 1)/3
         while not self.current in self.board:
             self.current += 1
 
@@ -49,146 +44,79 @@ class Board:
         starting, direction = position, self.direction
         if self.cube:
             position += direction
-            # Real data
-            if self.folding == 2:
-                if direction == 1:
-                    if position.imag < self.width:
-                        assert position.real == self.width * 3, "impossible real position"
-                        direction = -1
-                        position = (self.width * 2 - 1) + 1j * (self.width * 3 - 1 - position.imag)
-                    elif position.imag < 2 * self.width:
-                        assert position.real == self.width * 2, "impossible real position"
-                        direction = -1j
-                        position = (self.width * 1 + position.imag) + 1j * (self.width * 1 - 1)
-                    elif position.imag < 3 * self.width:
-                        assert position.real == self.width * 2, "impossible real position"
-                        direction = -1
-                        position = (self.width * 3 - 1) + 1j * (self.width * 3 - 1 - position.imag)
-                    elif position.imag < 4 * self.width:
-                        assert position.real == self.width * 1, "impossible real position"
-                        direction = -1j
-                        position = (-self.width * 2 + position.imag) + 1j * (self.width * 3 - 1)
-                    else:
-                        assert False, "impossible position"
-                elif direction == -1:
-                    if position.imag < self.width:
-                        assert position.real == self.width * 1 - 1, "impossible real position"
-                        direction = 1
-                        position = 0 + 1j * (self.width * 3 - 1 - position.imag)
-                    elif position.imag < 2 * self.width:
-                        assert position.real == self.width * 1 - 1, "impossible real position"
-                        direction = 1j
-                        position = (-self.width * 1 + position.imag) + 1j * (self.width * 2)
-                    elif position.imag < 3 * self.width:
-                        assert position.real == self.width * 0 - 1, "impossible real position"
-                        direction = 1
-                        position = (self.width * 1) + 1j * (self.width * 3 - 1 - position.imag)
-                    elif position.imag < 4 * self.width:
-                        assert position.real == self.width * 0 - 1, "impossible real position"
-                        direction = 1j
-                        position = (-self.width * 2 + position.imag) + 1j * (self.width * 0)
-                    else:
-                        assert False, "impossible position"
-                elif direction == 1j:
-                    if position.real < self.width:
-                        assert position.imag == self.width * 4, "impossible imag position"
-                        direction = 1j
-                        position = (self.width * 2 + position.real) + 1j * (self.width * 0)
-                    elif position.real < 2 * self.width:
-                        assert position.imag == self.width * 3, "impossible imag position"
-                        direction = -1
-                        position = (self.width * 1 - 1) + 1j * (self.width * 2 + position.real)
-                    elif position.real < 3 * self.width:
-                        assert position.imag == self.width * 1, "impossible imag position"
-                        direction = -1
-                        position = (self.width * 2 - 1) + 1j * (-self.width * 1 + position.real)
-                    else:
-                        assert False, "impossible position"
-                elif direction == -1j:
-                    if position.real < self.width:
-                        assert position.imag == self.width * 2 - 1, "impossible imag position"
-                        direction = 1
-                        position = (self.width * 1) + 1j * (self.width * 1 + position.real)
-                    elif position.real < 2 * self.width:
-                        assert position.imag == self.width * 0 - 1, "impossible imag position"
-                        direction = 1
-                        position = (self.width * 0) + 1j * (self.width * 2 + position.real)
-                    elif position.real < 3 * self.width:
-                        assert position.imag == self.width * 0 - 1, "impossible imag position"
-                        direction = -1j
-                        position = (-self.width * 2 + position.real) + 1j * (self.width * 4 - 1)
-                    else:
-                        assert False, "impossible position"
-            # Example data
-            elif self.folding == 1:
-                if direction == 1:
-                    if position.imag < self.width:
-                        assert position.real == self.width * 3, "impossible real position"
-                        direction = -1
-                        position = (self.width * 4 - 1) + 1j * (self.width * 3 - 1 - position.imag)
-                    elif position.imag < 2 * self.width:
-                        assert position.real == self.width * 3, "impossible real position"
-                        direction = 1j
-                        position = (self.width * 5 - 1 - position.imag) + 1j * (self.width * 2)
-                    elif position.imag < 3 * self.width:
-                        assert position.real == self.width * 4, "impossible real position"
-                        direction = -1
-                        position = (self.width * 3 - 1) + 1j * (-self.width * 3 + 1 + position.imag)
-                    else:
-                        assert False, "impossible position"
-                elif direction == -1:
-                    if position.imag < self.width:
-                        assert position.real == self.width * 2 - 1, "impossible real position"
-                        direction = 1j
-                        position = (self.width + position.imag) + 1j * (self.width + 1)
-                    elif position.imag < 2 * self.width:
-                        assert position.real == - 1, "impossible real position"
-                        direction = -1j
-                        position = (self.width * 5 - 1 - position.imag) + 1j * (self.width * 3 - 1)
-                    elif position.imag < 3 * self.width:
-                        assert position.real == self.width * 2 - 1, "impossible real position"
-                        direction = -1j
-                        position = (self.width * 4 - 1 - position.imag) + 1j * (self.width * 2 - 1)
-                    else:
-                        assert False, "impossible position"
-                elif direction == 1j:
-                    if position.real < self.width:
-                        assert position.imag == self.width * 2, "impossible imag position"
-                        direction = -1j
-                        position = (self.width * 2 + position.real) + 1j * (self.width * 0)
-                    elif position.real < 2 * self.width:
-                        assert position.imag == self.width * 2, "impossible imag position"
-                        direction = 1
-                        position = self.width * 2 + 1j * (self.width * 4 - 1 - position.real)
-                    elif position.real < 3 * self.width:
-                        assert position.imag == self.width * 3, "impossible imag position"
-                        direction = -1j
-                        position = self.width * 3 - 1 - position.real + 1j * (self.width * 2 - 1)
-                    elif position.real < 4 * self.width:
-                        assert position.imag == self.width * 3, "impossible imag position"
-                        direction = 1
-                        position = 0 + 1j * (self.width * 4 - 1 - position.real)
-                    else:
-                        assert False, "impossible position"
-                elif direction == -1j:
-                    if position.real < self.width:
-                        assert position.imag == self.width - 1, "impossible imag position"
-                        direction = 1j
-                        position = self.width * 3 - 1 - position.real + 1j * (0)
-                    elif position.real < 2 * self.width:
-                        assert position.imag == self.width - 1, "impossible imag position"
-                        direction = 1
-                        position = self.width * 2 + 1j * (position.real - self.width)
-                    elif position.real < 3 * self.width:
-                        assert position.imag == -1, "impossible imag position"
-                        direction = 1j
-                        position = self.width * 3 - 1 - position.real + 1j * (self.width - 1)
-                    elif position.real < 4 * self.width:
-                        assert position.imag == self.width * 2 - 1, "impossible imag position"
-                        direction = -1
-                        position = self.width * 3 - 1 + 1j * (self.width * 4 - 1 - position.real)
-                    else:
-                        assert False, "impossible position"
+            # Real data is folded
+            #  AB
+            #  C
+            # DE
+            # F
+            if direction == 1:
+                if position.imag < self.width:
+                    assert position.real == self.width * 3, "impossible real position"
+                    direction = -1
+                    position = (self.width * 2 - 1) + 1j * (self.width * 3 - 1 - position.imag)
+                elif position.imag < 2 * self.width:
+                    assert position.real == self.width * 2, "impossible real position"
+                    direction = -1j
+                    position = (self.width * 1 + position.imag) + 1j * (self.width * 1 - 1)
+                elif position.imag < 3 * self.width:
+                    assert position.real == self.width * 2, "impossible real position"
+                    direction = -1
+                    position = (self.width * 3 - 1) + 1j * (self.width * 3 - 1 - position.imag)
+                elif position.imag < 4 * self.width:
+                    assert position.real == self.width * 1, "impossible real position"
+                    direction = -1j
+                    position = (-self.width * 2 + position.imag) + 1j * (self.width * 3 - 1)
+                else:
+                    assert False, "impossible position"
+            elif direction == -1:
+                if position.imag < self.width:
+                    assert position.real == self.width * 1 - 1, "impossible real position"
+                    direction = 1
+                    position = 0 + 1j * (self.width * 3 - 1 - position.imag)
+                elif position.imag < 2 * self.width:
+                    assert position.real == self.width * 1 - 1, "impossible real position"
+                    direction = 1j
+                    position = (-self.width * 1 + position.imag) + 1j * (self.width * 2)
+                elif position.imag < 3 * self.width:
+                    assert position.real == self.width * 0 - 1, "impossible real position"
+                    direction = 1
+                    position = (self.width * 1) + 1j * (self.width * 3 - 1 - position.imag)
+                elif position.imag < 4 * self.width:
+                    assert position.real == self.width * 0 - 1, "impossible real position"
+                    direction = 1j
+                    position = (-self.width * 2 + position.imag) + 1j * (self.width * 0)
+                else:
+                    assert False, "impossible position"
+            elif direction == 1j:
+                if position.real < self.width:
+                    assert position.imag == self.width * 4, "impossible imag position"
+                    direction = 1j
+                    position = (self.width * 2 + position.real) + 1j * (self.width * 0)
+                elif position.real < 2 * self.width:
+                    assert position.imag == self.width * 3, "impossible imag position"
+                    direction = -1
+                    position = (self.width * 1 - 1) + 1j * (self.width * 2 + position.real)
+                elif position.real < 3 * self.width:
+                    assert position.imag == self.width * 1, "impossible imag position"
+                    direction = -1
+                    position = (self.width * 2 - 1) + 1j * (-self.width * 1 + position.real)
+                else:
+                    assert False, "impossible position"
+            elif direction == -1j:
+                if position.real < self.width:
+                    assert position.imag == self.width * 2 - 1, "impossible imag position"
+                    direction = 1
+                    position = (self.width * 1) + 1j * (self.width * 1 + position.real)
+                elif position.real < 2 * self.width:
+                    assert position.imag == self.width * 0 - 1, "impossible imag position"
+                    direction = 1
+                    position = (self.width * 0) + 1j * (self.width * 2 + position.real)
+                elif position.real < 3 * self.width:
+                    assert position.imag == self.width * 0 - 1, "impossible imag position"
+                    direction = -1j
+                    position = (-self.width * 2 + position.real) + 1j * (self.width * 4 - 1)
+                else:
+                    assert False, "impossible position"
             assert position in self.board, "outside position"
             while True:
                 if position in self.board:
