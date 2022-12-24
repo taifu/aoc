@@ -62,7 +62,7 @@ class Valley:
                 xy = xy.real + 1j
             next_winds.add((xy, wind))
             occupied.add(xy)
-        return frozenset(next_winds), frozenset(occupied)
+        return next_winds, occupied
 
     def inside(self, pos):
         return (pos.real > 0 and pos.real < self.width - 1 and pos.imag > 0 and pos.imag < self.height - 1)
