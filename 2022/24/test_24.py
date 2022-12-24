@@ -18,11 +18,13 @@ class TestDay(unittest.TestCase):
     def test_part_1(self):
         self.assertEqual(18, day.solve1(self.data))
 
-    def _test_part_2(self):
-        self.assertEqual(20, day.solve2(self.data))
+    def test_part_2(self):
+        self.assertEqual(54, day.solve2(self.data))
 
+    @pytest.mark.slow
     def test_solution_part_1(self):
         self.assertEqual(326, day.solve1(self.real_data))
 
-    def _test_solution_part_2(self):
-        self.assertEqual(1049, day.solve2(self.real_data))
+    @pytest.mark.slow
+    def test_solution_part_2(self):
+        self.assertEqual(976, day.solve2(self.real_data))
