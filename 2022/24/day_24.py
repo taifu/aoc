@@ -14,15 +14,21 @@ class Valley:
         self.starting_winds = set()
         self.width = self.height = 1
         for xy, wind  in load(data).items():
-            self.width = max(self.width, xy.real + 1)
-            self.height = max(self.height, xy.imag + 1)
+            self.width = int(max(self.width, xy.real + 1))
+            self.height = int(max(self.height, xy.imag + 1))
             if wind not in (None, 0):
                 self.starting_winds.add((xy, wind))
         self.enter = 1
         self.exit = self.width - 2 + 1j * (self.height - 1)
 
-    def draw(self, positions, winds):
-        print()
+    def draw(self, positions, winds, first=False):
+        MASK = "\033[{0};1m"
+        GREEN = MASK.format("32")
+        YELLOW = MASK.format("33")
+        CYAN = MASK.format("36")
+        if first:
+            print("\033[2J")
+        print("\033[0;0H\033[0m")
         summed_winds = defaultdict(list)
         for xy, wind in winds:
             summed_winds[xy].append(wind)
@@ -31,19 +37,19 @@ class Valley:
             for x in range(self.width):
                 xy = x + 1j * y
                 if xy in positions:
-                    line += "E"
+                    line += YELLOW + "E"
                 elif xy in (self.enter, self.exit):
-                    line += "."
+                    line += GREEN + "."
                 elif xy.real in (0, self.width - 1) or xy.imag in (0, self.height - 1):
-                    line += "#"
+                    line += GREEN + "#"
                 elif xy not in summed_winds:
-                    line += "."
+                    line += GREEN + "."
                 else:
                     xy_winds = summed_winds[xy]
                     if len(xy_winds) > 1:
                         line += str(len(xy_winds))
                     else:
-                        line += {1: '>', -1: '<', -1j: '^', 1j: 'v'}[xy_winds[0]]
+                        line += CYAN + {1: '>', -1: '<', -1j: '^', 1j: 'v'}[xy_winds[0]]
             print(line)
         print()
 
@@ -67,11 +73,13 @@ class Valley:
     def inside(self, pos):
         return (pos.real > 0 and pos.real < self.width - 1 and pos.imag > 0 and pos.imag < self.height - 1)
 
-    def go(self, back_and_forth=False):
-        winds = self.starting_winds.copy()
+    def go(self, back_and_forth=False, drawing=False):
+        winds = self.starting_winds
         positions = set((self.enter,))
         goals = [self.exit, self.enter, self.exit] if back_and_forth else [self.exit]
         step = 0
+        if drawing:
+            self.draw(positions, winds, first=True)
         while True:
             winds, occupied = self.wind_loop(winds)
             next_positions = set()
@@ -91,19 +99,22 @@ class Valley:
                 if going_back:
                     break
             positions = next_positions
+            if drawing:
+                self.draw(positions, winds)
             step += 1
 
 
-def solve1(data):
+def solve1(data, drawing=False):
     return Valley(data).go()
 
 
-def solve2(data):
-    return Valley(data).go(True)
+def solve2(data, drawing=False):
+    return Valley(data).go(back_and_forth=True, drawing=drawing)
 
 
 if __name__ == "__main__":
     import sys
-    data = open((sys.argv + ["input.txt"])[1]).read()
-    print(solve1(data))
-    print(solve2(data))
+    data = open("input.txt").read()
+    drawing = '-d' in sys.argv
+    print(solve1(data, drawing=drawing))
+    print(solve2(data, drawing=drawing))
