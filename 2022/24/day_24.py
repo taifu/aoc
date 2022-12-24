@@ -22,11 +22,20 @@ class Valley:
         self.exit = self.width - 2 + 1j * (self.height - 1)
 
     def draw(self, positions, winds, first=False):
-        MASK = "\033[{0};1m"
-        GREEN = MASK.format("32")
-        YELLOW = MASK.format("33")
-        CYAN = MASK.format("36")
-        WHITE = MASK.format("37")
+        # All Colors
+        #
+        # import sys
+        # for i in range(0, 16):
+        #     for j in range(0, 16):
+        #         code = str(i * 16 + j)
+        #         sys.stdout.write(u"\u001b[38;5;" + code + "m " + code.ljust(4))
+        # print(u"\u001b[0m")
+        #
+        MASK = "\033[38;5;{0}m"
+        GREEN = MASK.format("82")
+        YELLOW = MASK.format("226")
+        CYAN = MASK.format("87")
+        LIGHT_GRAY = MASK.format("246")
         if first:
             print("\033[2J")
         print("\033[0;0H\033[0m")
@@ -38,19 +47,20 @@ class Valley:
             for x in range(self.width):
                 xy = x + 1j * y
                 if xy in positions:
-                    line += WHITE + "E"
+                    line += YELLOW + "E"
                 elif xy in (self.enter, self.exit):
-                    line += GREEN + "."
+                    line += LIGHT_GRAY + "."
                 elif xy.real in (0, self.width - 1) or xy.imag in (0, self.height - 1):
-                    line += YELLOW + "#"
+                    line += GREEN + "#"
                 elif xy not in summed_winds:
-                    line += GREEN + "."
+                    line += LIGHT_GRAY + "."
                 else:
                     xy_winds = summed_winds[xy]
+                    line += LIGHT_GRAY 
                     if len(xy_winds) > 1:
-                        line += CYAN + str(len(xy_winds))
+                        line += str(len(xy_winds))
                     else:
-                        line += CYAN + {1: '>', -1: '<', -1j: '^', 1j: 'v'}[xy_winds[0]]
+                        line += {1: '>', -1: '<', -1j: '^', 1j: 'v'}[xy_winds[0]]
             print(line)
         print()
 
