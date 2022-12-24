@@ -14,23 +14,16 @@ class Elves:
     def __init__(self, elves):
         self.elves = load(elves)
 
-    def draw(self):
-        print()
-        for y in self.range_y:
-            line = f"{y:03} "
-            for x in self.range_x:
-                line += "." if (x + 1j * y) not in self.elves else "#"
-            print(line)
-        print()
+    def _range(self, attr):
+        return range(*(int(func(getattr(elf, attr) for elf in self.elves)) + n for n, func in enumerate((min, max))))
 
     @property
     def range_x(self):
-        return range(int(min(elf.real for elf in self.elves)), int(max(elf.real for elf in self.elves)) + 1)
+        return self._range('real')
 
     @property
     def range_y(self):
-        return range(int(min(elf.imag for elf in self.elves)), int(max(elf.imag for elf in self.elves)) + 1)
-
+        return self._range('imag')
 
     def move(self, rounds=None):
         searches = [(-1j, -1 - 1j, 1 - 1j), (1j, -1 + 1j, 1 + 1j), (-1, -1 + 1j, -1 - 1j), (1, 1 + 1j, 1 - 1j)]
@@ -40,15 +33,16 @@ class Elves:
                 break
             next_elves, moving_elves = set(), defaultdict(list)
             for elf in self.elves:
+                moving = False
                 if any((elf + pos_around) in self.elves for pos_around in (-1 - 1j, -1j, 1 - 1j, -1, 1, -1 + 1j, +1j, 1 + 1j)):
                     for good_search in range(round_ % 4, round_ % 4 + 4):
                         if not any((elf + pos_around) in self.elves for pos_around in searches[good_search % 4]):
                             moving_elves[elf + searches[good_search % 4][0]].append(elf)
+                            moving = True
                             break
-                    else:
-                        next_elves.add(elf)
-                else:
+                if not moving:
                     next_elves.add(elf)
+
             for moving_elf, how_many in moving_elves.items():
                 if len(how_many) > 1:
                     for elf in how_many:
