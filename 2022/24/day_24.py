@@ -58,7 +58,7 @@ class Valley:
                     line += LIGHT_GRAY + "."
                 else:
                     xy_winds = summed_winds[xy]
-                    line += LIGHT_GRAY 
+                    line += LIGHT_GRAY
                     if len(xy_winds) > 1:
                         line += str(len(xy_winds))
                     else:
