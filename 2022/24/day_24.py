@@ -26,6 +26,7 @@ class Valley:
         GREEN = MASK.format("32")
         YELLOW = MASK.format("33")
         CYAN = MASK.format("36")
+        WHITE = MASK.format("37")
         if first:
             print("\033[2J")
         print("\033[0;0H\033[0m")
@@ -37,17 +38,17 @@ class Valley:
             for x in range(self.width):
                 xy = x + 1j * y
                 if xy in positions:
-                    line += YELLOW + "E"
+                    line += WHITE + "E"
                 elif xy in (self.enter, self.exit):
                     line += GREEN + "."
                 elif xy.real in (0, self.width - 1) or xy.imag in (0, self.height - 1):
-                    line += GREEN + "#"
+                    line += YELLOW + "#"
                 elif xy not in summed_winds:
                     line += GREEN + "."
                 else:
                     xy_winds = summed_winds[xy]
                     if len(xy_winds) > 1:
-                        line += str(len(xy_winds))
+                        line += CYAN + str(len(xy_winds))
                     else:
                         line += CYAN + {1: '>', -1: '<', -1j: '^', 1j: 'v'}[xy_winds[0]]
             print(line)
