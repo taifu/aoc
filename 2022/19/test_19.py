@@ -19,6 +19,7 @@ Blueprint 30: Each ore robot costs 4 ore. Each clay robot costs 4 ore. Each obsi
     def test_part_1(self):
         self.assertEqual(33, day.solve1(self.data))
 
+    @pytest.mark.slow
     def test_part_test_euristic(self):
         self.assertEqual(11, day.Blueprint(day.load(self.data_2)[0]).best(24))
         self.assertEqual(7, day.Blueprint(day.load(self.data_2)[1]).best(24))

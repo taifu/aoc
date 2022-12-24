@@ -25,5 +25,6 @@ class TestDay(unittest.TestCase):
     def test_solution_part_1(self):
         self.assertEqual(7225, day.solve1(self.real_data))
 
+    @pytest.mark.slow
     def test_solution_part_2(self):
         self.assertEqual(548634267428, day.solve2(self.real_data))
