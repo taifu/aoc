@@ -10,11 +10,7 @@ def to_snafu(number):
 
 
 def from_snafu(number5):
-    number, p5 = 0, 1
-    for digit in number5[::-1]:
-        number += p5 * {'2': 2, '1': 1, '0': 0, '-': -1, '=': -2}[digit]
-        p5 *= 5
-    return number
+    return sum(5**n * {'2': 2, '1': 1, '0': 0, '-': -1, '=': -2}[digit] for n, digit in enumerate(number5[::-1]))
 
 
 def solve1(data):
