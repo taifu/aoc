@@ -2,15 +2,13 @@ def to_snafu(number):
     number5 = ""
     while number:
         remainder = number % 5
-        number5 = {2: '2', 1: '1', 0: '0', 3: '=', 4: '-'}[remainder] + number5
-        if remainder > 2:
-            number += 5
-        number = (number - remainder) // 5
+        number5 = ['0', '1', '2', '=', '-'][remainder] + number5
+        number = (number - remainder + (5 if remainder > 2 else 0)) // 5
     return number5
 
 
 def from_snafu(number5):
-    return sum(5**n * {'2': 2, '1': 1, '0': 0, '-': -1, '=': -2}[digit] for n, digit in enumerate(number5[::-1]))
+    return sum(5**n * ({'-': -1, '=': -2}.get(digit) or int(digit)) for n, digit in enumerate(number5[::-1]))
 
 
 def solve1(data):
