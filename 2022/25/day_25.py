@@ -14,7 +14,7 @@ def from_snafu(number5):
 
 
 def solve1(data):
-    return to_snafu(sum(from_snafu(number5) for number5 in data.split('\n')))
+    return to_snafu(sum(map(from_snafu, data.split('\n'))))
 
 
 if __name__ == "__main__":
