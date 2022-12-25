@@ -1,10 +1,10 @@
 def to_snafu(number):
-    number5 = ""
+    snafu = ""
     while number:
         remainder = number % 5
-        number5 = ['0', '1', '2', '=', '-'][remainder] + number5
+        snafu = ['0', '1', '2', '=', '-'][remainder] + snafu
         number = (number - remainder + (5 if remainder > 2 else 0)) // 5
-    return number5
+    return snafu
 
 
 def from_snafu(number5):
