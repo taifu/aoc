@@ -48,6 +48,7 @@ def solve2(data):
 
 
 if __name__ == "__main__":
-    data = open("input.txt").read()
+    import sys
+    data = open((sys.argv + ["input.txt"])[1]).read()
     print(solve1(data))
     print(solve2(data))
