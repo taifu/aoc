@@ -36,7 +36,8 @@ def solve2(data):
         for op, find, get_posdigit in ((gt, "index", 0), (lt, "rindex", 1)):
             posdigit = firstlastdigit(line)[get_posdigit]
             found = None
-            for digit, spell in ((1, "one"), (2, "two"), (3, "three"), (4, "four"), (5, "five"), (6, "six"), (7, "seven"), (8, "eight"), (9, "nine")):
+            for digit, spell in enumerate(("one", "two", "three", "four", "five", "six", "seven", "eight", "nine")):
+                digit += 1
                 try:
                     pos = getattr(line, find)(spell)
                     if found is None or op(found[0], pos):
