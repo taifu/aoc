@@ -30,4 +30,3 @@ if __name__ == "__main__":
     data = open("input.txt").read()
     print(solve1(data))
     print(solve2(data))
-    print(solve2("oneight"))
