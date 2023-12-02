@@ -41,7 +41,7 @@ def solve1(data):
 
 
 def solve2(data):
-    return sum(game.power() for _, game in load(data).items())
+    return sum(game.power() for game in load(data).values())
 
 
 if __name__ == "__main__":
