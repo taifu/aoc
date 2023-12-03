@@ -5,7 +5,7 @@ Lines: TypeAlias = list[str]
 
 
 def load(data: str) -> Lines:
-    return data.strip().split("\n")
+    return data.splitlines()
 
 
 def count(lines: Lines, spelt: bool = False) -> int:

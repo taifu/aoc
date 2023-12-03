@@ -32,7 +32,7 @@ class Game:
 
 def load(data: str) -> dict[int, Game]:
     games = {}
-    for line in data.strip().split("\n"):
+    for line in data.splitlines():
         parts = line.split(":")
         id_ = int(parts[0].split()[1])
         games[id_] = Game([Move(raw) for raw in parts[1].split(";")])

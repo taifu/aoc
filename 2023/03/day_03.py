@@ -58,7 +58,7 @@ class Schema:
 
 
 def load(data: str) -> Schema:
-    map = [list(line) for line in data.strip().split("\n")]
+    map = [list(line) for line in data.splitlines()]
     height, width = len(map), len(map[0])
     return Schema(map, height, width)
 
