@@ -1,8 +1,14 @@
-def load(data):
+from typing import TypeAlias
+
+
+Lines: TypeAlias = list[str]
+
+
+def load(data: str) -> Lines:
     return data.strip().split("\n")
 
 
-def count(lines, spelt=False):
+def count(lines: Lines, spelt: bool = False) -> int:
     tot = 0
     for line in lines:
         digits = []
@@ -18,11 +24,11 @@ def count(lines, spelt=False):
     return tot
 
 
-def solve1(data):
+def solve1(data: str) -> int:
     return count(load(data))
 
 
-def solve2(data):
+def solve2(data: str) -> int:
     return count(load(data), True)
 
 
