@@ -14,10 +14,10 @@ class Card:
         return int(2**(self.wins - 1)) if self.wins else 0
 
 
-class Cards:
+class Deck:
     def __init__(self, data: str) -> None:
-        cards = [Card(line) for line in data.splitlines()]
-        self.deck = dict((card._id, card) for card in cards)
+        self.cards = dict((card._id, card) for card in
+                          [Card(line) for line in data.splitlines()])
         self.cache: dict[int, int] = {}
 
     def count(self, card: Card) -> int:
@@ -25,19 +25,19 @@ class Cards:
             return self.cache[card._id]
         except KeyError:
             key = card._id
-            tot = 1 + sum(self.count(self.deck[id_])
+            tot = 1 + sum(self.count(self.cards[id_])
                           for id_ in range(card._id + 1, card._id + card.wins + 1))
             self.cache[key] = tot
             return tot
 
 
 def solve1(data: str) -> int:
-    return sum(card.value for card in Cards(data).deck.values())
+    return sum(card.value for card in Deck(data).cards.values())
 
 
 def solve2(data: str) -> int:
-    cards = Cards(data)
-    return sum(cards.count(card) for card in cards.deck.values())
+    deck = Deck(data)
+    return sum(deck.count(card) for card in deck.cards.values())
 
 
 if __name__ == "__main__":
