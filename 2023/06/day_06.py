@@ -1,8 +1,5 @@
 from math import sqrt, floor, ceil, prod
 from dataclasses import dataclass
-from typing import TypeAlias, List
-
-Mapping: TypeAlias = List[List[int]]
 
 
 @dataclass
