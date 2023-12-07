@@ -31,10 +31,7 @@ class Hand:
             elif counter.most_common()[0][1] > counter.most_common()[1][1]:
                 highest = counter.most_common()[0][0]
             else:
-                if self.index(cards[0]) > self.index(cards[1]):
-                    highest = cards[0]
-                else:
-                    highest = cards[1]
+                highest = cards[0 if self.index(cards[0]) > self.index(cards[1]) else 1]
             cards += highest * jolly
         return cards
 
