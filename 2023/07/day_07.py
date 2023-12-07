@@ -1,4 +1,3 @@
-from typing import List, Any
 from collections import Counter
 
 
@@ -11,8 +10,11 @@ class Hand:
         self.cards = self.arrange(_cards) if part2 else _cards
         self.rank = self.identify()
 
-    def order(self, cards: str) -> List[int]:
-        return [self.indexed.index(card) for card in cards]
+    def index(self, card: str) -> list[int]:
+        return self.indexed.index(card)
+
+    def order(self, cards: str) -> list[int]:
+        return [self.index(card) for card in cards]
 
     def arrange(self, cards: str) -> str:
         jolly = cards.count('J')
@@ -29,35 +31,27 @@ class Hand:
             elif counter.most_common()[0][1] > counter.most_common()[1][1]:
                 highest = counter.most_common()[0][0]
             else:
-                if self.order(counter.most_common()[0][0]) > self.order(counter.most_common()[1][0]):
-                    highest = counter.most_common()[0][0]
+                if self.index(cards[0]) > self.index(cards[1]):
+                    highest = cards[0]
                 else:
-                    highest = counter.most_common()[1][0]
+                    highest = cards[1]
             cards += highest * jolly
         return cards
 
     def identify(self) -> int:
         counter = Counter(self.cards)
-        if len(counter) == 5:
-            return 1
-        elif len(counter) == 4:
-            return 2
-        elif len(counter) == 3:
-            if counter.most_common()[0][1] == 3:
-                return 4
-            else:
-                return 3
-        elif len(counter) == 2:
-            if counter.most_common()[0][1] == 3:
-                return 5
-            else:
-                return 6
-        return 7
+        rank2 = 10 - 2 * len(counter)
+        # Tris or two pair
+        if rank2 == 4 and counter.most_common()[0][1] != 3:
+            rank2 -= 1
+        # Full house or Poker
+        elif rank2 == 6 and counter.most_common()[0][1] != 3:
+            rank2 += 1
+        return rank2
 
-    def __eq__(self, obj: Any) -> bool:
-        return bool(self.cards == obj.cards)
-
-    def __lt__(self, obj: Any) -> bool:
+    def __lt__(self, obj: object) -> bool:
+        if not isinstance(obj, Hand):
+            return NotImplemented
         if self.rank == obj.rank:
             return bool(self.ordered < obj.ordered)
         return bool(self.rank < obj.rank)
