@@ -1,7 +1,5 @@
-from typing import TypeAlias, List, Any
+from typing import List, Any
 from collections import Counter
-
-Mapping: TypeAlias = List[List[int]]
 
 
 class Hand:
