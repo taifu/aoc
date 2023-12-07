@@ -18,12 +18,9 @@ class Hand:
 
     def arrange(self, cards: str) -> str:
         jolly = cards.count('J')
-        if jolly == 5:
-            return 'JJJJJ'
-        if jolly > 0:
+        if 0 < jolly < 5:
             cards = cards.replace('J', '')
-            counter = Counter(cards)
-            order = self.order(cards)
+            counter, order = Counter(cards), self.order(cards)
             if counter.most_common()[0][1] == 4 or len(counter) == 1:
                 highest = cards[0]
             elif counter.most_common()[0][1] == 1:
