@@ -1,14 +1,13 @@
-from math import gcd
+from math import lcm
 
 
 class Map:
     def __init__(self, data: str):
-        self.graph: dict[str, dict[str, str]] = {}
         lines = data.splitlines()
+        self.graph: dict[str, dict[str, str]] = {}
         self.directions: list[str] = list(lines[0])
         for line in lines[2:]:
-            parts = line.replace('(', '').replace(')', '').replace(',', '').replace('=', '').split()
-            self.graph[parts[0]] = {'L': parts[1], 'R': parts[2]}
+            self.graph[line[0:3]] = {'L': line[7:10], 'R': line[12:15]}
 
     def steps(self, start_from: str = 'AAA', ends: list[str] = ['ZZZ']) -> int:
         count, start = 0, start_from
@@ -22,10 +21,7 @@ class Map:
         ends: list[str] = [end for end in self.graph.keys() if end[-1] == 'Z']
         for start in starts:
             counts.append(self.steps(start, ends))
-        mcm = 1
-        for count in counts:
-            mcm = mcm * count // gcd(mcm, count)
-        return mcm
+        return lcm(*counts)
 
 
 def solve1(data: str) -> int:
