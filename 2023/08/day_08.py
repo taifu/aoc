@@ -10,17 +10,18 @@ class Map:
             parts = line.replace('(', '').replace(')', '').replace(',', '').replace('=', '').split()
             self.graph[parts[0]] = {'L': parts[1], 'R': parts[2]}
 
-    def steps(self, start_from: str = 'AAA', all_Z: bool = False) -> int:
+    def steps(self, start_from: str = 'AAA', ends: list[str] = ['ZZZ']) -> int:
         count, start = 0, start_from
-        while (all_Z and start[-1] != 'Z') or (not all_Z and start != 'ZZZ'):
+        while start not in ends:
             start = self.graph[start][self.directions[count % len(self.directions)]]
             count += 1
         return count
 
     def steps_all(self) -> int:
         counts, starts = [], [start for start in self.graph.keys() if start[-1] == 'A']
+        ends: list[str] = [end for end in self.graph.keys() if end[-1] == 'Z']
         for start in starts:
-            counts.append(self.steps(start, True))
+            counts.append(self.steps(start, ends))
         mcm = 1
         for count in counts:
             mcm = mcm * count // gcd(mcm, count)
