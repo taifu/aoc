@@ -43,19 +43,19 @@ class Maze:
             if loop[-1] == self.start:
                 return loop[:-1]
 
-    def flood_fill(self, borders: list[complex], brick: set[complex]) -> set[complex]:
+    def flood_fill(self, borders: list[complex], wall: set[complex]) -> set[complex]:
         cells = deque(borders)
+        seen = set(wall)
         filled = set()
-        seen = set()
         while cells:
             cell = cells.popleft()
-            if cell in brick:
+            if cell in wall:
                 continue
             for cell in self.around(cell, factor=2):
                 if cell in seen:
                     continue
                 seen.add(cell)
-                if cell not in brick and cell not in filled:
+                if cell not in wall and cell not in filled:
                     filled.add(cell)
                     cells.append(cell)
         return filled
@@ -81,7 +81,7 @@ class Maze:
             1 for cell in filled if cell.real % 2 == 0 and cell.imag % 2 == 0))
 
     def farthest(self, part2: bool = False) -> int:
-        return self.loop(self.start) // 2
+        return len(self.loop(self.start)) // 2
 
 
 def solve1(data: str) -> int:
