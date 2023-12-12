@@ -10,7 +10,7 @@ class Hand:
         self.cards = self.arrange(_cards) if part2 else _cards
         self.rank = self.identify()
 
-    def index(self, card: str) -> list[int]:
+    def index(self, card: str) -> int:
         return self.indexed.index(card)
 
     def order(self, cards: str) -> list[int]:

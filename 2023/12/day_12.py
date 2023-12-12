@@ -4,9 +4,9 @@ class Row:
         self.springs = list(parts[0] + '.')
         self.length = len(self.springs)
         self.damaged = [int(p) for p in parts[1].split(',')]
-        self.cache = {}
+        self.cache: dict[tuple[int, int], int] = {}
 
-    def arrangements(self, which=0, pos=0):
+    def arrangements(self, which: int = 0, pos: int = 0) -> int:
         key = (which, pos)
         try:
             return self.cache[key]
@@ -32,13 +32,13 @@ class Row:
 
 
 class Field:
-    def __init__(self, data: str, mult=1):
+    def __init__(self, data: str, mult: int = 1):
         self.rows = []
         for line in data.splitlines():
             parts = line.split(' ')
             self.rows.append(Row('?'.join([parts[0]] * mult) + ' ' + ','.join([parts[1]] * mult)))
 
-    def arrangements(self):
+    def arrangements(self) -> int:
         return sum(row.arrangements() for row in self.rows)
 
 
