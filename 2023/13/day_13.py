@@ -24,21 +24,13 @@ class Pattern:
         return 0
 
 
-class Notes:
-    def __init__(self, data: str):
-        self.patterns = [Pattern(raw) for raw in data.strip().split('\n\n')]
-
-    def total(self, part2: bool = False) -> int:
-        return sum(pattern.reflection(col=True, part2=part2) + 100 * pattern.reflection(col=False, part2=part2)
-                   for pattern in self.patterns)
-
-
-def solve1(data: str) -> int:
-    return Notes(data).total()
+def solve1(data: str, part2: bool = False) -> int:
+    return sum(pattern.reflection(col=True, part2=part2) + 100 * pattern.reflection(col=False, part2=part2)
+               for pattern in [Pattern(raw) for raw in data.strip().split('\n\n')])
 
 
 def solve2(data: str) -> int:
-    return Notes(data).total(True)
+    return solve1(data, True)
 
 
 if __name__ == "__main__":
