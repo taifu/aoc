@@ -59,9 +59,7 @@ class Mirror:
         return sum((self.height - y) if char == 'O' else 0 for y, row in enumerate(self.map) for char in row)
 
     def cycle(self, cycles):
-        cache = []
-        loads = []
-        n = 0
+        cache, loads, n = [], [], 0
         while n < cycles:
             for direction in ((0, -1), (-1, 0), (0, 1), (1, 0)):
                 self.tilt(direction)
@@ -69,10 +67,10 @@ class Mirror:
             loads.append(self.load())
             if key in cache:
                 break
-            n += 1
             cache.append(key)
-        found = cache.index(key) + 1
-        return loads[(cycles - found) % (len(cache) - found + 1) + found - 1]
+            n += 1
+        found = cache.index(key)
+        return loads[(cycles - found - 1) % (len(cache) - found) + found]
 
 
 def solve1(data: str, part2: bool = False) -> int:
