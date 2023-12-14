@@ -1,6 +1,5 @@
-import unittest
 import os
-
+import unittest
 day = __import__('day_' + __file__[-5:-3])
 
 

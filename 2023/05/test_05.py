@@ -1,10 +1,12 @@
+import os
 import unittest
 day = __import__('day_' + __file__[-5:-3])
 
 
 class TestDay(unittest.TestCase):
     def setUp(self) -> None:
-        self.data = """seeds: 79 14 55 13
+        self.data = open(os.path.dirname(__file__) + "/input.txt").read()
+        self.data_example = """seeds: 79 14 55 13
 
 seed-to-soil map:
 50 98 2
@@ -40,13 +42,11 @@ humidity-to-location map:
 """
 
     def test_part_1(self) -> None:
-        self.assertEqual(35, day.solve1(self.data))
+        self.assertEqual(35, day.solve1(self.data_example))
 
     def test_part_2(self) -> None:
-        self.assertEqual(46, day.solve2(self.data))
+        self.assertEqual(46, day.solve2(self.data_example))
 
     def test_solution(self) -> None:
-        import os
-        data = open(os.path.dirname(__file__) + "/input.txt").read()
-        self.assertEqual(day.solve1(data), 621354867)
-        self.assertEqual(day.solve2(data), 15880236)
+        self.assertEqual(day.solve1(self.data), 621354867)
+        self.assertEqual(day.solve2(self.data), 15880236)
