@@ -1,64 +1,42 @@
-from collections import deque
-
-
 class Mirror:
     def __init__(self, raw: str):
         self.map = [list(line) for line in raw.splitlines()]
         self.height, self.width = len(self.map), len(self.map[0])
 
-    def orders(self, direction):
-        if direction.imag != 0:
-            getter = self.imag
-            limit = self.height
-        else:
-            getter = self.real
-            limit = self.width
-        return limit, getter
-
-    def show(self):
+    def show(self) -> None:
         print()
         for row in self.map:
             print(''.join(row))
         print()
 
-    def tilt(self, direction):
+    def tilt(self, direction: tuple[int, int]) -> "Mirror":
         inc_x, inc_y = direction
         # North/South
         if inc_x == 0:
-            range_x = range(self.width)
-            range_y = range(self.height) if inc_y < 0 else range(self.height - 1, -1, -1)
-            for x in range_x:
-                delta = 0
-                for y in range_y:
-                    char = self.map[y][x]
-                    if char == '.':
-                        delta += 1
-                    elif char == '#':
-                        delta = 0
-                    elif char == 'O' and delta:
-                        self.map[y - (-inc_y) * delta][x] = 'O'
-                        self.map[y][x] = '.'
+            range_outside = range(self.width)
+            range_inside = range(self.height) if inc_y < 0 else range(self.height - 1, -1, -1)
         # East/West
         else:
-            range_x = range(self.width) if inc_x < 0 else range(self.width - 1, -1, -1)
-            range_y = range(self.height)
-            for y in range_y:
-                delta = 0
-                for x in range_x:
-                    char = self.map[y][x]
-                    if char == '.':
-                        delta += 1
-                    elif char == '#':
-                        delta = 0
-                    elif char == 'O' and delta:
-                        self.map[y][x - (-inc_x) * delta] = 'O'
-                        self.map[y][x] = '.'
+            range_outside = range(self.height)
+            range_inside = range(self.width) if inc_x < 0 else range(self.width - 1, -1, -1)
+        for coord1 in range_outside:
+            delta = 0
+            for coord2 in range_inside:
+                x, y = (coord1, coord2) if inc_x == 0 else (coord2, coord1)
+                char = self.map[y][x]
+                if char == '.':
+                    delta += 1
+                elif char == '#':
+                    delta = 0
+                elif char == 'O' and delta:
+                    self.map[y - (-inc_y) * delta][x - (-inc_x) * delta] = 'O'
+                    self.map[y][x] = '.'
         return self
 
-    def load(self):
+    def load(self) -> int:
         return sum((self.height - y) if char == 'O' else 0 for y, row in enumerate(self.map) for char in row)
 
-    def cycle(self, cycles):
+    def cycle(self, cycles: int) -> int:
         cache, loads, n = [], [], 0
         while n < cycles:
             for direction in ((0, -1), (-1, 0), (0, 1), (1, 0)):
@@ -73,7 +51,7 @@ class Mirror:
         return loads[(cycles - found - 1) % (len(cache) - found) + found]
 
 
-def solve1(data: str, part2: bool = False) -> int:
+def solve1(data: str) -> int:
     return Mirror(data).tilt((0, -1)).load()
 
 
