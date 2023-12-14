@@ -17,4 +17,4 @@ class TestDay(unittest.TestCase):
     def test_solution(self) -> None:
         data = open(os.path.dirname(__file__) + "/input.txt").read()
         self.assertEqual(day.solve1(data), 105623)
-        #self.assertEqual(day.solve2(data), 98029)
+        self.assertEqual(day.solve2(data), 98029)

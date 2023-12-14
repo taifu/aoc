@@ -3,21 +3,8 @@ from collections import deque
 
 class Mirror:
     def __init__(self, raw: str):
-        self.rocks = {}
-        self.rolls = []
-        for y, line in enumerate(raw.splitlines()):
-            for x, char in enumerate(line):
-                if char == '#':
-                    self.rocks[complex(x, y)] = True
-                if char == 'O':
-                    self.rolls.append(complex(x, y))
-        self.height, self.width = y + 1, x + 1
-
-    def imag(self, coord):
-        return coord.imag
-
-    def real(self, coord):
-        return coord.real
+        self.map = [list(line) for line in raw.splitlines()]
+        self.height, self.width = len(self.map), len(self.map[0])
 
     def orders(self, direction):
         if direction.imag != 0:
@@ -28,63 +15,68 @@ class Mirror:
             limit = self.width
         return limit, getter
 
-    def tilt(self, direction):
-        limit, getter = self.orders(direction)
-        reverse = True if getter(direction) > 0 else False
-        new_rolls = set()
-        rolls = deque(sorted(self.rolls, key=getter, reverse=reverse))
-        while rolls:
-            next_roll = rolls.popleft()
-            while True:
-                next_roll += direction
-                if not 0 <= getter(next_roll) < limit or next_roll in self.rocks or next_roll in new_rolls or next_roll in rolls:
-                    next_roll -= direction
-                    new_rolls.add(next_roll)
-                    break
-        self.rolls = new_rolls
-
     def show(self):
         print()
-        for y in range(self.height):
-            line = ''
-            for x in range(self.height):
-                if complex(x, y) in self.rocks:
-                    line += '#'
-                elif complex(x, y) in self.rolls:
-                    line += 'O'
-                else:
-                    line += '.'
-            print(line)
+        for row in self.map:
+            print(''.join(row))
         print()
 
-    def load(self, direction):
-        self.tilt(direction)
-        limit, getter = self.orders(direction)
-        return sum(int(limit - getter(roll)) for roll in self.rolls)
+    def tilt(self, direction):
+        inc_x, inc_y = direction
+        # North/South
+        if inc_x == 0:
+            range_x = range(self.width)
+            range_y = range(self.height) if inc_y < 0 else range(self.height - 1, -1, -1)
+            for x in range_x:
+                delta = 0
+                for y in range_y:
+                    char = self.map[y][x]
+                    if char == '.':
+                        delta += 1
+                    elif char == '#':
+                        delta = 0
+                    elif char == 'O' and delta:
+                        self.map[y - (-inc_y) * delta][x] = 'O'
+                        self.map[y][x] = '.'
+        # East/West
+        else:
+            range_x = range(self.width) if inc_x < 0 else range(self.width - 1, -1, -1)
+            range_y = range(self.height)
+            for y in range_y:
+                delta = 0
+                for x in range_x:
+                    char = self.map[y][x]
+                    if char == '.':
+                        delta += 1
+                    elif char == '#':
+                        delta = 0
+                    elif char == 'O' and delta:
+                        self.map[y][x - (-inc_x) * delta] = 'O'
+                        self.map[y][x] = '.'
+        return self
+
+    def load(self):
+        return sum((self.height - y) if char == 'O' else 0 for y, row in enumerate(self.map) for char in row)
 
     def cycle(self, cycles):
-        cache = {}
+        cache = []
+        loads = []
         n = 0
-        limit, getter = self.orders(-1j)
-        found = False
         while n < cycles:
-            pos = tuple(self.rolls)
-            for direction in (-1j, -1, 1j, 1):
+            for direction in ((0, -1), (-1, 0), (0, 1), (1, 0)):
                 self.tilt(direction)
-            new_pos = tuple(self.rolls)
+            key = tuple(''.join(row) for row in self.map)
+            loads.append(self.load())
+            if key in cache:
+                break
             n += 1
-            if pos in cache:
-                if not found:
-                    length = n - cache[pos][0]
-                    n += ((cycles - n) // length) * length
-                    found = True
-            else:
-                cache[pos] = (n, new_pos)
-        return sum(int(limit - getter(roll)) for roll in self.rolls)
+            cache.append(key)
+        found = cache.index(key) + 1
+        return loads[(cycles - found) % (len(cache) - found + 1) + found - 1]
 
 
 def solve1(data: str, part2: bool = False) -> int:
-    return Mirror(data).load(-1j)
+    return Mirror(data).tilt((0, -1)).load()
 
 
 def solve2(data: str) -> int:
