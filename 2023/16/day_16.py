@@ -1,4 +1,4 @@
-from collections import defaultdict, deque
+from collections import defaultdict
 
 
 class Contraption:
@@ -9,9 +9,9 @@ class Contraption:
 
     def energy(self, x: int = -1, y: int = 0, dx: int = 1, dy: int = 0) -> int:
         visited: dict[tuple[int, int], set[tuple[int, int]]] = defaultdict(set)
-        rays = deque(((x, y, dx, dy),))
+        rays = [(x, y, dx, dy)]
         while rays:
-            x, y, dx, dy = rays.popleft()
+            x, y, dx, dy = rays.pop()
             while True:
                 x += dx
                 y += dy
@@ -30,16 +30,10 @@ class Contraption:
                     rays.append((x, y, 0, 1))
                     break
                 elif cell == '/':
-                    if dx != 0:
-                        dx, dy = dy, -dx
-                    else:
-                        dx, dy = -dy, dx
+                    dx, dy = -dy, -dx
                 elif cell == '\\':
-                    if dx != 0:
-                        dx, dy = dy, dx
-                    else:
-                        dx, dy = dy, dx
-        return sum(1 for energy in visited.items() if energy)
+                    dx, dy = dy, dx
+        return len(visited)
 
     def max_energy(self) -> int:
         max_energy = 0
