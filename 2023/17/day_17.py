@@ -1,6 +1,9 @@
-from typing import Generator
+from typing import Generator, TypeAlias
 from collections import defaultdict
 from heapq import heappop, heappush
+
+
+Path: TypeAlias = tuple[tuple[int, int], ...]
 
 
 class Map:
@@ -19,8 +22,8 @@ class Map:
         #  dijkstra
         visited = set()
         min_heat: dict[tuple[int, int, int], int] = {}
-        queue = [(0, 0, 0, -1, ())]
-        path: tuple[tuple[int, int]]
+        queue: list[tuple[int, int, int, int, Path]] = [(0, 0, 0, -1, ())]
+        path: Path = ()
         while queue:
             heat, x, y, direction, path = heappop(queue)
             if (x, y) == (self.width - 1, self.height - 1):
@@ -28,7 +31,7 @@ class Map:
             if (x, y, direction) in visited:
                 continue
             visited.add((x, y, direction))
-            path = path + ((x, y),)
+            path += ((x, y),)
             for plus_heat, nx, ny, next_direction in self.graph.get((x, y), ()):
                 if (nx, ny, next_direction) in visited:
                     continue
