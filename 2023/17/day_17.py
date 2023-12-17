@@ -33,7 +33,7 @@ class Map:
                 if (nx, ny, next_direction) in visited:
                     continue
                 if heat + plus_heat < min_heat.get((nx, ny, next_direction), float("inf")):
-                    min_heat[(x, y, next_direction)] = heat + plus_heat
+                    min_heat[nx, ny, next_direction] = heat + plus_heat
                     heappush(queue, (heat + plus_heat, nx, ny, next_direction))
         raise Exception("Not found")
 
