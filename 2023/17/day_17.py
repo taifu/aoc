@@ -19,24 +19,22 @@ class Map:
         #  dijkstra
         visited = set()
         min_heat: dict[tuple[int, int, int], int] = {}
-        queue: list[tuple[int, int, int, int]] = [(0, 0, 0, -1)]
+        queue: list[tuple[int, int, int, int]] = [(0, 0, 0, 0.5)]
         while queue:
             heat, x, y, direction = heappop(queue)
-            if (x, y) == (self.width - 1, self.height - 1):
-                return heat
             if (x, y, direction) in visited:
                 continue
+            if (x, y) == (self.width - 1, self.height - 1):
+                return heat
             visited.add((x, y, direction))
             for plus_heat, nx, ny, next_direction in self.graph.get((x, y), ()):
+                if next_direction % 2 == direction % 2:
+                    continue
                 if (nx, ny, next_direction) in visited:
                     continue
-                if direction != -1 and next_direction % 2 == direction % 2:
-                    continue
-                prev_heat = min_heat.get((nx, ny, next_direction), float("inf"))
-                next_heat = heat + plus_heat
-                if next_heat < prev_heat:
-                    min_heat[(x, y, next_direction)] = next_heat
-                    heappush(queue, (next_heat, nx, ny, next_direction))
+                if heat + plus_heat < min_heat.get((nx, ny, next_direction), float("inf")):
+                    min_heat[(x, y, next_direction)] = heat + plus_heat
+                    heappush(queue, (heat + plus_heat, nx, ny, next_direction))
         raise Exception("Not found")
 
     def inside(self, x: int, y: int) -> bool:
