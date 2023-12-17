@@ -1,9 +1,6 @@
-from typing import Generator, TypeAlias
+from typing import Generator
 from collections import defaultdict
 from heapq import heappop, heappush
-
-
-Path: TypeAlias = tuple[tuple[int, int], ...]
 
 
 class Map:
@@ -22,26 +19,24 @@ class Map:
         #  dijkstra
         visited = set()
         min_heat: dict[tuple[int, int, int], int] = {}
-        queue: list[tuple[int, int, int, int, Path]] = [(0, 0, 0, -1, ())]
-        path: Path = ()
+        queue: list[tuple[int, int, int, int]] = [(0, 0, 0, -1)]
         while queue:
-            heat, x, y, direction, path = heappop(queue)
+            heat, x, y, direction = heappop(queue)
             if (x, y) == (self.width - 1, self.height - 1):
                 return heat
             if (x, y, direction) in visited:
                 continue
             visited.add((x, y, direction))
-            path += ((x, y),)
             for plus_heat, nx, ny, next_direction in self.graph.get((x, y), ()):
                 if (nx, ny, next_direction) in visited:
                     continue
                 if direction != -1 and next_direction % 2 == direction % 2:
                     continue
-                prev_heat = min_heat.get((nx, ny, direction), float("inf"))
+                prev_heat = min_heat.get((nx, ny, next_direction), float("inf"))
                 next_heat = heat + plus_heat
                 if next_heat < prev_heat:
-                    min_heat[(x, y, direction)] = next_heat
-                    heappush(queue, (next_heat, nx, ny, next_direction, path))
+                    min_heat[(x, y, next_direction)] = next_heat
+                    heappush(queue, (next_heat, nx, ny, next_direction))
         raise Exception("Not found")
 
     def inside(self, x: int, y: int) -> bool:
