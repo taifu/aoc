@@ -1,7 +1,7 @@
 class Plan2:
-    def __init__(self, raw: str, part2=False):
+    def __init__(self, raw: str, part2: bool = False):
         self.vertical_walls = []
-        self.size = [-10e100, 10e100, -10e100, 10e100]
+        self.size = [int(-10e100), int(10e100), int(-10e100), int(10e100)]
         dxy = {'3': (0, -1), '2': (-1, 0), '1': (0, 1), '0': (1, 0)}
         ys = set((0,))
         self.length = 0
@@ -31,11 +31,11 @@ class Plan2:
             last_pos = pos
         self.ys = sorted(ys)
 
-    def vertical_intercepts(self, y0, y1):
+    def vertical_intercepts(self, y0: int, y1: int) -> list[int]:
         return sorted(set([x for wall in self.vertical_walls
                            if wall[1] < y1 and wall[3] > y0 for x in (wall[0], wall[2])]))
 
-    def area(self):
+    def area(self) -> int:
         area = 0
         for y0_slice, y1_slice in zip(self.ys, self.ys[1:]):
             x_slices = self.vertical_intercepts(y0_slice, y1_slice)
