@@ -62,4 +62,4 @@ if __name__ == "__main__":
     import sys
     data = open((sys.argv + ["input.txt"])[1]).read()
     print(solve1(data))
-    #print(solve2(data))
+    print(solve2(data))
