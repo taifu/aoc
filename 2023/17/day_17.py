@@ -19,7 +19,7 @@ class Map:
         #  dijkstra
         visited = set()
         min_heat: dict[tuple[int, int, int], int] = {}
-        queue: list[tuple[int, int, int, int]] = [(0, 0, 0, 0.5)]
+        queue: list[tuple[int, int, int, float]] = [(0, 0, 0, 0.5)]
         while queue:
             heat, x, y, direction = heappop(queue)
             if (x, y, direction) in visited:
