@@ -53,15 +53,17 @@ class Map:
         assert self.width == self.height
         size = self.width
         #
-        #      empty       nw_almost_empty  n_almost_full ne_almost_empty      empty
-        #
-        #  nw_almost_empty nw_almost_full     odd_full    ne_almost_full   ne_almost_empty
-        #
-        #  w_almost_full       odd_full      even_full      odd_full       e_almost_full
-        #
-        #  sw_almost_empty sw_almost_full     odd_full    se_almost_full   se_almost_empty
-        #
-        #      empty       sw_almost_empty  s_almost_full se_almost_empty      empty
+        # ----------------|---------------|--------------|---------------|----------------
+        #      empty      |nw_almost_empty| n_almost_full|ne_almost_empty|     empty
+        # ----------------|---------------|--------------|---------------|----------------
+        #  nw_almost_empty nw_almost_full |   odd_full   |ne_almost_full | ne_almost_empty
+        # ----------------|---------------|--------------|---------------|----------------
+        #  w_almost_full  |    odd_full   |  even_full   |  odd_full     | e_almost_full
+        # ----------------|---------------|--------------|---------------|----------------
+        #  sw_almost_empty|sw_almost_full |   odd_full   |se_almost_full | se_almost_empty
+        # ----------------|---------------|--------------|---------------|----------------
+        #      empty      |sw_almost_empty| s_almost_full|se_almost_empty|     empty
+        # ----------------|---------------|--------------|---------------|----------------
         #
         parity = max_steps % 2
 
