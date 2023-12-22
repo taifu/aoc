@@ -72,6 +72,7 @@ def solve2(data: str) -> int:
 
 
 if __name__ == "__main__":
-    data = open("input.txt").read()
+    import sys, os  # noqa: E401
+    data = open((sys.argv + [os.path.dirname(__file__) + "/input.txt"])[1]).read()
     print(solve1(data))
     print(solve2(data))
