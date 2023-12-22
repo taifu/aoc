@@ -19,6 +19,6 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green
     def test_part_2(self) -> None:
         self.assertEqual(2286, day.solve2(self.data_example))
 
-    def test_solution(self) -> None:
+    def test_solutions(self) -> None:
         self.assertEqual(day.solve1(self.data), 2810)
         self.assertEqual(day.solve2(self.data), 69110)

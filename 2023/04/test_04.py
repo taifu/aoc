@@ -20,6 +20,6 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11
     def test_part_2(self) -> None:
         self.assertEqual(30, day.solve2(self.data_example))
 
-    def test_solution(self) -> None:
+    def test_solutions(self) -> None:
         self.assertEqual(day.solve1(self.data), 23028)
         self.assertEqual(day.solve2(self.data), 9236992)

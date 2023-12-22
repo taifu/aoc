@@ -27,6 +27,6 @@ zoneight234
     def test_part_special(self) -> None:
         self.assertEqual(18, day.solve2("oneight"))
 
-    def test_solution(self) -> None:
+    def test_solutions(self) -> None:
         self.assertEqual(day.solve1(self.data), 56397)
         self.assertEqual(day.solve2(self.data), 55701)

@@ -17,6 +17,6 @@ class TestDay(unittest.TestCase):
     def test_part_2_100(self) -> None:
         self.assertEqual(8410, day.solve2(self.data_example, 100))
 
-    def test_solution(self) -> None:
+    def test_solutions(self) -> None:
         self.assertEqual(day.solve1(self.data), 9521550)
         self.assertEqual(day.solve2(self.data), 298932923702)
