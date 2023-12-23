@@ -108,7 +108,6 @@ def solve1(data: str) -> int:
 
 def solve2(data: str) -> int:
     return Maze(data, True).longest()
-    pass
 
 
 if __name__ == "__main__":
