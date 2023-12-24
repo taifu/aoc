@@ -46,9 +46,25 @@ class Point:
         assert self.dts[X] != 0
         return (point[X] - self.xyz[X]) / self.dts[X]
 
-    def get_z_coord(self, other: "Point", intercept: COORD_DTS) -> float:
-        time, time_other = self.get_time(intercept), other.get_time(intercept)
-        return (self.xyz[Z] - other.xyz[Z] + time * self.dts[Z] - time_other * other.dts[Z]) / (time - time_other)
+    def get_dz_rock(self, other: "Point", intercept: COORD_DTS) -> float:
+        # Given the universal intersection point and another hail:
+        #    z_rock = z_this  + time_this  * (dz_this  - dz_rock)
+        #    z_rock = z_other + time_other * (dz_other - dz_rock)
+        #
+        # Given time:
+        #    time = (x_intercept - x) / dx
+        #
+        # Then (equalizing right sides of z_rock and solving for dz_rock):
+        #    z_this  + time_this  * (dz_this  - dz_rock) = z_other + time_other * (dz_other - dz_rock)
+        #    z_this  + time_this  * (dz_this  - dz_rock) - z_other - time_other * (dz_other - dz_rock) = 0
+        #    z_this  + time_this  * (dz_this  - dz_rock) - z_other - time_other * (dz_other - dz_rock) = 0
+        #    z_this  + time_this * dz_this - time_this * dz_rock - z_other -time_other * dz_other + time_other * dz_rock = 0
+        #    z_this  + time_this * dz_this  - z_other -time_other * dz_other  = 0
+        #    dz_rock (time_other - time_this) = - z_this  - time_this * dz_this  + z_other + time_other * dz_other
+        #    dz_rock (time_other - time_this) = z_other - z_this  - time_this * dz_this + time_other * dz_other
+        #    dz_rock  = z_other - z_this  - time_this * dz_this + time_other * dz_other / (time_other - time_this)
+        time_this, time_other = self.get_time(intercept), other.get_time(intercept)
+        return (other.xyz[Z] - self.xyz[Z] - time_this * self.dts[Z] + time_other * other.dts[Z]) / (time_other - time_this)
 
 
 class Hails:
@@ -99,16 +115,15 @@ class Hails:
                         # with dvx, dvy transposing: must be the right one!
                         first_found = True
                         for hail2 in self.hails[1:]:
-                            new_dvz = self.hails[0].get_z_coord(hail2, first_intersect)
+                            new_dz_rock = self.hails[0].get_dz_rock(hail2, first_intersect)
                             if first_found:
-                                first_found, dvz = False, new_dvz
+                                first_found, dz_rock = False, new_dz_rock
                                 continue
-                            elif dvz != new_dvz:
-                                # One hail with different dvz, can't be!
-                                raise Exception(f"Interception invalidated by {dvz} from {(self.hails[0].xyz, self.hails[0].dts)}")
-                        if dvz == new_dvz:
-                            new_z = self.hails[0].xyz[Z] + self.hails[0].get_time(first_intersect) * (self.hails[0].dts[Z] - dvz)
-                            return int(first_intersect[0] + first_intersect[1] + new_z)
+                            elif dz_rock != new_dz_rock:
+                                # One hail with different dz_rock, can't be!
+                                raise Exception(f"Unexpected dz Rock: {dz_rock} from {(self.hails[0].xyz, self.hails[0].dts)}")
+                        rock_z = self.hails[0].xyz[Z] + self.hails[0].get_time(first_intersect) * (self.hails[0].dts[Z] - dz_rock)
+                        return int(first_intersect[0] + first_intersect[1] + rock_z)
         raise Exception("Not found")
 
 
