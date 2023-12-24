@@ -105,8 +105,7 @@ class Hails:
                                 continue
                             elif dvz != new_dvz:
                                 # One hail with different dvz, can't be!
-                                if new_intersect[X] is None or new_intersect != first_intersect:
-                                    raise Exception(f"Interception invalidated by {dvz} from {(self.hails[0].xyz, self.hails[0].dts)}")
+                                raise Exception(f"Interception invalidated by {dvz} from {(self.hails[0].xyz, self.hails[0].dts)}")
                         if dvz == new_dvz:
                             new_z = self.hails[0].xyz[Z] + self.hails[0].get_time(first_intersect) * (self.hails[0].dts[Z] - dvz)
                             return int(first_intersect[0] + first_intersect[1] + new_z)
