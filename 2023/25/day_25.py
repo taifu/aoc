@@ -69,13 +69,11 @@ class Wires:
                     bridges[node1, node2] += 1
 
         bottlenecks = sorted(bridges.items(), key=itemgetter(1), reverse=True)
-        removed: set[tuple[str, str]] = set()
         for count in range(3):
             node1, node2 = bottlenecks[count][0]
-            removed.add((node1, node2))
             self.graph[node1].remove(node2)
             self.graph[node2].remove(node1)
-        paths = self.bfs_shortest_path(nodes[0], nodes[1])
+        paths = self.bfs_shortest_path(nodes[0])
         detached = sum(1 for k, v in paths.items() if len(v) == 0)
         if detached not in (0, len(self.graph)):
             return (len(nodes) - detached) * detached
