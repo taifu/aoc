@@ -9,8 +9,8 @@ class TestDay(unittest.TestCase):
         self.data = open(os.path.dirname(__file__) + "/input.txt").read()
         self.data_example = open(os.path.dirname(__file__) + "/example.txt").read()
 
-    # def test_part_1(self) -> None:
-        # self.assertEqual(54, day.solve1(self.data_example))
+    def test_part_1(self) -> None:
+        self.assertEqual(54, day.solve1(self.data_example))
 
     def test_solutions(self) -> None:
         self.assertEqual(day.solve1(self.data), 613870)

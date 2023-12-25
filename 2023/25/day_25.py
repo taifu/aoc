@@ -1,5 +1,5 @@
-from collections import deque
-from collections import defaultdict
+from collections import deque, defaultdict
+from itertools import combinations
 from operator import itemgetter
 
 
@@ -44,24 +44,37 @@ class Wires:
     def split(self) -> int:
         nodes = list(self.nodes)
         bridges: dict[tuple[str, str], int] = defaultdict(int)
-        for node1, node2 in zip(nodes, nodes[1:]):
-            _, paths = self.bfs_shortest_path(node1, node2)
-            for node1, node2 in zip(paths[node2], paths[node2][1:]):
-                bridges[(node1, node2)] += 1
+        if len(self.graph) > 100:
+            for node1, node2 in zip(nodes, nodes[1:]):
+                _, paths = self.bfs_shortest_path(node1, node2)
+                for node1, node2 in zip(paths[node2], paths[node2][1:]):
+                    bridges[(node1, node2)] += 1
+        else:
+            for node1, node2 in combinations(nodes, 2):
+                _, paths = self.bfs_shortest_path(node1, node2)
+                for nodeA, nodeB in zip(paths[node2], paths[node2][1:]):
+                    bridges[(nodeA, nodeB)] += 1
 
-        first_six = sorted(bridges.items(), key=itemgetter(1), reverse=True)[:6]
-        removed = set()
-        for (node1, node2), _ in first_six:
-            if node1 > node2:
-                node1, node2, = node2, node1
-            if (node1, node2) not in removed:
-                removed.add((node1, node2))
-                self.graph[node1].remove(node2)
-                self.graph[node2].remove(node1)
-
-        _, paths = self.bfs_shortest_path(node1, "")
-        detached = sum(1 for k, v in paths.items() if len(v) == 0)
-        return (len(nodes) - detached) * detached
+        bottlenecks = sorted(bridges.items(), key=itemgetter(1), reverse=True)
+        count = -1
+        for how_many in (3, 1, 1):
+            removed: set[tuple[str, str]] = set()
+            while len(removed) < how_many:
+                count += 1
+                node1, node2 = bottlenecks[count][0]
+                if node1 > node2:
+                    node1, node2, = node2, node1
+                if (node1, node2) not in removed:
+                    removed.add((node1, node2))
+                    self.graph[node1].remove(node2)
+                    self.graph[node2].remove(node1)
+                    if len(removed) == how_many:
+                        break
+            _, paths = self.bfs_shortest_path(node1, "")
+            detached = sum(1 for k, v in paths.items() if len(v) == 0)
+            if detached not in (0, len(self.graph)):
+                return (len(nodes) - detached) * detached
+        raise Exception("Not found")
 
 
 def solve1(data: str) -> int:
