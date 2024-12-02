@@ -1,37 +1,27 @@
 from typing import TypeAlias
+from itertools import pairwise
 
 
-Levels: TypeAlias = list[list[int]]
+Level: TypeAlias = list[int]
+Levels: TypeAlias = list[Level]
 
 
 def load(data: str) -> Levels:
     return [[int(x) for x in line.split()] for line in data.splitlines()]
 
 
+def ok(level: Level) -> bool:
+    diffs = set([(a - b) for a, b in pairwise(level)])
+    return diffs <= set((1, 2, 3)) or diffs <= set((-1, -2, -3))
+
+
 def count(levels: Levels) -> int:
-    safe = 0
-    for level in levels:
-        diffs = set([(a - b) for a, b in zip(level, level[1:])])
-        if diffs <= set((1, 2, 3)) or diffs <= set((-1, -2, -3)):
-            safe += 1
-    return safe
+    return sum(1 if ok(level) else 0 for level in levels)
 
 
 def count2(levels: Levels) -> int:
-    safe = 0
-    for level in levels:
-        diffs = set([(a - b) for a, b in zip(level, level[1:])])
-        if diffs <= set((1, 2, 3)) or diffs <= set((-1, -2, -3)):
-            safe += 1
-        else:
-            for n in range(len(level)):
-                level2 = level[:]
-                del level2[n]
-                diffs = set([(a - b) for a, b in zip(level2, level2[1:])])
-                if diffs <= set((1, 2, 3)) or diffs <= set((-1, -2, -3)):
-                    safe += 1
-                    break
-    return safe
+    return sum(1 if ok(level) or any(ok(level[:i] + level[i + 1:])
+               for i in range(len(level))) else 0 for level in levels)
 
 
 def solve1(data: str) -> int:
