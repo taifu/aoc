@@ -8,7 +8,6 @@ class Map:
                 self.map[-1][int(self.start.imag)] = '.'
         self.height, self.width = len(self.map), len(self.map[0])
         self.direction = -1j
-        self.directions = [-1j, 1, 1j, -1, -1j]
 
     def draw(self, cell: complex) -> None:
         print()
@@ -29,7 +28,7 @@ class Map:
             if not (0 <= next_cell.imag < self.height and 0 <= next_cell.real < self.width):
                 break
             while self.map[int(next_cell.imag)][int(next_cell.real)] == '#':
-                direction = self.directions[self.directions.index(direction) + 1]
+                direction = complex(-direction.imag, direction.real)
                 next_cell = cell + direction
             cell = next_cell
         return visited
