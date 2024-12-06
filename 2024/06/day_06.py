@@ -1,22 +1,31 @@
+from typing import TypeAlias
+
+
+Position: TypeAlias = tuple[int, int]
+
+
 class Map:
     def __init__(self, data: str) -> None:
         self.map = []
         for line in data.splitlines():
             self.map.append(list(line))
             if '^' in line:
-                self.start = complex(line.index('^'), len(self.map) - 1)
-                self.map[-1][int(self.start.imag)] = '.'
+                self.start = (line.index('^'), len(self.map) - 1)
+                self.map[-1][self.start[0]] = '.'
         self.height, self.width = len(self.map), len(self.map[0])
-        self.direction = -1j
+        self.directions = ((0, -1), (1, 0), (0, 1), (-1, 0))
+        self.start_direction = 0
 
-    def draw(self, cell: complex) -> None:
+    def draw(self, cell: tuple[int, int]) -> None:
         print()
         for y, xs in enumerate(self.map):
-            line = (''.join('o' if y == cell.imag and x == cell.real else c for x, c in enumerate(xs)))
+            line = (''.join('o' if (x, y) == cell else c for x, c in enumerate(xs)))
             print(line)
         print()
 
-    def explore(self, cell: complex, direction: complex) -> set[complex]:
+    def explore(self) -> set[Position]:
+        cell = self.start
+        direction = self.start_direction
         visited = set()
         visited_direction = set()
         while True:
@@ -24,26 +33,26 @@ class Map:
             if (cell, direction) in visited_direction:
                 return set()
             visited_direction.add((cell, direction))
-            next_cell = cell + direction
-            if not (0 <= next_cell.imag < self.height and 0 <= next_cell.real < self.width):
+            next_cell = (cell[0] + self.directions[direction][0], cell[1] + self.directions[direction][1])
+            if not (0 <= next_cell[1] < self.height and 0 <= next_cell[0] < self.width):
                 break
-            while self.map[int(next_cell.imag)][int(next_cell.real)] == '#':
-                direction = complex(-direction.imag, direction.real)
-                next_cell = cell + direction
+            while self.map[next_cell[1]][next_cell[0]] == '#':
+                direction = (direction + 1) % len(self.directions)
+                next_cell = (cell[0] + self.directions[direction][0], cell[1] + self.directions[direction][1])
             cell = next_cell
         return visited
 
     def count(self) -> int:
-        return len(self.explore(self.start, self.direction))
+        return len(self.explore())
 
     def count2(self) -> int:
-        possible_obstacle = self.explore(self.start, self.direction)
+        possible_obstacle = self.explore()
         count = 0
         for obstacle in possible_obstacle:
-            self.map[int(obstacle.imag)][int(obstacle.real)] = '#'
-            if not self.explore(self.start, self.direction):
+            self.map[obstacle[1]][obstacle[0]] = '#'
+            if not self.explore():
                 count += 1
-            self.map[int(obstacle.imag)][int(obstacle.real)] = '.'
+            self.map[obstacle[1]][obstacle[0]] = '.'
         return count
 
 
