@@ -26,10 +26,8 @@ class Map:
     def explore(self) -> set[Position]:
         cell = self.start
         direction = self.start_direction
-        visited = set()
         visited_direction = set()
         while True:
-            visited.add(cell)
             if (cell, direction) in visited_direction:
                 return set()
             visited_direction.add((cell, direction))
@@ -40,13 +38,13 @@ class Map:
                 direction = (direction + 1) % len(self.directions)
                 next_cell = (cell[0] + self.directions[direction][0], cell[1] + self.directions[direction][1])
             cell = next_cell
-        return visited
+        return visited_direction
 
     def count(self) -> int:
-        return len(self.explore())
+        return len(set(cell for cell, _ in self.explore()))
 
     def count2(self) -> int:
-        possible_obstacle = self.explore()
+        possible_obstacle = set(cell for cell, _ in self.explore())
         count = 0
         for obstacle in possible_obstacle:
             self.map[obstacle[1]][obstacle[0]] = '#'
