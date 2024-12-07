@@ -47,6 +47,8 @@ class Map:
         possible_obstacle = set(cell for cell, _ in self.explore())
         count = 0
         for obstacle in possible_obstacle:
+            if obstacle == self.start:
+                continue
             self.map[obstacle[1]][obstacle[0]] = '#'
             if not self.explore():
                 count += 1
