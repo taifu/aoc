@@ -1,11 +1,9 @@
 from collections import defaultdict
-from typing import TypeAlias, Callable, Any, Optional
-from operator import add, mul
+from typing import TypeAlias
 from itertools import combinations
 
 
 Position: TypeAlias = tuple[int, int]
-Operator: TypeAlias = Callable[[Any, Any], Any]
 
 
 class Map:
