@@ -55,7 +55,7 @@ class Disk:
                 spaces_pos.append((self.space[n], pos))
         # Try to move files starting from the last one (and skipping the first)
         for file_id, size in self.files[-1:0:-1]:
-            # Search for first good empty space (starting from right)
+            # Search for first good empty space (starting from left)
             for n, (space, pos) in enumerate(spaces_pos):
                 if space >= size:
                     break
