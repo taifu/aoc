@@ -22,7 +22,7 @@ class Disk:
         spaces = self.space[:]
         space = spaces.pop(0)
         while left_files:
-            file_id, size = left_files.pop(-1)
+            file_id, size = left_files.pop()  # Get rightmost file
             while size:
                 while size and space:
                     compressed.append(file_id)
