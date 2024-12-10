@@ -36,10 +36,11 @@ class Map:
             for nx, ny, next_cell in self.around(x, y):
                 if part2 or (nx, ny) not in visited:
                     if next_cell == cell + 1:
-                        if next_cell == 9 and (nx, ny) not in peaks:
-                            if not part2:
-                                peaks.add((nx, ny))
-                            count += 1
+                        if next_cell == 9:
+                            if (nx, ny) not in peaks:
+                                if not part2:
+                                    peaks.add((nx, ny))
+                                count += 1
                         else:
                             count += self.count_peaks(nx, ny, next_cell, part2, peaks, visited, cache)
             cache[x, y] = count
