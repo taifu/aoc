@@ -45,11 +45,8 @@ class Map:
             cache[x, y] = count
             return count
 
-    def count(self) -> int:
-        return sum(self.count_peaks(x, y, 0, False, set(), set(), {}) for x, y in self.bottoms)
-
-    def count2(self) -> int:
-        return sum(self.count_peaks(x, y, 0, True, set(), set(), {}) for x, y in self.bottoms)
+    def count(self, part2=False) -> int:
+        return sum(self.count_peaks(x, y, 0, part2, set(), set(), {}) for x, y in self.bottoms)
 
 
 def solve1(data: str) -> int:
@@ -57,7 +54,7 @@ def solve1(data: str) -> int:
 
 
 def solve2(data: str) -> int:
-    return Map(data).count2()
+    return Map(data).count(True)
 
 
 if __name__ == "__main__":
