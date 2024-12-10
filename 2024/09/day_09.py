@@ -64,7 +64,7 @@ class Disk:
                 continue
             file_pos = files_pos[file_id]
             if pos > file_pos:
-                # Skip the file if the first empty space is at the rightmost position in the file
+                # Skip the file if the first empty space is at rightmost position of the file
                 continue
             # Move the file
             for p in range(size):
