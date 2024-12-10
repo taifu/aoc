@@ -1,0 +1,75 @@
+from typing import TypeAlias, List
+
+
+CompressedDisk: TypeAlias = List[int]
+RawDisk: TypeAlias = List[int | None]
+
+
+class Map:
+    def __init__(self, data: str) -> None:
+        self.map = []
+        for line in data.strip().split('\n'):
+            self.map.append([int(c) for c in line])
+        self.height, self.width = len(self.map), len(self.map[0])
+        self.bottoms = []
+        self.peaks = []
+        for y in range(self.height):
+            for x in range(self.height):
+                cell = self.map[y][x]
+                if cell == 0:
+                    self.bottoms.append((x, y))
+                elif cell == 9:
+                    self.peaks.append((x, y))
+
+    def around(self, x, y):
+        for dx, dy in ((1, 0), (-1, 0), (0, -1), (0, 1)):
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < self.width and 0 <= ny < self.height:
+                yield nx, ny, self.map[ny][nx]
+
+    def count_peaks(self, x, y, peaks=set(), visited=set(), cache={}):
+        try:
+            return cache[x, y]
+        except KeyError:
+            count = 0
+            cell = self.map[y][x]
+            visited.add((x, y))
+            for nx, ny, next_cell in self.around(x, y):
+                if next_cell == 9:
+                    if (nx, ny) not in peaks:
+                        peaks.add((nx, ny))
+                        count += 1
+                elif (nx, ny) not in visited and next_cell == cell + 1:
+                    count += self.count_peaks(nx, ny, peaks, visited, cache)
+            cache[x, y] = count
+            return count
+
+    def count(self) -> int:
+        total = 0
+        for x, y in self.bottoms[4:]:
+            peaks = self.count_peaks(x, y, set(), set())
+            print(peaks)
+            total += peaks
+            #total += self.count_peaks(x, y, set(), set())
+        return total
+
+    def count2(self) -> int:
+        checksum = 0
+        for n, file_id in enumerate(self.compress2()):
+            checksum += n * (file_id or 0)
+        return checksum
+
+
+def solve1(data: str) -> int:
+    return Map(data).count()
+
+
+def solve2(data: str) -> int:
+    return Map(data).count2()
+
+
+if __name__ == "__main__":
+    import sys, os  # noqa: E401
+    data = open((sys.argv + [os.path.dirname(__file__) + "/input.txt"])[1]).read()
+    print(solve1(data))
+    print(solve2(data))
