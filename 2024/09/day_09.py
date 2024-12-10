@@ -18,11 +18,11 @@ class Disk:
 
     def compress(self) -> CompressedDisk:
         compressed = [0 for n in range(self.files[0][1])]
-        left_files = self.files[-1:0:-1]
+        left_files = self.files[1:]
         spaces = self.space[:]
         space = spaces.pop(0)
         while left_files:
-            file_id, size = left_files.pop(0)
+            file_id, size = left_files.pop(-1)
             while size:
                 while size and space:
                     compressed.append(file_id)
@@ -31,7 +31,7 @@ class Disk:
                 if not space:
                     space = spaces.pop(0)
                     if left_files:
-                        left_file_id, left_size = left_files.pop(-1)
+                        left_file_id, left_size = left_files.pop(0)
                         for n in range(left_size):
                             compressed.append(left_file_id)
         return compressed
