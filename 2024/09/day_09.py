@@ -39,16 +39,23 @@ class Disk:
     def compress2(self) -> RawDisk:
         disk: RawDisk = []
         files_pos, spaces_pos = {}, []
+        # Build raw disk as a list: [0, 0, None, None, None, 1, 1, 1 ... etc. ]
         for n in range(len(self.files)):
+            # Save file starting position
             files_pos[self.files[n][0]] = len(disk)
             for s in range(self.files[n][1]):
+                # Write file
                 disk.append(self.files[n][0])
             pos = len(disk)
             if n != len(self.files) - 1:
                 for s in range(self.space[n]):
+                    # Write empty space
                     disk.append(None)
+                # Save empty space in a list
                 spaces_pos.append((self.space[n], pos))
+        # Try to move files starting from the last one (and skipping the first)
         for file_id, size in self.files[-1:0:-1]:
+            # Search for first good empty space (starting from right)
             for n, (space, pos) in enumerate(spaces_pos):
                 if space >= size:
                     break
@@ -56,12 +63,17 @@ class Disk:
                 continue
             file_pos = files_pos[file_id]
             if pos > file_pos:
+                # # Skipping file if the first empty space is at the rightmost position in the file
                 continue
+            # Move the file
             for p in range(size):
                 disk[p + pos], disk[p + file_pos] = file_id, None
+            # Adjust empty spaces
             if space == size:
+                # Detele if filled
                 spaces_pos.pop(n)
             else:
+                # Adjust if partially filled
                 spaces_pos[n] = (space - size, pos + size)
         return disk
 
