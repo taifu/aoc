@@ -10,19 +10,19 @@ class Stones:
     def count(self, times: int) -> None:
         for time in range(times):
             self.stones_copy = self.stones.copy()
-            for stone, how_much in self.stones_copy.items():
-                if not how_much:
+            for stone, how_many in self.stones_copy.items():
+                if not how_many:
                     continue
-                self.stones[stone] -= how_much
+                self.stones[stone] -= how_many
                 if stone == 0:
-                    self.stones[1] += how_much
+                    self.stones[1] += how_many
                 elif len(str(stone)) % 2 == 0:
                     s = str(stone)
                     left, right = int(s[:len(s) // 2]), int(s[len(s) // 2:])
-                    self.stones[left] += how_much
-                    self.stones[right] += how_much
+                    self.stones[left] += how_many
+                    self.stones[right] += how_many
                 else:
-                    self.stones[stone * 2024] += how_much
+                    self.stones[stone * 2024] += how_many
         return sum(self.stones.values())
 
 
