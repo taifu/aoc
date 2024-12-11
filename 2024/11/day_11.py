@@ -17,7 +17,8 @@ class Stones:
                 if stone == 0:
                     self.stones[1] += how_much
                 elif len(str(stone)) % 2 == 0:
-                    left, right = int(str(stone)[:len(str(stone)) // 2]), int(str(stone)[len(str(stone)) // 2:])
+                    s = str(stone)
+                    left, right = int(s[:len(s) // 2]), int(s[len(s) // 2:])
                     self.stones[left] += how_much
                     self.stones[right] += how_much
                 else:
