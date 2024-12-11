@@ -1,4 +1,5 @@
 from collections import defaultdict
+from math import floor, log10
 
 
 class Stones:
@@ -16,11 +17,9 @@ class Stones:
                 self.stones[stone] -= how_many
                 if stone == 0:
                     self.stones[1] += how_many
-                elif len(str(stone)) % 2 == 0:
-                    s = str(stone)
-                    left, right = int(s[:len(s) // 2]), int(s[len(s) // 2:])
-                    self.stones[left] += how_many
-                    self.stones[right] += how_many
+                elif (digits := floor(log10(stone)) + 1) % 2 == 0:
+                    self.stones[stone // 10**(digits // 2)] += how_many
+                    self.stones[stone % 10**(digits // 2)] += how_many
                 else:
                     self.stones[stone * 2024] += how_many
         return sum(self.stones.values())
