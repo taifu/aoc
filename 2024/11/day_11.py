@@ -8,7 +8,7 @@ class Stones:
         for raw in data.strip().split():
             self.stones[int(raw)] = 1
 
-    def count(self, times: int) -> None:
+    def count(self, times: int) -> int:
         for time in range(times):
             self.stones_copy = self.stones.copy()
             for stone, how_many in self.stones_copy.items():
