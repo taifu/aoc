@@ -63,10 +63,9 @@ class Garden:
         return 0, -1, 0, 1
 
     def count_sides(self, border: List[Tuple[Cell, Direction]]) -> int:
-        sides = []
+        n_sides = 0
         while border:
             (x, y), (dx, dy) = border.pop()
-            side = [(x, y, dx, dy)]
             up_left_dx, up_left_dy, down_right_dx, down_right_dy = self.updown_leftright(dx, dy)
             up_left = (x + up_left_dx, y + up_left_dy)
             while (up_left, (dx, dy)) in border:
@@ -76,8 +75,8 @@ class Garden:
             while (down_right, (dx, dy)) in border:
                 border.remove((down_right, (dx, dy)))
                 down_right = (down_right[0] + down_right_dx, down_right[1] + down_right_dy)
-            sides.append(side)
-        return len(sides)
+            n_sides += 1
+        return n_sides
 
     def count(self) -> int:
         return sum(area * len(border) for area, border in self.areas_borders)
