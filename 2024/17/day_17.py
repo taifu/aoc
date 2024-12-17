@@ -68,9 +68,12 @@ class Computer:
             next_A_registers = []
             for current_A in A_registers:
                 for check_A in range(current_A * 8, (current_A + 1) * 8):
-                    register_B = check_A % 8
-                    register_B = check_A // (2 ** (register_B ^ B_xor_1))
-                    if (last_digit ^ register_B ^ B_xor_1 ^ B_xor_2) % 8 == check_A % 8:
+                    register_B = (check_A % 8)
+                    register_B = register_B ^ B_xor_1
+                    register_C = check_A // (2 ** register_B)
+                    register_B = register_B ^ B_xor_2
+                    register_B = register_B ^ register_C
+                    if (last_digit ^ register_B) % 8 == check_A % 8:
                         next_A_registers.append((current_A * 8) + register_B)
             A_registers = next_A_registers
         return min(A_registers)
