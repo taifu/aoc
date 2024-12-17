@@ -42,11 +42,10 @@ Program: 0,3,5,4,3,0"""
         self.assertEqual(day.solution.registers[1], 44354)
 
     def test_part_1(self) -> None:
-        self.assertEqual("4,6,3,5,6,3,5,2,1,0", day.solve1(self.data_example))
+        self.assertEqual(day.solve1(self.data_example), "4,6,3,5,6,3,5,2,1,0")
 
     def test_solutions_1(self) -> None:
         self.assertEqual(day.solve1(self.data), "3,5,0,1,5,1,5,1,0")
 
     def test_solutions_2(self) -> None:
-        # self.assertEqual(day.solve2(self.data), xxxx)
-        pass
+        self.assertEqual(day.solve2(self.data), 107413700225434)
