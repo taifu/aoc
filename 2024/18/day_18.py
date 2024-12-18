@@ -11,11 +11,7 @@ BYTE = '#'
 
 class Solution:
     def __init__(self, raw: str, how_many: int, size: int) -> None:
-        self.map = {}
-        self.start = (0, 0)
-        self.size = size + 1
-        self.end = (size, size)
-        self.bytes = []
+        self.map, self.size, self.bytes = {}, size + 1, []
         for n, line in enumerate(raw.strip().splitlines()):
             if n >= how_many:
                 break
@@ -39,7 +35,7 @@ class Solution:
 
     def explore(self) -> Union[int, float]:
         stack: List[Tuple[int, Position]] = []
-        heapq.heappush(stack, (0, self.start))
+        heapq.heappush(stack, (0, (0, 0)))
         self.visited: Dict[Position, int] = {}
 
         while stack:
@@ -72,8 +68,7 @@ def solve1(data: str, how_many: int = 1024, size: int = 70) -> int:
 def solve2(data: str, size: int = 70) -> str:
     how_many_block = len(data.strip().splitlines()) - 1
     while True:
-        solution = Solution(data, how_many_block, size)
-        if solution.count() != float('inf'):
+        if (solution := Solution(data, how_many_block, size)).count() != float('inf'):
             return ",".join(str(n) for n in last_byte)  # noqa: F821
         last_byte: Position = solution.bytes[-1]  # noqa: F841
         how_many_block -= 1
