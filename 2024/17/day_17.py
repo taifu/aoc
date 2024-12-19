@@ -70,7 +70,12 @@ class Computer:
         # 3,0 ->  IF A goto 0
         #
         A_registers = [0]
-        B_xor_1, B_xor_2 = self.program[3], self.program[7]
+        B_xor_1 = self.program[3]
+        start_diff = 6  # Changing part of input
+        for n, instr in enumerate(self.program[start_diff::2]):
+            if instr == 1:  # bxl
+                B_xor_2 = self.program[start_diff + n * 2 + 1]
+                break
         for last_digit in reversed(self.program):
             next_A_registers = []
             for current_A in A_registers:
