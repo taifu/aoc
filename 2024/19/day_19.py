@@ -10,10 +10,10 @@ class Solution:
     @cache
     def ways(self, pattern: str) -> int:
         n_ways = 0
+        if not pattern:
+            return 0
         for towel in self.towels:
-            if towel == pattern:
-                n_ways += 1
-            elif pattern.startswith(towel):
+            if pattern.startswith(towel):
                 n_ways += self.ways(pattern[len(towel):])
         return n_ways
 
