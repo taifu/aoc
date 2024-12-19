@@ -24,12 +24,19 @@ class Solution:
         return sum(self.ways(pattern) for pattern in self.patterns)
 
 
+solution = None
+
+
 def solve1(data: str) -> int:
-    return int(Solution(data).count())
+    global solution
+    solution = solution or Solution(data)
+    return int(solution.count())
 
 
 def solve2(data: str) -> int:
-    return int(Solution(data).count2())
+    global solution
+    solution = solution or Solution(data)
+    return int(solution.count2())
 
 
 if __name__ == "__main__":
