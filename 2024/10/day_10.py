@@ -46,7 +46,7 @@ class Map:
             cache[x, y] = count
             return count
 
-    def count(self, part2=False) -> int:
+    def count(self, part2: bool = False) -> int:
         return sum(self.count_peaks(x, y, 0, part2, set(), set(), {}) for x, y in self.bottoms)
 
 

@@ -1,4 +1,4 @@
-from typing import TypeAlias
+from typing import TypeAlias, Set, Tuple
 
 
 Position: TypeAlias = tuple[int, int]
@@ -23,7 +23,7 @@ class Map:
             print(line)
         print()
 
-    def explore(self) -> set[Position]:
+    def explore(self) -> Set[Tuple[Position, int]]:
         cell = self.start
         direction = self.start_direction
         visited_direction = set()
