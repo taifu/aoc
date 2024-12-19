@@ -1,7 +1,4 @@
 from functools import cache
-from typing import TypeAlias, Dict, List, Tuple, Generator, Set, Optional, Union  # noqa: F401
-
-Position: TypeAlias = Tuple[int, int]
 
 
 class Solution:
