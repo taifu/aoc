@@ -1,5 +1,5 @@
 from typing import Any
-import pytest
+import pytest  # type: ignore
 
 
 def pytest_addoption(parser: Any) -> None:

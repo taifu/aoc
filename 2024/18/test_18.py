@@ -1,6 +1,5 @@
 import os
 import unittest
-import pytest  # noqa: F401
 day = __import__('day_' + __file__[-5:-3])
 
 

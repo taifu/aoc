@@ -1,6 +1,6 @@
 import os
 import unittest
-import pytest
+import pytest  # type: ignore
 day = __import__('day_' + __file__[-5:-3])
 
 
@@ -27,6 +27,6 @@ class TestDay(unittest.TestCase):
     def test_solution(self) -> None:
         self.assertEqual(day.solve1(self.data), 4819)
 
-    @pytest.mark.slow
+    @pytest.mark.slow  # type: ignore[misc]
     def test_solution_2(self) -> None:
         self.assertEqual(day.solve2(self.data), 1796)
