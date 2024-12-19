@@ -24,19 +24,22 @@ class Solution:
         return sum(self.ways(pattern) for pattern in self.patterns)
 
 
-solution = None
+class SingletonSolution:
+    _instance = None
+
+    @classmethod
+    def get_instance(cls, data: str):
+        if cls._instance is None:
+            cls._instance = Solution(data)
+        return cls._instance
 
 
 def solve1(data: str) -> int:
-    global solution
-    solution = solution or Solution(data)
-    return int(solution.count())
+    return SingletonSolution.get_instance(data).count()
 
 
 def solve2(data: str) -> int:
-    global solution
-    solution = solution or Solution(data)
-    return int(solution.count2())
+    return SingletonSolution.get_instance(data).count2()
 
 
 if __name__ == "__main__":
