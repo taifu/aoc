@@ -5,7 +5,7 @@ day = __import__('day_' + __file__[-5:-3])
 
 class TestDay(unittest.TestCase):
     def setUp(self) -> None:
-        setattr(day, 'solution', None)
+        day.Solution._instance = None
         self.data = open(os.path.dirname(__file__) + "/input.txt").read()
         self.data_example = """r, wr, b, g, bwu, rb, gb, br
 

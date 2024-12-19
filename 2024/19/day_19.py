@@ -1,7 +1,16 @@
 from functools import cache
+from typing import Any
 
 
 class Solution:
+    _instance = None
+
+    @classmethod
+    def get_instance(cls, data: str) -> "Solution":
+        if cls._instance is None:
+            cls._instance = Solution(data)
+        return cls._instance
+
     def __init__(self, raw: str) -> None:
         parts = raw.strip().split('\n\n')
         self.towels = [towel.strip() for towel in parts[0].split(',')]
@@ -24,22 +33,12 @@ class Solution:
         return sum(self.ways(pattern) for pattern in self.patterns)
 
 
-class SingletonSolution:
-    _instance = None
-
-    @classmethod
-    def get_instance(cls, data: str):
-        if cls._instance is None:
-            cls._instance = Solution(data)
-        return cls._instance
-
-
 def solve1(data: str) -> int:
-    return SingletonSolution.get_instance(data).count()
+    return Solution.get_instance(data).count()
 
 
 def solve2(data: str) -> int:
-    return SingletonSolution.get_instance(data).count2()
+    return Solution.get_instance(data).count2()
 
 
 if __name__ == "__main__":
