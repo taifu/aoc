@@ -11,7 +11,7 @@ class Solution:
     def ways(self, pattern: str) -> int:
         n_ways = 0
         if not pattern:
-            return 0
+            return 1
         for towel in self.towels:
             if pattern.startswith(towel):
                 n_ways += self.ways(pattern[len(towel):])
