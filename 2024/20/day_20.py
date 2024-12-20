@@ -3,6 +3,7 @@ from typing import TypeAlias, Dict, List, Tuple, Generator, Set, Optional, Union
 
 DIRECTIONS = ((1, 0), (-1, 0), (0, 1), (0, -1))
 Position: TypeAlias = Tuple[int, int]
+Length: TypeAlias = int
 
 
 class Solution:
@@ -15,7 +16,7 @@ class Solution:
         return cls._instance
 
     def __init__(self, raw: str) -> None:
-        self.map = {}
+        self.map: Dict[Position, Length] = {}
         for y, line in enumerate(raw.strip().splitlines()):
             for x, char in enumerate(line):
                 if char != '#':
@@ -27,8 +28,8 @@ class Solution:
         self.size = len(line)
         self.find_track()
 
-    def find_track(self):
-        length = 0
+    def find_track(self) -> None:
+        length: Length = 0
         pos, visited, self.track = self.start, set((self.start,)), [self.start]
         while pos != self.end:
             for direction in DIRECTIONS:
@@ -58,7 +59,7 @@ class Solution:
             print(line)
         print()
 
-    def count(self, saving: int = 100, exact: bool = False, cheat_length: int = 2) -> int:
+    def count(self, saving: Length = 100, exact: bool = False, cheat_length: Length = 2) -> int:
         total = 0
         for pos in self.track:
             for length in range(2, cheat_length + 1):
@@ -76,11 +77,11 @@ class Solution:
         return total
 
 
-def solve1(data: str, saving=100, exact=False) -> int:
+def solve1(data: str, saving: Length = 100, exact: bool = False) -> int:
     return Solution.get_instance(data).count(saving, exact)
 
 
-def solve2(data: str, saving=100, exact=False, cheat_length=20) -> int:
+def solve2(data: str, saving: Length = 100, exact: bool = False, cheat_length: Length = 20) -> int:
     return Solution.get_instance(data).count(saving, exact, cheat_length)
 
 
