@@ -67,8 +67,7 @@ class Solution:
                 for dx in range(-length, length + 1):
                     dy = length - abs(dx)
                     for step in (0, 1):
-                        cheat = (pos[0] + dx, pos[1] + dy)
-                        saved = self.map.get(cheat, 0) - self.map[pos] - length
+                        saved = self.map.get((pos[0] + dx, pos[1] + dy), 0) - self.map[pos] - length
                         if (exact and saved == saving) or (not exact and saved >= saving):
                             total += 1
                         if dy == 0:
