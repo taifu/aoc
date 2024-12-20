@@ -6,6 +6,10 @@ Position: TypeAlias = Tuple[int, int]
 Length: TypeAlias = int
 
 
+def add_pos(pos: Position, dpos: Position):
+    return (pos[0] + dpos[0], pos[1] + dpos[1])
+
+
 class Solution:
     _instance = None
 
@@ -33,7 +37,7 @@ class Solution:
         pos, visited, self.track = self.start, set((self.start,)), [self.start]
         while pos != self.end:
             for direction in DIRECTIONS:
-                next_pos = (pos[0] + direction[0], pos[1] + direction[1])
+                next_pos = add_pos(pos, direction)
                 if next_pos in visited:
                     continue
                 visited.add(next_pos)
@@ -67,7 +71,7 @@ class Solution:
                 for dx in range(-length, length + 1):
                     dy = length - abs(dx)
                     for step in (0, 1):
-                        saved = self.map.get((pos[0] + dx, pos[1] + dy), 0) - self.map[pos] - length
+                        saved = self.map.get(add_pos(pos, (dx, dy)), 0) - self.map[pos] - length
                         if (exact and saved == saving) or (not exact and saved >= saving):
                             total += 1
                         if dy == 0:
