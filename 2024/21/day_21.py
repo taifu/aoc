@@ -79,7 +79,7 @@ class Solution:
         self.all_paths_numpad = self.all_paths(Numpad, POS_NUMPAD)
         self.all_paths_dirpad = self.all_paths(Dirpad, POS_DIRPAD)
 
-    def shortest_paths(self, key_from: Key, key_to: Key, pos_keys: Dict[Position, Key], forbidden: Position) -> KeyPaths:
+    def shortest_manhattan_paths(self, key_from: Key, key_to: Key, pos_keys: Dict[Position, Key], forbidden: Position) -> KeyPaths:
         if key_from == key_to:
             return ((Dirpad.KA,),)
         paths: KeyPaths = ()
@@ -91,13 +91,13 @@ class Solution:
         if dx:
             if (x1 + dx, y1) != forbidden:
                 key_dir = DXY_KEYS[dx, 0]
-                for path in self.shortest_paths(pos_keys[x1 + dx, y1], key_to, pos_keys, forbidden):
+                for path in self.shortest_manhattan_paths(pos_keys[x1 + dx, y1], key_to, pos_keys, forbidden):
                     paths += (((key_dir,) + path),)
         # Move up/down
         if dy:
             if (x1, y1 + dy) != forbidden:
                 key_dir = DXY_KEYS[0, dy]
-                for path in self.shortest_paths(pos_keys[x1, y1 + dy], key_to, pos_keys, forbidden):
+                for path in self.shortest_manhattan_paths(pos_keys[x1, y1 + dy], key_to, pos_keys, forbidden):
                     paths += (((key_dir,) + path),)
         return tuple(paths)
 
@@ -112,17 +112,15 @@ class Solution:
                 if k_from == k_to:
                     all_paths[k_from, k_to] = ((keypad['KA'],),)
                 else:
-                    all_paths[k_from, k_to] = self.shortest_paths(k_from, k_to, pos_keys, POS[keypad.GP])
+                    all_paths[k_from, k_to] = self.shortest_manhattan_paths(k_from, k_to, pos_keys, POS[keypad.GP])
         return all_paths
 
     @cache
     def press(self, key_from: Key, key_to: Key, levels: int) -> int:
         if levels == 1:
             return len(self.all_paths_dirpad[key_from, key_to][0])
-        all_lengths = []
-        for path in self.all_paths_dirpad[key_from, key_to]:
-            all_lengths.append(sum(self.press(key_0, key_1, levels - 1) for key_0, key_1 in pairwise((Dirpad.KA,) + path)))
-        return min(all_lengths)
+        return min(sum(self.press(key_0, key_1, levels - 1) for key_0, key_1 in pairwise((Dirpad.KA,) + path))
+                   for path in self.all_paths_dirpad[key_from, key_to])
 
     def count(self, levels: int = 3) -> int:
         complexity = 0
@@ -130,15 +128,10 @@ class Solution:
             all_paths: KeyPaths = ()
             last_key = Numpad.KA
             for next_key in sequence:
-                this_paths: KeyPaths = ()
-                for path in self.all_paths_numpad[last_key, next_key]:
-                    this_paths += (path,)
+                this_paths: KeyPaths = tuple(self.all_paths_numpad[last_key, next_key])
                 all_paths = tuple([aseq + dseq for dseq in this_paths for aseq in all_paths] or this_paths)
                 last_key = next_key
-            lengths = []
-            for path in all_paths:
-                lengths.append(sum(self.press(k0, k1, levels) for k0, k1 in pairwise((Dirpad.KA,) + path)))
-            complexity += code * min(lengths)
+            complexity += code * min(sum(self.press(k0, k1, levels) for k0, k1 in pairwise((Dirpad.KA,) + path)) for path in all_paths)
         return complexity
 
 
@@ -146,8 +139,8 @@ def solve1(data: str, levels: int = 2) -> int:
     return Solution.get_instance(data).count(levels)
 
 
-def solve2(data: str) -> int:
-    return Solution.get_instance(data).count(levels=25)
+def solve2(data: str, levels: int = 25) -> int:
+    return Solution.get_instance(data).count(levels)
 
 
 if __name__ == "__main__":
