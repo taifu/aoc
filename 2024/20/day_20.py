@@ -6,7 +6,7 @@ Position: TypeAlias = Tuple[int, int]
 Length: TypeAlias = int
 
 
-def add_pos(pos: Position, dpos: Position):
+def add_pos(pos: Position, dpos: Position) -> Position:
     return (pos[0] + dpos[0], pos[1] + dpos[1])
 
 

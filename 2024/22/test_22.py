@@ -1,6 +1,6 @@
 import os
 import unittest
-import pytest  # type: ignore  # noqa: F401
+import pytest  # noqa: F401
 day = __import__('day_' + __file__[-5:-3])
 
 
@@ -25,10 +25,10 @@ class TestDay(unittest.TestCase):
     def test_part_2(self) -> None:
         self.assertEqual(day.solve2(self.data_example_2), 23)
 
-    @pytest.mark.slow  # type: ignore[misc]
+    @pytest.mark.slow
     def test_solutions_1(self) -> None:
         self.assertEqual(day.solve1(self.data), 15335183969)
 
-    @pytest.mark.slow  # type: ignore[misc]
+    @pytest.mark.slow
     def test_solutions_2(self) -> None:
         self.assertEqual(day.solve2(self.data), 1696)
