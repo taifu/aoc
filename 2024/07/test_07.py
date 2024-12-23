@@ -1,6 +1,5 @@
 import os
 import unittest
-import pytest
 day = __import__('day_' + __file__[-5:-3])
 
 
@@ -26,6 +25,5 @@ class TestDay(unittest.TestCase):
     def test_solution(self) -> None:
         self.assertEqual(day.solve1(self.data), 882304362421)
 
-    @pytest.mark.slow
     def test_solution_2(self) -> None:
         self.assertEqual(day.solve2(self.data), 145149066755184)
