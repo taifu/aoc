@@ -73,9 +73,6 @@ tnw OR pbm -> gnj
     def test_part_1_B(self) -> None:
         self.assertEqual(day.solve1(self.data_example_2), 2024)
 
-    def _test_part_2(self) -> None:
-        self.assertEqual(day.solve2(self.data_example), 'co,de,ka,ta')
-
     def test_solutions_1(self) -> None:
         self.assertEqual(day.solve1(self.data), 69201640933606)
 
