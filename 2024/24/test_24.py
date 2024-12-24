@@ -67,7 +67,7 @@ tgd XOR rvg -> z12
 tnw OR pbm -> gnj
 """
 
-    def test_part_1_A(self) -> None:
+    def test_part_1(self) -> None:
         self.assertEqual(day.solve1(self.data_example), 4)
 
     def test_part_1_B(self) -> None:
@@ -79,5 +79,6 @@ tnw OR pbm -> gnj
     def test_solutions_1(self) -> None:
         self.assertEqual(day.solve1(self.data), 69201640933606)
 
+    # 8 minuti con pypy
     def _test_solutions_2(self) -> None:
-        self.assertEqual(day.solve2(self.data), "")
+        self.assertEqual(day.solve2(self.data), "dhq,hbs,jcp,kfp,pdg,z18,z22,z27")
