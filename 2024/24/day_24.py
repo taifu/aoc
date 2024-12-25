@@ -7,6 +7,10 @@ from itertools import combinations
 Changes: TypeAlias = Union[Tuple[int, ...], Tuple[()]]
 
 
+NO_CALC = -1
+UNABLE = set((-1,))
+
+
 class Solution:
     _instance = None
 
@@ -40,12 +44,12 @@ class Solution:
                 both = True
                 if not isinstance(p1, int):
                     if p1 in values:
-                        p1 = values[p1]
+                        p1 = values[p1]  # type: ignore
                     else:
                         both = False
                 if not isinstance(p2, int):
                     if p2 in values:
-                        p2 = values[p2]
+                        p2 = values[p2]  # type: ignore
                     else:
                         both = False
                 if both:
@@ -54,7 +58,7 @@ class Solution:
                 else:
                     connections[(p1, op, p2)] = p3s
             if (last_conn, last_val) == (len(connections), len(values)):
-                return None
+                return NO_CALC
             last_conn, last_val = (len(connections), len(values))
         result, n = '', 0
         while True:
@@ -65,7 +69,7 @@ class Solution:
             n += 1
         return int(result, 2)
 
-    def wrong(self, full_check=False) -> str:
+    def wrong(self, full_check: Optional[bool] = False) -> Set[int]:
         wrong = set()
         for n in range(self.wires):
             values = self.values.copy()
@@ -76,8 +80,8 @@ class Solution:
             values[lab_x] = 1
             # calc = self.compute(values)
             calc = self.compute(values)
-            if calc is None:
-                return None
+            if calc == NO_CALC:
+                return UNABLE
             if calc != 2 ** n:
                 wrong.add(n)
             values[lab_x] = 0
@@ -109,8 +113,8 @@ class Solution:
                     return set([1])
         return wrong
 
-    def count(self) -> str:
-        return self.compute(self.values)
+    def count(self) -> int:
+        return self.compute(self.values) or 0
 
     def count2(self) -> str:
         keys = list(self.connections.keys())
@@ -138,7 +142,7 @@ class Solution:
         for sw1, sw2 in combinations(range(n_conn), 2):
             self.connections[keys[sw1]], self.connections[keys[sw2]] = self.connections[keys[sw2]], self.connections[keys[sw1]]
             wrong = self.wrong()
-            if wrong is not None and len(wrong) < len(start_wrong):
+            if wrong != UNABLE and len(wrong) < len(start_wrong):
                 improving.append((sw1, sw2))
             self.connections[keys[sw1]], self.connections[keys[sw2]] = self.connections[keys[sw2]], self.connections[keys[sw1]]
         # Try all combinations of 4 of them
@@ -151,7 +155,7 @@ class Solution:
                 labels.append(self.connections[keys[sw1]][0])
                 labels.append(self.connections[keys[sw2]][0])
             wrong = self.wrong()
-            if wrong is not None and len(wrong) == 0:
+            if wrong != UNABLE and len(wrong) == 0:
                 # Without a full_check there are 4 solutions
                 # ((30, 94), (81, 136), (87, 109), (157, 173))
                 # bqp,hbs,jcp,kfp,pdg,rfk,z18,z27
