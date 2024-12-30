@@ -73,8 +73,8 @@ class Solution:
     def wrong(self, full_check: Optional[bool] = False) -> Set[int]:
         wrong = set()
         order = None
+        values = self.values.copy()
         for n in range(self.wires):
-            values = self.values.copy()
             for k in values:
                 values[k] = 0
             lab_x = f"x{str(n).zfill(2)}"
@@ -97,8 +97,8 @@ class Solution:
         # Check 100 random value
         if full_check:
             from random import randint
+            values = self.values.copy()
             for n in range(100):
-                values = self.values.copy()
                 for k in values:
                     values[k] = 0
                 numbers = []
