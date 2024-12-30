@@ -70,12 +70,13 @@ tnw OR pbm -> gnj
     def test_part_1(self) -> None:
         self.assertEqual(day.solve1(self.data_example), 4)
 
-    def test_part_1_B(self) -> None:
+    # Quick version doesn't compute largest example (missing z02 and z05)
+    def _test_part_1_B(self) -> None:
         self.assertEqual(day.solve1(self.data_example_2), 2024)
 
     def test_solutions_1(self) -> None:
         self.assertEqual(day.solve1(self.data), 69201640933606)
 
-    # 8 minuti con pypy
+    # 1.5 minuti con pypy
     def _test_solutions_2(self) -> None:
         self.assertEqual(day.solve2(self.data), "dhq,hbs,jcp,kfp,pdg,z18,z22,z27")

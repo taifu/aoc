@@ -1,10 +1,11 @@
-from typing import TypeAlias, Dict, List, Tuple, Generator, Set, Optional, Union, Any  # noqa: F401
+from typing import TypeAlias, Dict, List, Tuple, Generator, Set, Optional, Union, Any, Callable  # noqa: F401
 from operator import and_, or_, xor
 from collections import defaultdict
 from itertools import combinations
 
 
 Changes: TypeAlias = Union[Tuple[int, ...], Tuple[()]]
+Order: TypeAlias = List[Tuple[Tuple[str, Callable[[int, int], int], str], List[str]]]
 
 
 NO_CALC = -1
@@ -32,45 +33,46 @@ class Solution:
             self.connections[(p1, {'AND': and_, 'XOR': xor, 'OR': or_}[op], p2)].append(p3)
         self.wires = len(self.values) // 2
 
-    def compute(self, values: Dict[str, int]) -> int:
-        values = values.copy()
-        connections = self.connections.copy()
-        last_conn, last_val = (len(connections), len(values))
-        while connections:
-            for (p1, op, p2), p3s in connections.copy().items():
-                if not (p1 in values or p2 in values) and not (isinstance(p1, int) and isinstance(p2, int)):
-                    continue
-                connections.pop((p1, op, p2))
-                both = True
-                if not isinstance(p1, int):
-                    if p1 in values:
-                        p1 = values[p1]  # type: ignore
-                    else:
-                        both = False
-                if not isinstance(p2, int):
-                    if p2 in values:
-                        p2 = values[p2]  # type: ignore
-                    else:
-                        both = False
-                if both:
-                    for p3 in p3s:
-                        values[p3] = op(p1, p2)
-                else:
-                    connections[(p1, op, p2)] = p3s
-            if (last_conn, last_val) == (len(connections), len(values)):
-                return NO_CALC
-            last_conn, last_val = (len(connections), len(values))
+    def result(self, computed: Dict[str, int]) -> int:
         result, n = '', 0
         while True:
             label = 'z' + str(n).zfill(2)
-            if label not in values:
+            if label not in computed:
                 break
-            result = str(values[label]) + result
+            result = str(computed[label]) + result
             n += 1
         return int(result, 2)
 
+    def compute(self, values: Dict[str, int]) -> Tuple[int, Optional[Order]]:
+        order = []
+        computed = values.copy()
+        done = set()
+        while len(computed) - len(values) < len(self.connections):
+            found = False
+            for (p1, op, p2), p3s in self.connections.items():
+                if (p1, op, p2) in done:
+                    continue
+                if p1 in computed and p2 in computed:
+                    found = True
+                    order.append(((p1, op, p2), p3s))
+                    done.add((p1, op, p2))
+                    for p3 in p3s:
+                        computed[p3] = op(computed[p1], computed[p2])
+            if not found:
+                return NO_CALC, None
+        result = self.result(computed)
+        return result, order
+
+    def compute_order(self, values: Dict[str, int], order: Order) -> int:
+        computed = values.copy()
+        for (p1, op, p2), p3s in order:
+            for p3 in p3s:
+                computed[p3] = op(computed[p1], computed[p2])
+        return self.result(computed)
+
     def wrong(self, full_check: Optional[bool] = False) -> Set[int]:
         wrong = set()
+        order = None
         for n in range(self.wires):
             values = self.values.copy()
             for k in values:
@@ -78,24 +80,21 @@ class Solution:
             lab_x = f"x{str(n).zfill(2)}"
             lab_y = f"y{str(n).zfill(2)}"
             values[lab_x] = 1
-            # calc = self.compute(values)
-            calc = self.compute(values)
+            if order is None:
+                calc, order = self.compute(values)
+            else:
+                calc = self.compute_order(values, order)
             if calc == NO_CALC:
                 return UNABLE
             if calc != 2 ** n:
                 wrong.add(n)
-            values[lab_x] = 0
-            values[lab_y] = 1
-            # calc = self.compute(values)
-            calc = self.compute(values)
-            if calc != 2 ** n:
+            values[lab_x], values[lab_y] = 0, 1
+            if self.compute_order(values, order) != 2 ** n:  # type: ignore
                 wrong.add(n)
             values[lab_x] = 1
-            # calc = self.compute(values)
-            calc = self.compute(values)
-            if calc != 2 * 2 ** n:
+            if self.compute_order(values, order) != 2 * 2 ** n:  # type: ignore
                 wrong.add(n)
-        # Testare valori a caso
+        # Check 100 random value
         if full_check:
             from random import randint
             for n in range(100):
@@ -108,13 +107,12 @@ class Solution:
                     numbers.append(x)
                     for n, c in enumerate(bin(x)[2:].zfill(45)[::-1]):
                         values[label + str(n).zfill(2)] = int(c)
-                calc = self.compute(values)
-                if (calc != sum(numbers)):
+                if self.compute_order(values, order) != sum(numbers):  # type: ignore
                     return set([1])
         return wrong
 
     def count(self) -> int:
-        return self.compute(self.values) or 0
+        return self.compute(self.values)[0] or 0
 
     def count2(self) -> str:
         keys = list(self.connections.keys())
