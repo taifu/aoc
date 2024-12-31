@@ -28,8 +28,11 @@ class Solution:
             p1, p2 = line.split(':')
             self.values[p1] = int(p2.strip())
         self.connections = defaultdict(list)
+        self.zs = 0
         for line in parts[1].strip().splitlines():
             p1, op, p2, p3 = line.replace('-> ', '').split(' ')
+            if p3.startswith('z'):
+                self.zs += 1
             self.connections[(p1, {'AND': and_, 'XOR': xor, 'OR': or_}[op], p2)].append(p3)
         self.wires = len(self.values) // 2
 
@@ -47,18 +50,21 @@ class Solution:
         order = []
         computed = values.copy()
         done = set()
-        while len(computed) - len(values) < len(self.connections):
-            found = False
+        zs = 0
+        while zs < self.zs:
+            no_new_found = True
             for (p1, op, p2), p3s in self.connections.items():
                 if (p1, op, p2) in done:
                     continue
                 if p1 in computed and p2 in computed:
-                    found = True
+                    no_new_found = False
                     order.append(((p1, op, p2), p3s))
                     done.add((p1, op, p2))
                     for p3 in p3s:
+                        if p3.startswith('z'):
+                            zs += 1
                         computed[p3] = op(computed[p1], computed[p2])
-            if not found:
+            if no_new_found:
                 return NO_CALC, None
         result = self.result(computed)
         return result, order
@@ -117,7 +123,7 @@ class Solution:
     def count2(self) -> str:
         keys = list(self.connections.keys())
         n_conn = len(keys)
-        improving = []
+        improving_couples = []
         start_wrong = self.wrong()
         # This brute force approach finds these improving swaps:
         # (30, 94)
@@ -141,10 +147,10 @@ class Solution:
             self.connections[keys[sw1]], self.connections[keys[sw2]] = self.connections[keys[sw2]], self.connections[keys[sw1]]
             wrong = self.wrong()
             if wrong != UNABLE and len(wrong) < len(start_wrong):
-                improving.append((sw1, sw2))
+                improving_couples.append((sw1, sw2))
             self.connections[keys[sw1]], self.connections[keys[sw2]] = self.connections[keys[sw2]], self.connections[keys[sw1]]
         # Try all combinations of 4 of them
-        for swaps in combinations(improving, 4):
+        for swaps in combinations(improving_couples, 4):
             if len(set(wire for swap in swaps for wire in swap)) < 8:
                 continue
             labels = []
