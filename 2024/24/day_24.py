@@ -143,6 +143,7 @@ class Solution:
             self.connections[key1], self.connections[key2] = self.connections[key2], self.connections[key1]
         # Try all combinations of 4 of them
         for swaps in combinations(improving_couples, 4):
+            # Combinations where you swap twice same wire are not acceptable
             if len(set(key for swap in swaps for key in swap)) != 8:
                 continue
             labels = []
