@@ -1,4 +1,5 @@
 from typing import TypeAlias, Dict, List, Tuple, Generator, Set, Optional, Union, Any, Callable  # noqa: F401
+from random import randint
 from operator import and_, or_, xor
 from collections import defaultdict
 from itertools import combinations
@@ -31,25 +32,20 @@ class Solution:
         self.zs = 0
         for line in parts[1].strip().splitlines():
             p1, op, p2, p3 = line.replace('-> ', '').split(' ')
-            if p3.startswith('z'):
+            if p3[0] == 'z':
                 self.zs += 1
             self.connections[(p1, {'AND': and_, 'XOR': xor, 'OR': or_}[op], p2)].append(p3)
         self.wires = len(self.values) // 2
 
     def result(self, computed: Dict[str, int]) -> int:
-        result, n = '', 0
-        while True:
+        result = 0
+        for n in range(self.zs):
             label = 'z' + str(n).zfill(2)
-            if label not in computed:
-                break
-            result = str(computed[label]) + result
-            n += 1
-        return int(result, 2)
+            result = computed[label] * 2**n + result
+        return result
 
     def compute(self, values: Dict[str, int]) -> Tuple[int, Optional[Order]]:
-        order = []
-        computed = values.copy()
-        done = set()
+        order, computed, done = [], values.copy(), set()
         zs = 0
         while zs < self.zs:
             no_new_found = True
@@ -61,20 +57,18 @@ class Solution:
                     order.append(((p1, op, p2), p3s))
                     done.add((p1, op, p2))
                     for p3 in p3s:
-                        if p3.startswith('z'):
+                        if p3[0] == 'z':
                             zs += 1
                         computed[p3] = op(computed[p1], computed[p2])
             if no_new_found:
                 return NO_CALC, None
-        result = self.result(computed)
-        return result, order
+        return self.result(computed), order
 
     def compute_order(self, values: Dict[str, int], order: Order) -> int:
-        computed = values.copy()
         for (p1, op, p2), p3s in order:
             for p3 in p3s:
-                computed[p3] = op(computed[p1], computed[p2])
-        return self.result(computed)
+                values[p3] = op(values[p1], values[p2])
+        return self.result(values)
 
     def wrong(self, full_check: Optional[bool] = False) -> Set[int]:
         wrong = set()
@@ -92,24 +86,22 @@ class Solution:
                 calc = self.compute_order(values, order)
             if calc == NO_CALC:
                 return UNABLE
-            if calc != 2 ** n:
+            if calc != 2**n:
                 wrong.add(n)
             values[lab_x], values[lab_y] = 0, 1
-            if self.compute_order(values, order) != 2 ** n:  # type: ignore
+            if self.compute_order(values, order) != 2**n:  # type: ignore
                 wrong.add(n)
             values[lab_x] = 1
-            if self.compute_order(values, order) != 2 * 2 ** n:  # type: ignore
+            if self.compute_order(values, order) != 2 * 2**n:  # type: ignore
                 wrong.add(n)
-        # Check 100 random value
+        # Check 10 random value
         if full_check:
-            from random import randint
-            values = self.values.copy()
-            for n in range(100):
+            for n in range(10):
                 for k in values:
                     values[k] = 0
                 numbers = []
                 for label in ('x', 'y'):
-                    x = randint(0, 2**45 - 1)
+                    x = randint(0, 2**self.wires - 1)
                     numbers.append(x)
                     for n, c in enumerate(bin(x)[2:].zfill(45)[::-1]):
                         values[label + str(n).zfill(2)] = int(c)
@@ -121,58 +113,73 @@ class Solution:
         return self.compute(self.values)[0] or 0
 
     def count2(self) -> str:
-        keys = list(self.connections.keys())
-        n_conn = len(keys)
+        # This brute force approach finds these improving swaps:
+        #
+        # y09 XOR x09 -> hbs <=> x09 AND y09 -> kfp  ok
+        # jdm OR vvp  -> dcm <=> x22 AND y22 -> bqp
+        # x17 AND y17 -> pnt <=> x18 AND y18 -> z18
+        # dhq OR qdb  -> rfk <=> x18 AND y18 -> z18
+        # ckj AND bch -> z27 <=> ckj XOR bch -> jcp  ok
+        # ckj AND bch -> z27 <=> jcp OR knm  -> bqj
+        # y21 AND x21 -> jdm <=> x22 AND y22 -> bqp
+        # pvk XOR fwt -> dhq <=> x18 AND y18 -> z18  ok
+        # vmg XOR rfk -> z19 <=> x18 AND y18 -> z18
+        # x18 AND y18 -> z18 <=> gvb OR pnt  -> pvk
+        # x18 AND y18 -> z18 <=> y18 XOR x18 -> fwt
+        # x22 XOR y22 -> dbp <=> x22 AND y22 -> bqp
+        # x22 AND y22 -> bqp <=> dcm XOR dbp -> pdg
+        # x22 AND y22 -> bqp <=> pdg XOR tfm -> z23
+        # bqp OR gkg  -> z22 <=> dcm XOR dbp -> pdg  ok
+        # bqp OR gkg  -> z22 <=> pdg XOR tfm -> z23
+        # dcm XOR dbp -> pdg <=> dcm AND dbp -> gkg
+        #
         improving_couples = []
         start_wrong = self.wrong()
-        # This brute force approach finds these improving swaps:
-        # (30, 94)
-        # (34, 157)
-        # (57, 136)
-        # (81, 136)
-        # (87, 109)
-        # (87, 177)
-        # (104, 157)
-        # (108, 136)
-        # (134, 136)
-        # (136, 164)
-        # (136, 174)
-        # (145, 157)
-        # (157, 173)
-        # (157, 206)
-        # (168, 173)
-        # (168, 206)
-        # (173, 184)
-        for sw1, sw2 in combinations(range(n_conn), 2):
-            self.connections[keys[sw1]], self.connections[keys[sw2]] = self.connections[keys[sw2]], self.connections[keys[sw1]]
+        for key1, key2 in combinations(self.connections.keys(), 2):
+            self.connections[key1], self.connections[key2] = self.connections[key2], self.connections[key1]
             wrong = self.wrong()
             if wrong != UNABLE and len(wrong) < len(start_wrong):
-                improving_couples.append((sw1, sw2))
-            self.connections[keys[sw1]], self.connections[keys[sw2]] = self.connections[keys[sw2]], self.connections[keys[sw1]]
+                improving_couples.append((key1, key2))
+            self.connections[key1], self.connections[key2] = self.connections[key2], self.connections[key1]
         # Try all combinations of 4 of them
         for swaps in combinations(improving_couples, 4):
-            if len(set(wire for swap in swaps for wire in swap)) < 8:
+            if len(set(key for swap in swaps for key in swap)) != 8:
                 continue
             labels = []
-            for sw1, sw2 in swaps:
-                self.connections[keys[sw1]], self.connections[keys[sw2]] = self.connections[keys[sw2]], self.connections[keys[sw1]]
-                labels.append(self.connections[keys[sw1]][0])
-                labels.append(self.connections[keys[sw2]][0])
-            wrong = self.wrong()
-            if wrong != UNABLE and len(wrong) == 0:
-                # Without a full_check there are 4 solutions
-                # ((30, 94), (81, 136), (87, 109), (157, 173))
-                # bqp,hbs,jcp,kfp,pdg,rfk,z18,z27
-                # ((30, 94), (81, 136), (87, 109), (168, 173))
-                # hbs,jcp,kfp,pdg,rfk,z18,z22,z27
-                # ((30, 94), (87, 109), (108, 136), (157, 173))
-                # bqp,dhq,hbs,jcp,kfp,pdg,z18,z27
-                # ((30, 94), (87, 109), (108, 136), (168, 173))
-                # dhq,hbs,jcp,kfp,pdg,z18,z22,z27            <- only this was right: WHY!?!
+            for key1, key2 in swaps:
+                self.connections[key1], self.connections[key2] = self.connections[key2], self.connections[key1]
+                labels.extend([self.connections[key1][0], self.connections[key2][0]])
+            if len(self.wrong()) == 0:
+                # Without a full_check there are 4 solutions without any wrong bit:
+                #
+                # 1) bqp,hbs,jcp,kfp,pdg,rfk,z18,z27
+                #  y09 XOR x09 -> kfp <=> x09 AND y09 -> hbs
+                #  dhq OR qdb  -> z18 <=> x18 AND y18 -> rfk
+                #  ckj AND bch -> jcp <=> ckj XOR bch -> z27
+                #  x22 AND y22 -> pdg <=> dcm XOR dbp -> bqp
+                #
+                # 2) hbs,jcp,kfp,pdg,rfk,z18,z22,z27
+                #  y09 XOR x09 -> kfp <=> x09 AND y09 -> hbs
+                #  dhq OR qdb  -> z18 <=> x18 AND y18 -> rfk
+                #  ckj AND bch -> jcp <=> ckj XOR bch -> z27
+                #  bqp OR gkg  -> pdg <=> dcm XOR dbp -> z22
+                #
+                # 3) bqp,dhq,hbs,jcp,kfp,pdg,z18,z27
+                #  y09 XOR x09 -> kfp <=> x09 AND y09 -> hbs
+                #  ckj AND bch -> jcp <=> ckj XOR bch -> z27
+                #  pvk XOR fwt -> z18 <=> x18 AND y18 -> dhq
+                #  x22 AND y22 -> pdg <=> dcm XOR dbp -> bqp
+                #
+                # 4) dhq,hbs,jcp,kfp,pdg,z18,z22,z27 <= only this is right: WHY!?!
+                #  y09 XOR x09 -> kfp <=> x09 AND y09 -> hbs
+                #  ckj AND bch -> jcp <=> ckj XOR bch -> z27
+                #  pvk XOR fwt -> z18 <=> x18 AND y18 -> dhq
+                #  bqp OR gkg  -> pdg <=> dcm XOR dbp -> z22
+                #
                 if self.wrong(True) == set():
                     return ",".join(sorted(labels))
-            for sw1, sw2 in swaps:
-                self.connections[keys[sw1]], self.connections[keys[sw2]] = self.connections[keys[sw2]], self.connections[keys[sw1]]
+            for key1, key2 in swaps:
+                self.connections[key1], self.connections[key2] = self.connections[key2], self.connections[key1]
         return ""
 
 
