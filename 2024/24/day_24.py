@@ -80,7 +80,7 @@ class Solution:
             lab_x = f"x{str(n).zfill(2)}"
             lab_y = f"y{str(n).zfill(2)}"
             values[lab_x] = 1
-            if order is None:
+            if n == 0:
                 calc, order = self.compute(values)
             else:
                 calc = self.compute_order(values, order)
