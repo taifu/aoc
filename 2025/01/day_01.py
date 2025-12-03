@@ -1,5 +1,5 @@
 from enum import IntEnum
-from typing import TypeAlias
+from typing import TypeAlias, Tuple
 
 
 class Direction(IntEnum):
@@ -8,8 +8,8 @@ class Direction(IntEnum):
 
 
 Distance: TypeAlias = int
-Rotation: TypeAlias = tuple[Direction, Distance]
-Rotations: TypeAlias = tuple[Rotation, ...]
+Rotation: TypeAlias = Tuple[Direction, Distance]
+Rotations: TypeAlias = Tuple[Rotation, ...]
 
 
 def load(data: str) -> Rotations:
