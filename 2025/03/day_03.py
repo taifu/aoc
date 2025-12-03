@@ -1,23 +1,20 @@
-from typing import TypeAlias, Generator, Tuple  # noqa: F401
-
-
-Battery: TypeAlias = Tuple[int, ...]
-Batteries: TypeAlias = Tuple[Battery, ...]
+type Battery = tuple[int, ...]
+type Batteries = tuple[Battery, ...]
 
 
 def load(data: str) -> Batteries:
     return tuple(tuple(int(c) for c in line) for line in data.strip().splitlines())
 
 
+def best(battery: Battery, length: int) -> int:
+    if length == 1:
+        return max(battery)
+    max_digit = max(battery[:1 - length])
+    return 10**(length - 1) * max_digit + best(battery[battery.index(max_digit) + 1:], length - 1)
+
+
 def count(batteries: Batteries, length: int = 2) -> int:
-    tot = 0
-    for battery in batteries:
-        maxs, punt = [], 0
-        for cont in range(length - 1, 0, -1):
-            maxs.append(max(battery[punt:-cont]))
-            punt = battery.index(maxs[-1], punt) + 1
-        tot += int("".join(str(m) for m in maxs + [max(battery[punt:])]))
-    return tot
+    return sum(best(battery, length) for battery in batteries)
 
 
 def solve1(data: str) -> int:
