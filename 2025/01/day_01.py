@@ -1,5 +1,4 @@
 from enum import IntEnum
-from typing import TypeAlias, Tuple
 
 
 class Direction(IntEnum):
@@ -7,9 +6,9 @@ class Direction(IntEnum):
     LEFT = -1
 
 
-Distance: TypeAlias = int
-Rotation: TypeAlias = Tuple[Direction, Distance]
-Rotations: TypeAlias = Tuple[Rotation, ...]
+type Distance = int
+type Rotation = tuple[Direction, Distance]
+type Rotations = tuple[Rotation, ...]
 
 
 def load(data: str) -> Rotations:
@@ -19,7 +18,7 @@ def load(data: str) -> Rotations:
 def count(rotations: Rotations, part: int = 1) -> int:
     pos, pwd = 50, 0
     for direction, distance in rotations:
-        for step in range(distance):
+        for _ in range(distance):
             pos = (pos + direction) % 100
             if part == 2 and pos == 0:
                 pwd += 1
@@ -37,7 +36,7 @@ def solve2(data: str) -> int:
 
 
 if __name__ == "__main__":
-    import sys, os  # noqa: E401
+    import os, sys  # noqa: E401
     data = open((sys.argv + [os.path.dirname(__file__) + "/input.txt"])[1]).read()
     print(solve1(data))
     print(solve2(data))

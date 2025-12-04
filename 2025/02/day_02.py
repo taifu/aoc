@@ -1,16 +1,16 @@
-from typing import Generator, Tuple
+from collections.abc import Iterator
 
 
 class Range:
-    def __init__(self, line: str):
+    def __init__(self, line: str) -> None:
         self.start, self.end = [int(p) for p in line.split('-')]
 
     def __repr__(self) -> str:
         return f"{self.start}-{self.end}"
 
 
-def invalids(start: int, end: int, part: int = 1) -> Generator[int, None, None]:
-    found = set()
+def invalids(start: int, end: int, part: int = 1) -> Iterator[int]:
+    found: set[int] = set()
     for step in range(1, len(str(end)) // 2 + 1):
         for rep in range(max(2, len(str(start)) // step), len(str(end)) // step + 1):
             if part == 1 and rep != 2:
@@ -26,15 +26,15 @@ def invalids(start: int, end: int, part: int = 1) -> Generator[int, None, None]:
                     break
 
 
-def load(data: str) -> Tuple[Range, ...]:
+def load(data: str) -> tuple[Range, ...]:
     return tuple(Range(line) for line in data.strip().split(','))
 
 
-def count(ranges: Tuple[Range, ...]) -> int:
+def count(ranges: tuple[Range, ...]) -> int:
     return sum(invalid for range in ranges for invalid in invalids(range.start, range.end))
 
 
-def count2(ranges: Tuple[Range, ...]) -> int:
+def count2(ranges: tuple[Range, ...]) -> int:
     return sum(invalid for range in ranges for invalid in invalids(range.start, range.end, part=2))
 
 

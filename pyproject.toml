@@ -1,0 +1,41 @@
+[tool.pyright]
+typeCheckingMode = "strict"
+reportMissingTypeStubs = "warning"
+
+
+# --------------------------------------------------------------
+# Ruff — Linting (correct new layout)
+# --------------------------------------------------------------
+
+[tool.ruff]
+exclude = [
+    "venv",
+    ".venv",
+    ".git",
+]
+
+# Global config that applies to *both* lint + formatter
+line-length = 88
+
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle
+    "F",      # pyflakes
+    "ANN",    # flake8-annotations
+    "I",      # import sorting
+]
+
+ignore = [
+    "E501",  # Line long
+    "I001",  # Import
+]
+
+# --------------------------------------------------------------
+# Ruff formatter
+# --------------------------------------------------------------
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
