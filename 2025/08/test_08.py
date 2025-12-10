@@ -26,7 +26,7 @@ class TestDay(unittest.TestCase):
 862,61,35
 984,92,344
 425,690,689
-"""       
+"""
 
     def test_part_1(self) -> None:
         self.assertEqual(40, day.solve1(self.data_example, 10))
@@ -34,6 +34,7 @@ class TestDay(unittest.TestCase):
     def test_part_2(self) -> None:
         self.assertEqual(25272, day.solve2(self.data_example))
 
-    def _test_solutions(self) -> None:
-        self.assertEqual(day.solve1(self.data), 1642)
-        self.assertEqual(day.solve2(self.data), 47274292756692)
+    def test_solutions(self) -> None:
+        day.playground = None
+        self.assertEqual(day.solve1(self.data), 123234)
+        self.assertEqual(day.solve2(self.data), 9259958565)
