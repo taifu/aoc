@@ -11,7 +11,7 @@ class Machine:
         self.buttons = [sum(2**int(n) for n in but.split(',')) for but in parts[1].replace(' ', '').replace('(', '').strip(')').split(')')]
         self.joltage = [int(p) for p in parts[2][:-1].split(',')]
 
-    def switch_on(self):
+    def switch_on(self) -> int:
         for cont in range(1, len(self.buttons) + 1):
             for used in combinations(self.buttons, cont):
                 if reduce(xor, used) == self.target:
