@@ -2,24 +2,27 @@ from collections import defaultdict
 from math import sqrt, prod
 
 
+type Junction = tuple[int, ...]
+
+
 class Playground:
     def __init__(self, data: str) -> None:
-        self.junctions = []
-        self.junctions_circuits = {}
-        self.distances = []
-        self.circuits = defaultdict(set)
+        self.junctions: list[Junction] = []
+        self.junctions_circuits: dict[Junction, int] = {}
+        self.distances: list[tuple[float, Junction, Junction]] = []
+        self.circuits: dict[int, set[Junction]] = defaultdict(set)
         for line in data.strip().splitlines():
             self.junctions.append(tuple(int(c) for c in line.split(',')))
             for junction in self.junctions[:-1]:
                 d = self.distance(junction, self.junctions[-1])
                 self.distances.append((d, junction, self.junctions[-1]))
 
-    def distance(self, j1, j2) -> int:
+    def distance(self, j1: Junction, j2: Junction) -> float:
         return sqrt(sum((j1[d] - j2[d])**2 for d in range(3)))
 
-    def connect(self, connections: int) -> None:
+    def connect(self, connections: int) -> "Playground":
         conn = 0
-        for key, j1, j2 in sorted(self.distances):
+        for _, j1, j2 in sorted(self.distances):
             conn += 1
             circ1, circ2 = self.junctions_circuits.get(j1), self.junctions_circuits.get(j2)
             if circ1 is None or circ2 is None:
@@ -30,12 +33,15 @@ class Playground:
                     self.junctions_circuits[j1] = conn
                     self.junctions_circuits[j2] = conn
                 elif circ1 is None:
+                    assert circ2 is not None
                     self.junctions_circuits[j1] = circ2
                     self.circuits[circ2].add(j1)
                 else:
+                    assert circ1 is not None
                     self.junctions_circuits[j2] = circ1
                     self.circuits[circ1].add(j2)
             elif circ1 != circ2:
+                assert circ1 is not None and circ2 is not None
                 for junction in self.circuits[circ2]:
                     self.junctions_circuits[junction] = circ1
                     self.circuits[circ1].add(junction)
