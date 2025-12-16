@@ -18,7 +18,6 @@ class Machine:
         self.joltage = tuple(int(p) for p in raw_joltage[1:-1].split(','))
 
         # Possibili pressioni (1 per bottone) che portano a un dato diagramma
-        #self.diagram_patterns: dict[Diagram, list[Button]] = defaultdict(list)
         self.diagram_patterns = defaultdict[Diagram, list[Button]](list)
 
         # Jolt ottenibili da tutte le combinazioni di pressioni possibili (solo 1 per bottone massimo)
