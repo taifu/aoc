@@ -1,7 +1,7 @@
 class Tree:
     def __init__(self, data: str) -> None:
-        self.presents = {}
-        self.boards = []
+        self.presents: dict[int, list[list[int]]] = {}
+        self.boards: list[tuple[tuple[int, int], tuple[int, ...]]] = []
         for line in data.strip().split('\n\n'):
             parts = line.split(':')
             if len(parts) == 2:
