@@ -43,10 +43,12 @@ class Machine:
         if any(x < 0 for x in joltage_target):
             return inf
 
-        # Considero solo le pressioni che corrispondo alla parità del target attuale
+        # Considero solo le pressioni che corrispondono alla parità del target attuale
         press_count, parity_lights = inf, tuple(x % 2 for x in joltage_target)
         for pressed in self.diagram_patterns[parity_lights]:
-            new_joltage_target = tuple((b - a) // 2 for a, b in zip(self.added_joltage[pressed], joltage_target))
+            # La divisione per due non dà resti perché considero solo
+            # le pressioni che hanno messo a zero la parità del target
+            new_joltage_target = tuple((b - a) / 2 for a, b in zip(self.added_joltage[pressed], joltage_target))
             press_count = min(press_count, sum(pressed) + 2 * self.get_joltage(new_joltage_target))
         return press_count
 
