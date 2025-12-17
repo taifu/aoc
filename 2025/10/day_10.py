@@ -13,9 +13,9 @@ class Machine:
     def __init__(self, line: str) -> None:
         # Elementi della macchina
         raw_diagram, *raw_buttons, raw_joltage = line.split()
-        self.diagram = tuple(1 if rd == '#' else 0 for rd in raw_diagram[1:-1])
-        self.buttons = [tuple(map(int, rb[1:-1].split(','))) for rb in raw_buttons]
-        self.joltage = tuple(int(p) for p in raw_joltage[1:-1].split(','))
+        self.diagram: Diagram = tuple(1 if rd == '#' else 0 for rd in raw_diagram[1:-1])
+        self.buttons: list[Button] = [tuple(map(int, rb[1:-1].split(','))) for rb in raw_buttons]
+        self.joltage: Joltage = tuple(int(p) for p in raw_joltage[1:-1].split(','))
 
         # Possibili pressioni (1 per bottone) che portano a un dato diagramma
         self.diagram_patterns = defaultdict[Diagram, list[Button]](list)
